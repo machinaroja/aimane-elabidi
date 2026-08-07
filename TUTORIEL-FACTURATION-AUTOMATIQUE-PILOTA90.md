@@ -1,5 +1,14 @@
 # Facturation automatique PDF — PILOTA90 (Shopify)
 
+> **STATUT : ✅ CONFIGURATION VALIDÉE le 07/08/2026** — app retenue : **Invoice
+> Falcon** (et non Order Printer Pro comme initialement proposé). Facture réelle
+> vérifiée conforme (commande #1075) : identité EI + SIREN, adresse 75002,
+> numérotation INV#, total net sans aucune ligne de TVA, mention art. 293 B en
+> pied de page, document en français. Modèle « Bold » assigné à « Orders ».
+> Points restants côté marchand : activer/confirmer l'envoi automatique,
+> générer les factures des commandes antérieures, passer au plan payant
+> (>50 factures/mois), assigner un modèle aux avoirs (« Credit notes »).
+
 Tutoriel de configuration de l'envoi automatique de factures conformes au statut
 de micro-entrepreneur en franchise en base de TVA (art. 293 B du CGI).
 
