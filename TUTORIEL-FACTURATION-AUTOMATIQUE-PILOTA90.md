@@ -8,27 +8,28 @@ de micro-entrepreneur en franchise en base de TVA (art. 293 B du CGI).
 
 ---
 
-## Étape 0 (indispensable) — Supprimer toute trace de TVA dans Shopify
+## Étape 0 — Supprimer toute trace de TVA dans Shopify ✅ FAIT (07/08/2026)
 
-Constat au moment de la rédaction : les 10 produits de la boutique sont cochés
-« taxable » dans Shopify. Tant que c'est le cas, Shopify peut afficher une ligne
-« dont TVA » sur les commandes, reçus et factures, même si le prix payé ne change pas.
-Il faut donc désactiver la taxe produit par produit :
+Les **14 produits** de la boutique étaient cochés « taxable » dans Shopify.
+La case « Facturer les taxes » a été décochée sur les 14 produits via l'API
+Admin le 07/08/2026, et l'état a été vérifié : **0 produit taxable sur 14**.
+Les totaux sont désormais nets partout, conformément à la franchise en base.
 
-1. Admin Shopify → **Produits**.
-2. Cochez la case tout en haut de la liste pour **sélectionner tous les produits**.
-3. Cliquez sur **Modifier les produits** (éditeur en masse).
-4. Cliquez sur **Colonnes** → ajoutez la colonne **« Facturer les taxes »**
-   (Charge taxes).
-5. **Décochez** la case pour chaque produit → **Enregistrer**.
-6. Ensuite : **Paramètres → Taxes et frais de douane** → vérifiez qu'aucune
-   région (France, Union européenne…) n'est configurée pour la collecte de taxes.
-   Si une zone de collecte existe, supprimez-la.
+Reste une vérification manuelle (2 clics) : **Paramètres → Taxes et frais de
+douane** → si une région de collecte (France, Union européenne…) est
+configurée, la supprimer. Sans région de collecte et sans produit taxable,
+aucune ligne de TVA ne peut apparaître.
 
-Résultat : plus aucune ligne de TVA nulle part — les totaux sont nets, ce qui
-correspond à la franchise en base.
+Pour tout nouveau produit créé à l'avenir : penser à **décocher « Facturer
+les taxes »** dans la fiche produit avant publication.
 
 ---
+
+> **Note sur LDT** : l'application LDT déjà installée gère la **livraison des
+> fichiers** (liens de téléchargement). Elle ne produit pas de facture légale
+> française — il faut donc bien ajouter une application de facturation dédiée
+> (étapes 1 à 4 ci-dessous). Les deux apps cohabitent sans problème : LDT
+> envoie le guide, l'app de facturation envoie la facture.
 
 ## Étape 1 — Installer l'application de facturation
 
@@ -119,3 +120,20 @@ désignation et quantité des produits, prix unitaire et total net, la mention
   mondial.
 - Vérifiez chaque année les seuils de la franchise en base (art. 293 B), ils
   ont fait l'objet de réformes récentes.
+
+## Côté URSSAF — ce que la facturation ne fait PAS à votre place
+
+L'émission des factures est une obligation, mais elle ne remplace pas vos
+obligations déclaratives de micro-entrepreneur :
+
+1. **Déclarer votre chiffre d'affaires** (mensuel ou trimestriel selon votre
+   option) sur autoentrepreneur.urssaf.fr — montant encaissé, catégorie BIC
+   ventes de marchandises pour les guides téléchargeables. À déclarer même si
+   le CA est de 0 €.
+2. **Tenir un livre des recettes** chronologique : l'export des commandes
+   Shopify (Commandes → Exporter) + l'archive des factures de l'app suffisent
+   à le constituer — pensez à l'exporter chaque mois et à le conserver.
+3. **Compte bancaire dédié** à l'activité obligatoire si le CA dépasse
+   10 000 € deux années de suite.
+4. Surveiller le **plafond de CA de la micro-entreprise** (188 700 € pour la
+   vente de biens — à vérifier chaque année) et les seuils de TVA.
