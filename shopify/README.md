@@ -88,7 +88,10 @@ Le CSS est mobile d'abord, sans débordement horizontal à 360 px comme à 390 p
 - Le champ `preuve` ne cite le chiffre d'un produit que s'il dépasse 10 ventes ; en dessous,
   il affiche la preuve à l'échelle de la boutique.
 - Le champ `bonus` ne se remplit que si le bonus est réellement livré.
-- Un guide ne doit jamais être présenté comme une alternative à un pack qui ne le contient pas.
-  Le **Pack Complet** contient exactement 5 guides : Motivation, Communiquer, Confiance,
-  Force Mentale, Les Bases du Jeu Intelligent. Pour tous les autres guides, la seule formulation
-  vraie est additive : guide + pack = 54,65 € au lieu de 94,40 € à l'unité.
+- **Ne jamais évoquer une offre qui n'existe pas en boutique.** Un client ne peut acheter que
+  ce qui a une page produit et un prix. Additionner deux achats pour annoncer un total
+  (« 6 guides pour 54,65 € ») revient à inventer un pack : c'est interdit.
+- Le **Pack Complet** (39,75 €) contient exactement 5 guides : Motivation, Communiquer,
+  Confiance, Force Mentale, Les Bases du Jeu Intelligent. Il n'est mentionné **que sur ces
+  5 fiches** et sur sa propre page. Les 9 autres fiches n'en parlent pas du tout : leur
+  urgence repose sur le coût réel de l'attente, pas sur un pack qui ne les contient pas.
