@@ -88,6 +88,21 @@ Le CSS est mobile d'abord, sans débordement horizontal à 360 px comme à 390 p
 - Le champ `preuve` ne cite le chiffre d'un produit que s'il dépasse 10 ventes ; en dessous,
   il affiche la preuve à l'échelle de la boutique.
 - Le champ `bonus` ne se remplit que si le bonus est réellement livré.
+- **Ne jamais attribuer une identité aux acheteurs.** Le nombre de téléchargements est
+  vérifiable, pas la profession de ceux qui achètent : écrire « téléchargé plus de 20 fois »,
+  jamais « par 20 éducateurs et parents ».
+
+## Typographie française
+
+Les fiches suivent la typographie française : **espace insécable** (U+00A0) avant `: ; ! ?`,
+entre le nombre et `€` ou `%`, et à l'intérieur des guillemets `« »`. Sans elle, un `:` ou un
+`€` peut se retrouver seul en début de ligne sur mobile. Le script `relecture.py` du dossier de
+travail applique et vérifie cette règle sur les champs texte et sur les nœuds de texte du HTML,
+jamais à l'intérieur des balises.
+
+Autres conventions retenues : `e-mail` (jamais `email` ni `mail`), garantie à la première
+personne du pluriel (« nous vous remboursons », jamais « on vous rembourse »), apostrophes
+typographiques `’`.
 - **Ne jamais évoquer une offre qui n'existe pas en boutique.** Un client ne peut acheter que
   ce qui a une page produit et un prix. Additionner deux achats pour annoncer un total
   (« 6 guides pour 54,65 € ») revient à inventer un pack : c'est interdit.
