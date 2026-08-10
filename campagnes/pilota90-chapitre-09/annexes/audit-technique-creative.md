@@ -21,33 +21,44 @@ Fichier analysé : `Votre_Story_Septembre_chapitre_9_sur_12_Minimaliste_Monochro
 
 ## 2. Zones de sécurité — le point bloquant
 
-Meta recouvre le haut et le bas du cadre avec son interface en Reels et en Stories. La recommandation
-usuelle est de réserver **environ 14 % en haut et 20 % en bas**, soit sur un cadre de 1920 px de haut :
-**268 px en haut** et **384 px en bas**.
+Meta recouvre le haut et le bas du cadre avec son interface. **Les deux placements n'ont pas la même
+emprise, et c'est ce qui change le diagnostic :**
+
+| Placement | Réservé en haut | Réservé en bas | Sur un cadre de 1920 px |
+|---|---|---|---|
+| Stories | 14 % | 20 % | texte à garder entre y = 268 et y = 1536 |
+| **Reels** | 14 % | **35 %** | **texte à garder entre y = 268 et y = 1248** |
+
+Reels superpose davantage d'éléments en bas — pseudo, légende, audio, boutons — d'où la bande beaucoup
+plus haute. C'est le placement le plus visé par cette campagne, donc **c'est la contrainte de 35 % qui
+fait foi**.
 
 Positions réellement mesurées dans la vidéo (détection des pixels de texte, image par image) :
 
-| Élément | Position verticale | Distance au bas du cadre | Verdict |
-|---|---|---|---|
-| Watermark logo PILOTA90 | y = 102 → 248 px | — (à 102 px du **haut**) | ❌ Entièrement dans les 268 px du haut |
-| Sous-titre ligne 1 (1,0 s) | y = 1546 → 1590 | 330 → 374 px | ❌ Sous la limite des 384 px |
-| Sous-titre ligne 2 (1,0 s) | y = 1615 → 1649 | 271 → 305 px | ❌ Nettement sous la limite |
-| Sur-titre L1 « Vos mots construisent son mental. » | y = 1484 → 1526 | 394 → 436 px | ✅ Juste au-dessus de la limite |
-| Sur-titre L2 « Ou le détruisent. » | y = 1555 → 1599 | 321 → 365 px | ❌ Sous la limite des 384 px |
+| Élément | Position verticale | Distance au bas | Stories (< 1536) | Reels (< 1248) |
+|---|---|---|---|---|
+| Watermark logo PILOTA90 | y = 102 → 248 | — (102 px du haut) | ❌ dans les 268 px du haut | ❌ idem |
+| Sous-titre ligne 1 (1,0 s) | y = 1546 → 1590 | 330 → 374 px | ❌ masqué | ❌ masqué |
+| Sous-titre ligne 2 (1,0 s) | y = 1615 → 1649 | 271 → 305 px | ❌ masqué | ❌ masqué |
+| « Vos mots construisent son mental. » | y = 1484 → 1526 | 394 → 436 px | ✅ passe de justesse | ❌ masqué |
+| « Ou le détruisent. » | y = 1555 → 1599 | 321 → 365 px | ❌ masqué | ❌ masqué |
 
-**Conséquence concrète :** en placement Reels, la seconde ligne de la punchline — « Ou le détruisent. » —
-et la seconde ligne des dialogues sous-titrés passent **derrière le nom du compte, la légende et la barre
-d'actions**. C'est-à-dire que la moitié qui porte la charge émotionnelle du message est masquée
-précisément sur le placement le moins cher et le plus regardé.
+**Conséquence concrète.** En Stories, la seconde ligne de la punchline et les dialogues sous-titrés
+passent derrière l'interface. **En Reels, c'est la totalité du texte du film qui est masquée** —
+dialogues et punchline comprises. Or ce texte porte l'intégralité du sens : sans lui, il reste un
+adulte qui s'agite et un enfant qui baisse la tête, sans la bascule ni la conclusion.
 
-Visualisation : `../assets/audit-zones-securite.jpg`
+Visualisation : `../assets/audit-zones-securite.jpg` (le repère blanc y matérialise la limite Stories
+à 384 px ; la limite Reels est 288 px plus haut encore).
 
 ### Correction demandée au monteur
 
-1. Remonter l'ensemble du bloc de texte (dialogues + punchline) pour que **la ligne la plus basse se
-   termine à 420 px minimum du bas** du cadre — soit une marge de sécurité de 36 px au-delà des 384 px.
+1. Remonter l'ensemble du bloc de texte — dialogues et punchline — d'au moins **420 px**, pour que la
+   ligne la plus basse se termine au-dessus de y = 1248, avec une marge. Le bloc actuel descend
+   jusqu'à y = 1649 : 401 px est le strict minimum, 450 px donne la marge de sécurité.
 2. Descendre le watermark à **300 px minimum du haut**, ou le supprimer : le logo revient de toute
-   façon en grand sur le carton final, il n'apporte rien en surimpression.
+   façon en grand sur le carton final, il n'apporte rien en surimpression. Accessoirement, le « 90 »
+   y est détouré en rouge sur rouge et ne se lit pas — à cette taille, la marque se lit « PILOTA ».
 3. Exporter une seconde version **4:5 (1080 × 1350)** pour le fil Facebook et Instagram, où le 9:16 est
    recadré. Le 9:16 reste le master pour Reels et Stories.
 
