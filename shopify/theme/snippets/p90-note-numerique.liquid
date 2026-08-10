@@ -1,0 +1,11 @@
+{%- comment -%}
+  PILOTA90 — Masque les mentions de taxes / livraison (produit 100 % numérique)
+  et affiche la note correspondante. Extrait tel quel du bloc Liquid d'origine.
+{%- endcomment -%}
+<style>
+  .product__tax,.product__shipping,.product-form__tax,.product-form__shipping,
+  .product-form__shipping-policy,.shipping-policy-link,[data-shipping-policy],
+  .product__tax-and-shipping,.product__tax-shipping,.product-form__tax-shipping{display:none !important;}
+  .p90-digital-note{margin:6px 0 2px;font-size:12.5px;color:#3E4E63;}
+</style>
+<p class="p90-digital-note">Produit 100 % numérique — taxes incluses, aucun frais de livraison.</p>

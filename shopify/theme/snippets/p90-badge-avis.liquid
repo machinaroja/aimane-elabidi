@@ -1,0 +1,10 @@
+{%- comment -%}
+  PILOTA90 — Badge d'avis Judge.me. Masqué automatiquement quand le produit
+  n'a encore aucun avis. Extrait tel quel du bloc Liquid d'origine.
+{%- endcomment -%}
+<style>
+  .ssp-badge{margin:8px 0 2px;}
+  .ssp-badge .jdgm-prev-badge{display:inline-flex;align-items:center;gap:6px;}
+  .ssp-badge .jdgm-prev-badge[data-number-of-reviews="0"]{display:none;}
+</style>
+<div class="ssp-badge">{{ product.metafields.judgeme.badge }}</div>

@@ -1,0 +1,211 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": { "text": "{{ product.vendor }}", "text_style": "uppercase" }
+        },
+        "title": { "type": "title", "settings": {} },
+        "p90_sous_titre": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-conversion', part: 'sous_titre' %}" }
+        },
+        "reviews_badge": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-badge-avis' %}" }
+        },
+        "price": { "type": "price", "settings": {} },
+        "custom_liquid_cm9jxw": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-note-numerique' %}" }
+        },
+        "p90_sous_prix": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-conversion', part: 'sous_prix' %}" }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "disabled": true,
+          "settings": { "picker_type": "button", "swatch_shape": "circle" }
+        },
+        "p90_urgence": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-conversion', part: 'urgence' %}" }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": { "show_dynamic_checkout": true, "show_gift_card_recipient": true }
+        },
+        "p90_paiement": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-conversion', part: 'paiement' %}" }
+        },
+        "p90_avantages": {
+          "type": "custom_liquid",
+          "settings": { "custom_liquid": "{% render 'p90-avantages' %}" }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "p90_sous_titre",
+        "reviews_badge",
+        "price",
+        "custom_liquid_cm9jxw",
+        "p90_sous_prix",
+        "variant_picker",
+        "p90_urgence",
+        "buy_buttons",
+        "p90_paiement",
+        "p90_avantages"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 20
+      }
+    },
+    "ssp_detail": {
+      "type": "ss-prod-detail",
+      "settings": { "eyebrow": "Au programme", "heading": "Ce que vous allez recevoir" }
+    },
+    "ssp_benefits": {
+      "type": "ss-prod-benefits",
+      "settings": {
+        "eyebrow": "Pourquoi ce guide",
+        "heading": "Concret, rapide, fait pour le terrain",
+        "t1": "Court et actionnable",
+        "d1": "Pas un pavé théorique : l'essentiel, à appliquer dès le prochain entraînement.",
+        "t2": "Fondé sur la méthode",
+        "d2": "Neurobiologie et psychologie du sport, adaptées à tous les sportifs — du jeune au confirmé, toutes disciplines.",
+        "t3": "Accès immédiat",
+        "d3": "Fichier PDF reçu tout de suite après l'achat, lisible sur téléphone, tablette ou papier.",
+        "t4": "Utile toute la saison",
+        "d4": "À relire et réutiliser aussi souvent que nécessaire, match après match."
+      }
+    },
+    "17856033931d0231b7": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_aAaxFb": {
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "disabled": true,
+          "settings": { "maxwidth": 1080 }
+        },
+        "judge_me_review_widget_p90": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_aAaxFb",
+        "judge_me_review_widget_p90"
+      ],
+      "settings": { "include_margins": true }
+    },
+    "ssp_signal": { "type": "ss-prod-signal", "settings": {} },
+    "ssp_radar": {
+      "type": "ss-prod-radar",
+      "disabled": true,
+      "settings": { "eyebrow": "Le pilier travaillé", "heading": "Ce que ce guide entraîne" }
+    },
+    "ssp_compare": {
+      "type": "ss-prod-compare",
+      "settings": {
+        "eyebrow": "La différence",
+        "heading": "Ce qui change, concrètement",
+        "r1": "Gérer la pression le jour J",
+        "r2": "Rebondir après une erreur",
+        "r3": "Rester motivé sur la durée",
+        "r4": "Rester concentré en compétition",
+        "r5": "Confiance en soi"
+      }
+    },
+    "ssp_faq": {
+      "type": "ss-prod-faq",
+      "settings": {
+        "eyebrow": "Questions fréquentes",
+        "heading": "Tout ce qu'il faut savoir",
+        "q1": "C'est quoi exactement ?",
+        "r1": "Un guide numérique au format PDF, concret et court, dédié à la préparation mentale du sportif — tous âges, tous niveaux. Actionnable, pas théorique.",
+        "q2": "Comment je le reçois ?",
+        "r2": "Immédiatement après le paiement : le lien de téléchargement s'affiche et vous est aussi envoyé par e-mail. Pas d'attente, pas de livraison physique.",
+        "q3": "Sur quels appareils je peux le lire ?",
+        "r3": "Sur tout : téléphone, tablette, ordinateur. Le PDF s'ouvre partout et vous pouvez l'imprimer si vous préférez le papier.",
+        "q4": "À partir de quel âge c'est utile ?",
+        "r4": "À tout âge : avec l'aide d'un parent ou d'un éducateur pour les plus jeunes, en autonomie pour les ados et les adultes, quel que soit le niveau.",
+        "q5": "Le paiement est-il sécurisé ?",
+        "r5": "Oui. Le paiement passe par l'infrastructure sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises.",
+        "q6": "Et si ça ne me convient pas ?",
+        "r6": "Garantie 14 jours, satisfait ou remboursé : un simple email à contact@pilota90.com et nous vous remboursons intégralement. Sans question, sans justificatif."
+      }
+    },
+    "ssp_cta": {
+      "type": "ss-prod-cta",
+      "settings": {
+        "heading_before": "Prêt à passer",
+        "heading_highlight": "un cap ?",
+        "subtext": "Reçu tout de suite, lu ce soir. Applicable dès la prochaine séance.",
+        "button_label": "Obtenir mon accès immédiat"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "<strong>Découvrez aussi</strong>",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-2",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    },
+    "178560338585ededf9": { "type": "apps", "settings": { "include_margins": true } }
+  },
+  "order": [
+    "main",
+    "ssp_detail",
+    "ssp_benefits",
+    "17856033931d0231b7",
+    "ssp_signal",
+    "ssp_radar",
+    "ssp_compare",
+    "ssp_faq",
+    "ssp_cta",
+    "related-products",
+    "178560338585ededf9"
+  ]
+}
