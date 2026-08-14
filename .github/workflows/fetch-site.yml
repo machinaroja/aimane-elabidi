@@ -1,0 +1,43 @@
+name: Fetch site snapshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download homepage and assets
+        run: |
+          mkdir -p site-snapshot
+          curl -sSL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" \
+            "https://pilota90.com/" -o site-snapshot/home.html
+          curl -sSL "https://cdn.shopify.com/s/files/1/1003/5724/3264/files/15E5344C-7DE0-4868-B8BA-130DE1943B41.png?v=1786463481" -o site-snapshot/featured-pack.png
+          curl -sSL "https://cdn.shopify.com/s/files/1/1003/5724/3264/files/pack-mental-complet.png?v=1786456361" -o site-snapshot/pack-mental-complet.png
+          curl -sSL "https://cdn.shopify.com/s/files/1/1003/5724/3264/files/1_d489146d-961b-4ebd-804b-33748450af1f.png?v=1786457316" -o site-snapshot/pack-candidate-1.png
+          # Also grab every stylesheet referenced by the homepage, so we can
+          # inspect exactly what the browser loads (app-injected CSS included).
+          grep -oE 'href="[^"]+\.css[^"]*"' site-snapshot/home.html | sed 's/^href="//;s/"$//' | sort -u | while read -r css; do
+            case "$css" in
+              //*) url="https:$css" ;;
+              /*) url="https://pilota90.com$css" ;;
+              *) url="$css" ;;
+            esac
+            name=$(echo "$url" | md5sum | cut -c1-8)-$(basename "${url%%\?*}")
+            curl -sSL "$url" -o "site-snapshot/css-$name" || true
+            echo "$url -> css-$name" >> site-snapshot/css-map.txt
+          done
+          ls -la site-snapshot
+
+      - name: Commit snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add site-snapshot
+          git commit -m "Add site snapshot for debugging"
+          git push
