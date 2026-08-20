@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baseline — Tennis Club &amp; Academy</title>
+<meta name="description" content="Baseline — a members' tennis club and academy where focused coaching meets championship courts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap" />
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm" } }
+</script>
+<style>
+/* ============================== reset ============================== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; font: inherit; color: inherit; background: none; border: 0; }
+a { color: inherit; text-decoration: none; }
+input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 2px; }
+
+/* ====================== adaptive rem grid ========================== */
+html { font-size: 16px; }
+@media (max-width: 1920px) { html { font-size: 0.833333vw; } }
+@media (max-width: 1440px) { html { font-size: 1.111111vw; } }
+@media (max-width: 1024px) { html { font-size: 1.5625vw; } }
+@media (max-width: 640px)  { html { font-size: 4.444444vw; } }
+html.scroll-locked { position: relative; overflow: hidden; height: 100%; }
+
+/* ============================= palette ============================= */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --brand: #2563c9;
+  --brand-deep: #0f2f63;
+  --brand-light: #5790e6;
+  --accent-teal: #0b6e97;
+  --surface: #f4f4f4;
+  --surface-card: #ffffff;
+  --ink: #0a0a0a;
+  --ink-soft: #717784;
+  --ghost: #d7dae1;
+  --hairline: #e6e8ec;
+  --on-brand: #ffffff;
+  --radius-card: 1.5rem;
+  --radius-card-lg: 2rem;
+  --radius-pill: 62.5rem;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Onest", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+main { width: 100%; overflow-x: clip; padding: 0.5rem; }
+@media (min-width: 640px) { main { padding: 0.75rem; } }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ==================== reveal primitives (clip mask) ================ */
+.tx { display: block; }
+.tx .clip {
+  display: inline-block; overflow: hidden; vertical-align: top;
+  padding-bottom: 0.14em;
+}
+.tx.tx-words .clip { padding-bottom: 0.12em; }
+.tx .clip > span {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.tx.is-in .clip > span { transform: translateY(0); opacity: 1; }
+
+.tx-fade .clip { overflow: visible; padding-bottom: 0; }
+.tx-fade .clip > span { transform: translateY(18px); }
+.tx-fade.is-in .clip > span { transform: translateY(0); }
+
+/* ============================ components =========================== */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; font-weight: 500; text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: var(--radius-pill); }
+.eyebrow.tone-dark { color: var(--ink-soft); }
+.eyebrow.tone-dark::before { background: var(--brand); }
+.eyebrow.tone-light { color: rgba(255,255,255,0.7); }
+.eyebrow.tone-light::before { background: var(--brand-light); }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.pill svg { width: 1rem; height: 1rem; }
+.pill.v-light { background: #ffffff; color: var(--brand-deep); }
+.pill.v-light:hover { background: var(--brand-light); color: #ffffff; }
+.pill.v-solid { background: var(--ink); color: #ffffff; }
+.pill.v-solid:hover { background: var(--brand-deep); }
+.pill.v-outline { border: 1px solid currentColor; color: var(--ink); }
+.pill.v-outline:hover { background: var(--ink); color: #ffffff; }
+
+.arrow-btn {
+  display: grid; place-items: center;
+  width: 3rem; height: 3rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+@media (min-width: 640px) { .arrow-btn { width: 3.5rem; height: 3.5rem; } }
+.arrow-btn svg { width: 1.25rem; height: 1.25rem; }
+.arrow-btn.v-outline { border-color: var(--hairline); background: transparent; color: var(--ink); }
+.arrow-btn.v-outline:hover { border-color: var(--ink); }
+.arrow-btn.v-solid { background: var(--ink); border-color: var(--ink); color: #ffffff; }
+.arrow-btn.v-solid:hover { background: var(--brand-deep); }
+.arrow-btn.is-prev svg { transform: scaleX(-1); }
+.arrow-btn .icon-wrap { display: block; }
+
+.dots { display: flex; align-items: center; gap: 0.5rem; }
+.dots button { padding: 0.375rem; display: block; }
+.dots button > span {
+  display: block; height: 0.375rem; width: 0.375rem;
+  border-radius: var(--radius-pill);
+  transition: width 0.4s var(--ease-out-expo), background-color 0.4s ease;
+}
+.dots.tone-dark button > span { background: var(--ghost); }
+.dots.tone-dark button[aria-current="true"] > span { background: var(--ink); width: 1.25rem; }
+.dots.tone-light button > span { background: rgba(255,255,255,0.4); }
+.dots.tone-light button[aria-current="true"] > span { background: #ffffff; width: 1.25rem; }
+
+.brandmark { display: inline-flex; align-items: center; gap: 0.5rem; }
+.brandmark svg { width: 1.25rem; height: 1.25rem; }
+.brandmark span {
+  font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em;
+}
+
+/* ============================== header ============================= */
+.site-header {
+  position: relative; z-index: 20;
+  display: flex; align-items: center;
+  padding: 1.5rem 1.5rem 0;
+  font-size: 0.75rem; color: #ffffff;
+}
+@media (min-width: 640px) { .site-header { padding: 2rem 2.5rem 0; } }
+.hdr-nav { flex: 1; display: none; align-items: center; gap: 2rem; }
+@media (min-width: 1024px) { .hdr-nav { display: flex; } }
+.hdr-nav a { color: rgba(255,255,255,0.9); transition: color 0.25s ease; }
+.hdr-nav a:hover { color: #ffffff; }
+.hdr-brand { flex: 1; display: flex; justify-content: flex-start; }
+@media (min-width: 1024px) { .hdr-brand { justify-content: center; } }
+.hdr-actions { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+@media (min-width: 640px) { .hdr-actions { gap: 1.25rem; } }
+.hdr-book {
+  display: none; text-transform: uppercase; letter-spacing: 0.05em;
+}
+@media (min-width: 640px) { .hdr-book { display: inline-block; } }
+.hdr-book:hover { text-decoration: underline; }
+.burger {
+  display: grid; place-items: center;
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: background-color 0.3s ease;
+  gap: 5px;
+}
+.burger:hover { background: rgba(255,255,255,0.25); }
+.burger i { display: block; width: 1rem; height: 1px; background: #ffffff; }
+
+/* =============================== hero ============================== */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: var(--brand-deep); color: #ffffff;
+  border-radius: var(--radius-card-lg);
+  height: calc(100svh - 1rem);
+  min-height: 36rem;
+}
+@media (min-width: 640px) { .hero { height: calc(100svh - 1.5rem); } }
+.hero-plate { position: absolute; inset: 0; z-index: -10; overflow: hidden; }
+.hero-plate .plate-inner {
+  position: absolute; left: 0; right: 0; top: -16%; height: 132%; width: 100%;
+  will-change: transform;
+}
+.hero-plate img { width: 100%; height: 100%; object-fit: cover; }
+.hero-plate .plate-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(15,47,99,0.65), rgba(15,47,99,0.35), rgba(15,47,99,0.75));
+}
+.hero-title-wrap { padding: 1rem 1.5rem 0; }
+@media (min-width: 640px) { .hero-title-wrap { padding: 1rem 2.5rem 0; } }
+#hero-title {
+  font-size: 12.5vw; font-weight: 500; text-transform: uppercase;
+  line-height: 0.85; letter-spacing: -0.02em; white-space: nowrap;
+}
+.hero-bottom {
+  margin-top: auto;
+  padding: 0 1.5rem 2rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .hero-bottom { padding: 0 2.5rem 2.5rem; flex-direction: row; justify-content: space-between; align-items: flex-end; }
+}
+.hero-tagline {
+  font-size: 2.4rem; font-weight: 500; text-transform: uppercase;
+  line-height: 0.95; letter-spacing: -0.02em; color: rgba(255,255,255,0.85);
+}
+.hero-right { display: flex; align-items: flex-end; gap: 1rem; }
+
+.glass {
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.10);
+  border-radius: var(--radius-card);
+  padding: 0.75rem;
+  box-shadow: 0 1.25rem 2.5rem rgba(15,47,99,0.2);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.collection-slider { display: none; width: 16rem; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 768px) { .collection-slider { display: flex; } }
+.collection-card { display: flex; gap: 0.75rem; align-items: stretch; }
+.collection-card img { width: 3.5rem; height: 3.5rem; border-radius: 0.75rem; object-fit: cover; flex: none; }
+.collection-meta { display: flex; flex-direction: column; justify-content: center; gap: 0.125rem; min-width: 0; }
+.collection-meta .c-brand { font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.collection-meta .c-title { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+.collection-meta .c-cta { font-size: 0.65rem; text-decoration: underline; margin-top: 0.25rem; }
+
+.membership { width: 100%; max-width: 20rem; display: flex; gap: 0.75rem; align-items: stretch; }
+@media (min-width: 640px) { .membership { max-width: 15rem; } }
+.membership .m-left { display: flex; flex-direction: column; justify-content: space-between; gap: 0.5rem; }
+.membership .m-value { font-size: 1.875rem; font-weight: 500; line-height: 1; }
+.membership .m-avatars { display: flex; }
+.membership .m-avatars i {
+  display: block; width: 1.25rem; height: 1.25rem; border-radius: var(--radius-pill);
+  border: 1px solid rgba(15,47,99,0.4);
+}
+.membership .m-avatars i + i { margin-left: -0.5rem; }
+.membership .m-caption { font-size: 0.65rem; opacity: 0.8; }
+.membership .m-photo { width: 4rem; flex: none; aspect-ratio: 3 / 4; border-radius: 0.75rem; object-fit: cover; }
+
+/* =============================== trust ============================= */
+.trust {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--background);
+  padding: 4rem 1.5rem;
+}
+@media (min-width: 640px) { .trust { padding: 5rem 2.5rem; } }
+.trust-top { position: relative; z-index: 20; display: flex; flex-direction: column; gap: 2rem; }
+@media (min-width: 640px) { .trust-top { flex-direction: row; justify-content: space-between; align-items: flex-start; } }
+.pct-badge {
+  display: grid; place-items: center; text-align: center;
+  width: 7rem; height: 7rem; border-radius: var(--radius-pill);
+  background: var(--surface); padding: 0.75rem; flex: none;
+}
+@media (min-width: 640px) { .pct-badge { width: 8rem; height: 8rem; } }
+.pct-badge .pct-value { font-size: 1.5rem; font-weight: 500; line-height: 1.1; }
+.pct-badge .pct-caption { font-size: 0.6rem; color: var(--ink-soft); max-width: 7em; margin: 0.25rem auto 0; line-height: 1.3; }
+.badge-card {
+  display: flex; gap: 1rem; max-width: 28rem;
+  border-radius: var(--radius-card); background: var(--surface); padding: 1.25rem;
+}
+@media (min-width: 640px) { .badge-card { gap: 1.25rem; padding: 1.5rem; } }
+.badge-card .b-chip {
+  border-radius: 0.75rem; background: var(--background);
+  padding: 0.5rem 1rem; font-size: 1.25rem; font-weight: 500; align-self: flex-start; flex: none;
+}
+.badge-card .b-title { font-size: 1.125rem; font-weight: 500; }
+.badge-card .b-body { font-size: 0.75rem; color: var(--ink-soft); line-height: 1.625; margin-top: 0.5rem; }
+
+#trust-title {
+  position: relative; z-index: 0; pointer-events: none; user-select: none;
+  max-width: 88rem; margin: 3rem auto 0;
+  font-size: 8.2vw; font-weight: 500; text-transform: uppercase;
+  line-height: 1.02; letter-spacing: -0.02em;
+}
+#trust-title .ghost-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.ghost-word { display: inline-block; will-change: transform; }
+.ghost-word.is-ink { color: var(--ink); }
+.ghost-word:not(.is-ink) { color: var(--ghost); }
+
+.coach-anchor {
+  position: relative; z-index: 10;
+  width: 13rem; margin: 2rem auto 0;
+}
+@media (min-width: 640px) {
+  .coach-anchor {
+    width: 16rem; margin: 0;
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.coach-card {
+  position: relative;
+  aspect-ratio: 3 / 4; border-radius: var(--radius-card);
+  background: var(--brand); overflow: hidden;
+  will-change: transform, opacity;
+}
+.coach-card img { width: 100%; height: 100%; object-fit: cover; }
+.coach-cap {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem;
+  border-radius: 0.75rem; background: rgba(15,47,99,0.4); color: #ffffff;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 0.5rem 0.75rem;
+}
+.coach-cap .c-name { font-size: 0.875rem; font-weight: 500; }
+.coach-cap .c-role { font-size: 0.65rem; opacity: 0.8; }
+.trust-controls {
+  position: relative; z-index: 20;
+  margin-top: 3rem; display: flex; align-items: center; justify-content: space-between;
+}
+@media (min-width: 640px) { .trust-controls { margin-top: 6rem; } }
+
+/* ============================= programs ============================ */
+.programs { background: var(--surface); padding: 6rem 1.5rem; }
+@media (min-width: 640px) { .programs { padding: 6rem 2.5rem; } }
+#programs-title, #stats-title, #testimonials-title {
+  font-size: 3rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 1rem;
+}
+.program-list { list-style: none; padding: 0; margin: 3.5rem 0 0; }
+.program-list li { border-top: 1px solid var(--hairline); }
+.program-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.program-row {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 1.75rem 0;
+  transition: background-color 0.3s ease;
+}
+.program-row:focus-visible { background: var(--background); }
+.program-index { width: 2.5rem; flex: none; font-size: 0.875rem; font-weight: 500; color: var(--ink-soft); }
+.program-body { flex: 1; min-width: 0; }
+.program-name { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+@media (min-width: 640px) { .program-name { font-size: 1.875rem; } }
+.program-desc { font-size: 0.875rem; color: var(--ink-soft); margin-top: 0.25rem; }
+.program-arrow {
+  display: grid; place-items: center; flex: none;
+  width: 2.75rem; height: 2.75rem; border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline);
+}
+.program-arrow .icon-wrap { display: block; opacity: 0.55; }
+.program-arrow svg { width: 1.25rem; height: 1.25rem; }
+
+/* ============================ facilities =========================== */
+.facilities {
+  background: var(--background);
+  border-radius: var(--radius-card-lg);
+  margin-top: -2.5rem;
+  position: relative; z-index: 1;
+  padding: 4rem 1.5rem 5rem;
+}
+@media (min-width: 640px) { .facilities { padding: 4rem 2.5rem 5rem; } }
+.facilities-grid { display: grid; grid-template-columns: 1fr; align-items: end; gap: 2.5rem; }
+@media (min-width: 768px) { .facilities-grid { grid-template-columns: 1fr 1fr; } }
+.fac-intro { max-width: 24rem; }
+.fac-icon { width: 4rem; height: 4rem; border-radius: var(--radius-card); object-fit: cover; }
+#facilities-title { font-size: 3rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 1.5rem; }
+.fac-body { font-size: 0.875rem; color: var(--ink-soft); max-width: 20rem; margin-top: 1.5rem; line-height: 1.6; }
+.court-cards { display: flex; align-items: flex-end; gap: 1.25rem; }
+.court-card {
+  flex: 1; position: relative;
+  aspect-ratio: 3 / 4; border-radius: var(--radius-card);
+  overflow: hidden; background: var(--surface);
+}
+.court-card:nth-child(2) { margin-bottom: 2rem; }
+.court-card .court-img-wrap { position: absolute; inset: 0; will-change: transform; }
+.court-card img { width: 100%; height: 100%; object-fit: cover; }
+.court-cap {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem;
+  border-radius: 0.75rem; color: #ffffff;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 0.75rem 1rem;
+}
+.court-cap.tone-blue { background: rgba(11,110,151,0.55); }
+.court-cap.tone-clay { background: rgba(15,47,99,0.4); }
+.court-cap .k-name { font-size: 0.875rem; font-weight: 500; }
+.court-cap .k-desc { font-size: 0.65rem; opacity: 0.85; margin-top: 0.125rem; }
+
+/* ============================== stats ============================== */
+.stats {
+  background: var(--brand-deep); color: #ffffff;
+  border-radius: var(--radius-card-lg);
+  margin-top: 0.75rem;
+  padding: 5rem 1.5rem;
+}
+@media (min-width: 640px) { .stats { padding: 5rem 2.5rem; } }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2rem; row-gap: 3rem; margin-top: 4rem;
+}
+@media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.stat-cell { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.25rem; }
+.stat-value { font-size: 3.75rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+@media (min-width: 640px) { .stat-value { font-size: 4.5rem; } }
+.stat-label { font-size: 0.875rem; color: rgba(255,255,255,0.65); margin-top: 0.75rem; }
+
+/* =========================== testimonials ========================== */
+.testimonials { background: var(--background); padding: 5rem 1.5rem; }
+@media (min-width: 640px) { .testimonials { padding: 6rem 2.5rem; } }
+.testimonial-grid {
+  list-style: none; padding: 0; margin: 3.5rem 0 0;
+  display: grid; grid-template-columns: 1fr; gap: 1.25rem;
+}
+@media (min-width: 768px) { .testimonial-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.testimonial-card {
+  display: flex; flex-direction: column; justify-content: space-between;
+  height: 100%; border-radius: var(--radius-card);
+  background: var(--surface); padding: 1.75rem;
+  will-change: transform, opacity;
+}
+.testimonial-card .t-quote { font-size: 2.25rem; color: var(--brand); line-height: 1; }
+.testimonial-card blockquote { font-size: 1.125rem; line-height: 1.625; color: var(--ink); margin-top: 1rem; }
+.testimonial-card figcaption {
+  border-top: 1px solid var(--hairline); padding-top: 1rem; margin-top: 1.5rem;
+}
+.testimonial-card .t-name { font-weight: 500; }
+.testimonial-card .t-role { font-size: 0.875rem; color: var(--ink-soft); }
+
+/* ============================== footer ============================= */
+.site-footer {
+  background: var(--brand-deep); color: #ffffff;
+  border-radius: var(--radius-card-lg);
+  margin-top: 0.75rem;
+  padding: 3.5rem 1.5rem;
+}
+@media (min-width: 640px) { .site-footer { padding: 4rem 2.5rem; } }
+.footer-cta {
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 3.5rem;
+  display: flex; flex-direction: column; gap: 2rem;
+}
+@media (min-width: 640px) { .footer-cta { flex-direction: row; justify-content: space-between; align-items: flex-end; } }
+.footer-cta p { font-size: 3.75rem; font-weight: 500; line-height: 0.92; letter-spacing: -0.02em; margin-top: 1rem; }
+.footer-cols {
+  padding: 3.5rem 0;
+  display: grid; grid-template-columns: 1fr; gap: 2.5rem;
+}
+@media (min-width: 768px) { .footer-cols { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+.footer-brand { max-width: 20rem; }
+.footer-brand .brandmark span { font-size: 1.125rem; }
+.footer-blurb { font-size: 0.875rem; color: rgba(255,255,255,0.65); margin-top: 1rem; line-height: 1.6; }
+.footer-address { font-style: normal; margin-top: 1.5rem; color: rgba(255,255,255,0.8); font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.footer-address a:hover { text-decoration: underline; }
+.footer-address .muted { color: rgba(255,255,255,0.55); }
+.footer-col h3 {
+  font-size: 0.75rem; font-weight: 500; text-transform: uppercase;
+  letter-spacing: 0.2em; color: rgba(255,255,255,0.5);
+}
+.footer-col ul { list-style: none; padding: 0; margin: 1rem 0 0; font-size: 0.875rem; color: rgba(255,255,255,0.8); }
+.footer-col li + li { margin-top: 0.75rem; }
+.footer-col a:hover { color: #ffffff; text-decoration: underline; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.15); padding-top: 2rem;
+  font-size: 0.875rem; color: rgba(255,255,255,0.6);
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+@media (min-width: 640px) { .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.footer-bottom nav { display: flex; gap: 1.25rem; }
+.footer-bottom a:hover { color: #ffffff; }
+
+/* ============================== modal ============================== */
+.modal-root {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0.75rem; pointer-events: none;
+}
+@media (min-width: 640px) { .modal-root { align-items: center; padding: 1.5rem; } }
+.modal-root.is-open { pointer-events: auto; }
+.modal-backdrop {
+  position: absolute; inset: 0; opacity: 0;
+  background: rgba(15,47,99,0.4);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.modal-panel {
+  position: relative; width: 100%; opacity: 0;
+  max-height: 92svh; overflow-y: auto;
+  border-radius: var(--radius-card-lg);
+  background: var(--surface-card); color: var(--ink);
+  padding: 1.5rem;
+  box-shadow: 0 2.5rem 5rem rgba(15,47,99,0.35);
+  will-change: transform, opacity;
+}
+@media (min-width: 640px) { .modal-panel { padding: 2rem; max-width: 32rem; } }
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.modal-head h2 { font-size: 2.25rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.02em; margin-top: 0.75rem; }
+@media (min-width: 640px) { .modal-head h2 { font-size: 3rem; } }
+.icon-btn {
+  display: grid; place-items: center; flex: none;
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill);
+  background: var(--surface); transition: background-color 0.3s ease;
+}
+.icon-btn:hover { background: var(--hairline); }
+.icon-btn svg { width: 1.25rem; height: 1.25rem; }
+.icon-btn .icon-wrap { display: block; }
+.modal-form { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+.field label {
+  display: block; font-size: 0.75rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft);
+  margin-bottom: 0.5rem;
+}
+.field input, .field textarea {
+  width: 100%; border-radius: 0.75rem; border: 1px solid var(--hairline);
+  background: var(--background); padding: 0.75rem 1rem; font-size: 0.875rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  resize: vertical;
+}
+.field input:focus, .field textarea:focus {
+  outline: none; border-color: var(--brand-light);
+  box-shadow: 0 0 0 2px rgba(87,144,230,0.35);
+}
+.modal-submit {
+  border-radius: var(--radius-pill); background: var(--ink); color: #ffffff;
+  padding: 0.875rem 1.75rem; font-size: 0.875rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  align-self: flex-start;
+}
+.modal-submit:hover { background: var(--brand-deep); }
+.modal-submit[disabled] { opacity: 0.6; cursor: default; }
+.modal-success {
+  margin-top: 2rem; border-radius: var(--radius-card);
+  background: var(--surface); padding: 1.5rem; text-align: center;
+}
+.modal-success .s-check {
+  width: 3rem; height: 3rem; border-radius: var(--radius-pill);
+  background: var(--brand); color: #ffffff;
+  display: grid; place-items: center; margin: 0 auto 1rem;
+}
+.modal-success .s-check svg { width: 1.25rem; height: 1.25rem; }
+.modal-success .s-title { font-size: 1.125rem; font-weight: 500; }
+.modal-success .s-text { font-size: 0.875rem; color: var(--ink-soft); margin-top: 0.5rem; }
+.modal-success .pill { margin-top: 1.5rem; }
+[hidden] { display: none !important; }
+
+/* =============================== menu ============================== */
+.menu-root {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; flex-direction: column; pointer-events: none;
+}
+.menu-root.is-open { pointer-events: auto; }
+.menu-backdrop { position: absolute; inset: 0; background: var(--brand-deep); opacity: 0; }
+.menu-panel {
+  position: relative; height: 100%; width: 100%; color: #ffffff;
+  display: flex; flex-direction: column; padding: 0.5rem; opacity: 0;
+  will-change: transform, opacity;
+}
+@media (min-width: 640px) { .menu-panel { padding: 0.75rem; } }
+.menu-inner {
+  height: 100%; display: flex; flex-direction: column;
+  padding: 1.5rem 1.5rem;
+}
+@media (min-width: 640px) { .menu-inner { padding: 2rem 2.5rem; } }
+.menu-top { display: flex; align-items: center; justify-content: space-between; }
+.menu-close {
+  display: grid; place-items: center;
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.15); transition: background-color 0.3s ease;
+}
+.menu-close:hover { background: rgba(255,255,255,0.25); }
+.menu-close svg { width: 1.25rem; height: 1.25rem; }
+.menu-nav {
+  flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem;
+}
+.menu-nav a {
+  display: block; font-size: 3rem; font-weight: 500; letter-spacing: -0.02em;
+  transition: color 0.25s ease; will-change: transform, opacity;
+}
+@media (min-width: 640px) { .menu-nav a { font-size: 4.5rem; } }
+.menu-nav a:hover { color: var(--brand-light); }
+.menu-bottom {
+  border-top: 1px solid rgba(255,255,255,0.15); padding-top: 2rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+@media (min-width: 640px) { .menu-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.menu-social { display: flex; gap: 1.25rem; font-size: 0.875rem; color: rgba(255,255,255,0.7); }
+.menu-social a:hover { color: #ffffff; }
+
+/* ============================== loader ============================= */
+.loader {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--brand-deep); color: #ffffff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2rem;
+  will-change: transform;
+}
+.loader-mark { display: inline-flex; align-items: center; gap: 0.75rem; opacity: 0; }
+.loader-mark svg { width: 1.75rem; height: 1.75rem; }
+.loader-mark span { font-size: 1.5rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em; }
+.loader-track {
+  width: 10rem; height: 1px; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.2); overflow: hidden;
+}
+.loader-fill { height: 100%; width: 100%; background: #ffffff; transform: scaleX(0); transform-origin: left; }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- =========================== HERO =========================== -->
+  <section class="hero" id="hero">
+    <div class="hero-plate">
+      <div class="plate-inner" data-parallax-y="0,12">
+        <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp"
+             alt="Player lunging for a shot on a hard court" fetchpriority="high" loading="eager" decoding="async" />
+      </div>
+      <div class="plate-grad"></div>
+    </div>
+
+    <header class="site-header">
+      <nav class="hdr-nav" aria-label="Primary">
+        <a href="#programs" data-anchor>Programs &amp; Coaches</a>
+        <a href="#facilities" data-anchor>Club &amp; Events</a>
+      </nav>
+      <div class="hdr-brand">
+        <a class="brandmark" href="#hero" data-anchor aria-label="Baseline home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+          </svg>
+          <span>Baseline</span>
+        </a>
+      </div>
+      <div class="hdr-actions">
+        <button type="button" class="hdr-book" data-open-modal>Book a Visit</button>
+        <button type="button" class="burger" data-open-menu aria-label="Open menu">
+          <i></i><i></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="hero-title-wrap">
+      <h1 id="hero-title" class="tx tx-words" data-gate="ready"
+          data-words="Own The Court" data-stagger="140" data-duration="1100" data-ease="expo"></h1>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="hero-tagline tx" data-gate="ready"
+         data-lines="Show Up,|Level Up" data-stagger="110" data-base-delay="350" data-duration="900" data-ease="expo"></p>
+
+      <div class="hero-right">
+        <div class="collection-slider" data-inview='{"from":{"opacity":0,"y":28},"to":{"opacity":1,"y":0},"config":{"tension":200,"friction":26},"delayIn":650}' data-gate="ready">
+          <article class="glass collection-card" id="collection-card">
+            <img id="collection-img" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/2.webp"
+                 alt="Player driving a backhand on a hard court" loading="lazy" decoding="async" />
+            <div class="collection-meta">
+              <span class="c-brand" id="collection-brand">Baseline Pro</span>
+              <span class="c-title" id="collection-title">Featured Gear</span>
+              <a class="c-cta" id="collection-cta" href="#shop">Shop the kit &rarr;</a>
+            </div>
+          </article>
+          <div class="dots tone-light" id="collection-dots" role="tablist" aria-label="Collections"></div>
+        </div>
+
+        <article class="glass membership" data-inview='{"from":{"opacity":0,"y":28},"to":{"opacity":1,"y":0},"config":{"tension":200,"friction":26},"delayIn":780}' data-gate="ready">
+          <div class="m-left">
+            <span class="m-value">9K+</span>
+            <div class="m-avatars" aria-hidden="true">
+              <i style="background:#5790e6"></i><i style="background:#c2e029"></i><i style="background:#0b6e97"></i><i style="background:#ffffff"></i>
+            </div>
+            <span class="m-caption">Members on court</span>
+          </div>
+          <img class="m-photo" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp"
+               alt="Player waiting to return on a clay court" loading="lazy" decoding="async" />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== TRUST =========================== -->
+  <section class="trust" id="trust" aria-labelledby="trust-title">
+    <div class="trust-top">
+      <div class="pct-badge" data-inview='{"from":{"opacity":0,"scale":0.9},"to":{"opacity":1,"scale":1},"config":{"tension":220,"friction":22}}'>
+        <div>
+          <div class="pct-value">100%</div>
+          <p class="pct-caption">Coaching built around your game</p>
+        </div>
+      </div>
+      <article class="badge-card" data-inview='{"from":{"opacity":0,"y":24},"to":{"opacity":1,"y":0},"config":{"tension":200,"friction":26},"delayIn":120}'>
+        <span class="b-chip">#01</span>
+        <div>
+          <h3 class="b-title">Trusted by serious players</h3>
+          <p class="b-body">From first-timers to nationally ranked juniors, players train here because the progress shows up on the scoreboard.</p>
+        </div>
+      </article>
+    </div>
+
+    <h2 id="trust-title">
+      <span class="ghost-row">
+        <span class="ghost-word tx tx-words" data-px="-3,3" data-slot="0"></span>
+        <span class="ghost-word tx tx-words" data-px="3,-3" data-slot="1"></span>
+      </span>
+      <span class="ghost-row">
+        <span class="ghost-word is-ink tx tx-words" data-px="-2,4" data-slot="2"></span>
+        <span class="ghost-word tx tx-words" data-px="4,-3" data-slot="3"></span>
+      </span>
+    </h2>
+
+    <div class="coach-anchor">
+      <figure class="coach-card" data-inview='{"from":{"opacity":0,"y":60,"scale":0.92,"rotate":6},"to":{"opacity":1,"y":0,"scale":1,"rotate":6},"config":{"tension":170,"friction":26}}'>
+        <img id="coach-img" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/5.webp"
+             alt="Head coach set in a ready stance on clay" loading="lazy" decoding="async" />
+        <figcaption class="coach-cap">
+          <div class="c-name" id="coach-name">Marco Vidal</div>
+          <div class="c-role" id="coach-role">Head Coach</div>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="trust-controls">
+      <button type="button" class="arrow-btn v-outline is-prev" id="trust-prev" aria-label="Previous coach">
+        <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <div class="dots tone-dark" id="trust-dots" role="tablist" aria-label="Coaches"></div>
+      <button type="button" class="arrow-btn v-solid" id="trust-next" aria-label="Next coach">
+        <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ========================= PROGRAMS ========================== -->
+  <section class="programs" id="programs" aria-labelledby="programs-title">
+    <span class="eyebrow tone-dark">Training programs</span>
+    <h2 id="programs-title" class="tx" data-lines="Built for|every level" data-stagger="120" data-duration="950" data-ease="expo"></h2>
+    <ul class="program-list" id="program-list"></ul>
+  </section>
+
+  <!-- ======================== FACILITIES ========================= -->
+  <section class="facilities" id="facilities" aria-labelledby="facilities-title">
+    <div class="facilities-grid">
+      <div class="fac-intro">
+        <img class="fac-icon" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/3.webp"
+             alt="Player stretching for a forehand on clay" loading="lazy" decoding="async"
+             data-inview='{"from":{"opacity":0,"scale":0.85},"to":{"opacity":1,"scale":1},"config":{"tension":240,"friction":20}}' />
+        <h2 id="facilities-title" class="tx" data-lines="Tour Our|World-Class|Courts" data-stagger="120" data-duration="950" data-ease="expo"></h2>
+        <p class="fac-body tx tx-words tx-fade"
+           data-words="Reserve a court for focused practice, squad drills, or private sessions — and train in the same conditions you'll compete in."
+           data-stagger="28" data-base-delay="250" data-duration="700" data-ease="quart"></p>
+      </div>
+      <div class="court-cards" id="court-cards"></div>
+    </div>
+  </section>
+
+  <!-- =========================== STATS =========================== -->
+  <section class="stats" aria-labelledby="stats-title">
+    <span class="eyebrow tone-light">By the numbers</span>
+    <h2 id="stats-title" class="tx" data-lines="A club that|keeps score" data-stagger="120" data-duration="950" data-ease="expo"></h2>
+    <dl class="stats-grid" id="stats-grid"></dl>
+  </section>
+
+  <!-- ======================= TESTIMONIALS ======================== -->
+  <section class="testimonials" id="testimonials" aria-labelledby="testimonials-title">
+    <span class="eyebrow tone-dark">What players say</span>
+    <h2 id="testimonials-title" class="tx" data-lines="Loved by|the locker room" data-stagger="120" data-duration="950" data-ease="expo"></h2>
+    <ul class="testimonial-grid" id="testimonial-grid"></ul>
+  </section>
+
+  <!-- ========================== FOOTER =========================== -->
+  <footer class="site-footer" id="contact">
+    <div class="footer-cta">
+      <div>
+        <span class="eyebrow tone-light">Get started</span>
+        <p class="tx" data-lines="Ready to|play?" data-stagger="120" data-duration="950" data-ease="expo"></p>
+      </div>
+      <button type="button" class="pill v-light" data-open-modal
+              data-inview='{"from":{"opacity":0,"y":20},"to":{"opacity":1,"y":0},"config":{"tension":200,"friction":24},"delayIn":150}'>
+        Book a Visit
+        <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+    </div>
+
+    <div class="footer-cols">
+      <div class="footer-brand">
+        <span class="brandmark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+          </svg>
+          <span>Baseline</span>
+        </span>
+        <p class="footer-blurb">A members' tennis club and academy where focused coaching meets championship courts.</p>
+        <address class="footer-address">
+          <a href="mailto:play@baseline.club">play@baseline.club</a>
+          <a href="tel:+12125550148">+1 (212) 555-0148</a>
+          <span class="muted">120 Court Lane, New York</span>
+        </address>
+      </div>
+      <nav class="footer-col" aria-label="Programs">
+        <h3>Programs</h3>
+        <ul>
+          <li><a href="#junior">Junior Development</a></li>
+          <li><a href="#performance">Performance Squad</a></li>
+          <li><a href="#adult">Adult Clinics</a></li>
+          <li><a href="#private">Private Coaching</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Club">
+        <h3>Club</h3>
+        <ul>
+          <li><a href="#membership">Membership</a></li>
+          <li><a href="#facilities" data-anchor>Facilities</a></li>
+          <li><a href="#club">Events</a></li>
+          <li><a href="#shop">Pro Shop</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Company">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#programs" data-anchor>Coaches</a></li>
+          <li><a href="#careers">Careers</a></li>
+          <li><a href="#contact" data-anchor>Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Baseline Tennis Club. All rights reserved.</p>
+      <nav aria-label="Social">
+        <a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a>
+      </nav>
+      <nav aria-label="Legal">
+        <a href="#privacy">Privacy</a><a href="#terms">Terms</a>
+      </nav>
+    </div>
+  </footer>
+</main>
+
+<!-- ====================== CONTACT MODAL (portal) ====================== -->
+<div class="modal-root" id="modal-root" aria-hidden="true" inert>
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="modal-panel" id="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <div>
+        <span class="eyebrow tone-dark">Book a visit</span>
+        <h2 id="modal-title" class="tx" data-lines="Come see|the courts" data-stagger="90" data-duration="800" data-ease="expo" data-manual></h2>
+      </div>
+      <button type="button" class="icon-btn" id="modal-close" aria-label="Close dialog">
+        <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+      </button>
+    </div>
+
+    <form class="modal-form" id="modal-form" novalidate>
+      <div class="field">
+        <label for="f-name">Full name</label>
+        <input id="f-name" name="name" type="text" placeholder="Alex Rivera" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" placeholder="you@email.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="f-msg">What would you like to play?</label>
+        <textarea id="f-msg" name="message" rows="3" placeholder="I'd love to try a private lesson on the clay courts…"></textarea>
+      </div>
+      <button type="submit" class="modal-submit" id="modal-submit">Request a visit</button>
+    </form>
+
+    <div class="modal-success" id="modal-success" hidden>
+      <div class="s-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div>
+      <p class="s-title">Request received</p>
+      <p class="s-text" id="modal-success-text">Thanks, there — our team will be in touch to lock in your visit.</p>
+      <button type="button" class="pill v-solid" id="modal-done">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= MENU OVERLAY (portal) ====================== -->
+<div class="menu-root" id="menu-root" aria-hidden="true" inert>
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+  <div class="menu-panel" id="menu-panel" role="dialog" aria-modal="true" aria-label="Site menu">
+    <div class="menu-inner">
+      <div class="menu-top">
+        <span class="brandmark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+          </svg>
+          <span>Baseline</span>
+        </span>
+        <button type="button" class="menu-close" id="menu-close" aria-label="Close menu">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+        </button>
+      </div>
+      <nav class="menu-nav" id="menu-nav" aria-label="Menu">
+        <a href="#programs" data-anchor data-menu-link>Programs</a>
+        <a href="#facilities" data-anchor data-menu-link>Facilities</a>
+        <a href="#testimonials" data-anchor data-menu-link>Reviews</a>
+        <a href="#contact" data-anchor data-menu-link>Contact</a>
+      </nav>
+      <div class="menu-bottom">
+        <button type="button" class="pill v-light" id="menu-book">
+          Book a Visit
+          <span class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+        <nav class="menu-social" aria-label="Social">
+          <a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== LOADER ============================== -->
+<div class="loader" id="loader">
+  <div class="loader-mark" id="loader-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/>
+    </svg>
+    <span>Baseline</span>
+  </div>
+  <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+</div>
+
+<script type="module">
+import Lenis from "lenis";
+
+/* =================================================================== *
+ *  Constants
+ * =================================================================== */
+const ASSETS = "https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000";
+const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+const MIN_VISIBLE_MS = 1400, MAX_VISIBLE_MS = 2600, EXIT_MS = 850;
+const COLLECTION_INTERVAL = 3800;
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const EASES = {
+  expo: "cubic-bezier(0.16, 1, 0.3, 1)",
+  quart: "cubic-bezier(0.25, 1, 0.5, 1)",
+  cubic: "cubic-bezier(0.65, 0, 0.35, 1)"
+};
+const ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+/* =================================================================== *
+ *  Adaptive rem grid (scale-up above 1920)
+ * =================================================================== */
+function syncRootFontSize() {
+  const reduction = ((BASE_W - window.innerWidth) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) document.documentElement.style.fontSize = size + "px";
+  else document.documentElement.style.removeProperty("font-size");
+}
+syncRootFontSize();
+window.addEventListener("resize", syncRootFontSize);
+
+/* =================================================================== *
+ *  Smooth scroll (Lenis) + scroll lock
+ * =================================================================== */
+window.scrollTo(0, 0);
+const lenis = new Lenis({ smoothWheel: true });
+let locks = 0;
+function lockScroll() {
+  locks++;
+  document.documentElement.classList.add("scroll-locked");
+  lenis.stop();
+}
+function unlockScroll() {
+  locks = Math.max(0, locks - 1);
+  if (locks === 0) {
+    document.documentElement.classList.remove("scroll-locked");
+    lenis.start();
+  }
+}
+
+/* =================================================================== *
+ *  Spring engine — v += (-tension*(x-target) - friction*v) * dt
+ * =================================================================== */
+const springs = new Set();
+function applyProps(el, p) {
+  let t = "";
+  if ("x" in p) t += "translateX(" + p.x + "px) ";
+  if ("y" in p) t += "translateY(" + p.y + "px) ";
+  if ("scale" in p) t += "scale(" + p.scale + ") ";
+  if ("rotate" in p) t += "rotate(" + p.rotate + "deg)";
+  if (t) el.style.transform = t.trim();
+  if ("opacity" in p) el.style.opacity = p.opacity;
+}
+class Spring {
+  constructor(el, from, config, apply) {
+    this.el = el;
+    this.p = Object.assign({}, from);
+    this.t = Object.assign({}, from);
+    this.v = {};
+    for (const k in from) this.v[k] = 0;
+    this.config = config || { tension: 200, friction: 26 };
+    this.apply = apply || applyProps;
+    this.active = false;
+    springs.add(this);
+    this.render();
+  }
+  to(target, config) {
+    if (config) this.config = config;
+    Object.assign(this.t, target);
+    this.active = true;
+  }
+  set(vals) {
+    Object.assign(this.p, vals);
+    Object.assign(this.t, vals);
+    for (const k in vals) this.v[k] = 0;
+    this.active = false;
+    this.render();
+  }
+  step(dt) {
+    if (!this.active) return;
+    const { tension, friction } = this.config;
+    let moving = false;
+    for (const k in this.p) {
+      const d = this.p[k] - this.t[k];
+      const a = -tension * d - friction * this.v[k];
+      this.v[k] += a * dt;
+      this.p[k] += this.v[k] * dt;
+      if (Math.abs(this.p[k] - this.t[k]) > 0.0008 || Math.abs(this.v[k]) > 0.0008) moving = true;
+    }
+    if (!moving) {
+      Object.assign(this.p, this.t);
+      for (const k in this.v) this.v[k] = 0;
+      this.active = false;
+    }
+    this.render();
+  }
+  render() { this.apply(this.el, this.p); }
+}
+
+/* =================================================================== *
+ *  Scroll parallax registry
+ * =================================================================== */
+const parallaxItems = [];
+function registerParallax(el, axis, from, to) {
+  const host = el.closest("section") || el.parentElement;
+  parallaxItems.push({ el, axis, from, to, host });
+}
+function stepParallax() {
+  const vh = window.innerHeight;
+  for (const it of parallaxItems) {
+    const r = it.host.getBoundingClientRect();
+    let p = (vh - r.top) / (vh + r.height);
+    p = Math.min(1, Math.max(0, p));
+    const val = it.from + (it.to - it.from) * p;
+    it.el.style.transform = it.axis === "x" ? "translateX(" + val + "%)" : "translateY(" + val + "%)";
+  }
+}
+
+/* =================================================================== *
+ *  rAF loop
+ * =================================================================== */
+let last = performance.now();
+function raf(time) {
+  lenis.raf(time);
+  let dt = (time - last) / 1000;
+  last = time;
+  if (dt > 1 / 30) dt = 1 / 30;
+  for (const s of springs) s.step(dt);
+  stepParallax();
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+/* =================================================================== *
+ *  Reveal primitive 1 — clip-mask word / line reveal
+ * =================================================================== */
+function clipSpan(text) {
+  const clip = document.createElement("span");
+  clip.className = "clip";
+  const inner = document.createElement("span");
+  inner.textContent = text;
+  clip.appendChild(inner);
+  return clip;
+}
+function txOptions(el) {
+  return {
+    stagger: Number(el.dataset.stagger || 120),
+    baseDelay: Number(el.dataset.baseDelay || 0),
+    duration: Number(el.dataset.duration || 950),
+    ease: EASES[el.dataset.ease || "expo"]
+  };
+}
+function txTransition(el, o) {
+  $$(".clip > span", el).forEach((inner, i) => {
+    inner.style.transition =
+      "transform " + o.duration + "ms " + o.ease + ", opacity " + o.duration + "ms " + o.ease;
+    inner.style.transitionDelay = (o.baseDelay + i * o.stagger) + "ms";
+  });
+}
+function buildWords(el, text) {
+  const o = txOptions(el);
+  el.textContent = "";
+  text.split(/\s+/).filter(Boolean).forEach((w, i, arr) => {
+    el.appendChild(clipSpan(w));
+    if (i < arr.length - 1) el.appendChild(document.createTextNode(" "));
+  });
+  txTransition(el, o);
+}
+function buildLines(el, lines) {
+  const o = txOptions(el);
+  el.textContent = "";
+  lines.forEach((line) => {
+    const row = document.createElement("span");
+    row.style.display = "block";
+    row.appendChild(clipSpan(line));
+    el.appendChild(row);
+  });
+  txTransition(el, o);
+}
+function fireText(el) { el.classList.add("is-in"); }
+function resetText(el) { el.classList.remove("is-in"); void el.offsetWidth; }
+function replayWords(el, text) {
+  resetText(el);
+  buildWords(el, text);
+  requestAnimationFrame(() => requestAnimationFrame(() => fireText(el)));
+}
+
+/* =================================================================== *
+ *  Gating on loader "ready"
+ * =================================================================== */
+let ready = false;
+const readyQueue = [];
+function whenReady(fn) { if (ready) fn(); else readyQueue.push(fn); }
+
+/* =================================================================== *
+ *  Reveal primitive 2 — Inview (play once)
+ * =================================================================== */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    const fn = e.target.__reveal;
+    if (fn) fn();
+  });
+}, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+
+function observeOnce(el, fn) {
+  el.__reveal = () => {
+    if (el.dataset.gate === "ready") whenReady(fn);
+    else fn();
+  };
+  io.observe(el);
+}
+function setupInview(el) {
+  const cfg = JSON.parse(el.dataset.inview);
+  const sp = new Spring(el, cfg.from, cfg.config);
+  observeOnce(el, () => {
+    if (cfg.delayIn) setTimeout(() => sp.to(cfg.to), cfg.delayIn);
+    else sp.to(cfg.to);
+  });
+  return sp;
+}
+
+/* =================================================================== *
+ *  Reveal primitive 3 — Hover spring (disabled ≤768px)
+ * =================================================================== */
+function hoverSpring(trigger, target, from, to, config) {
+  const sp = new Spring(target, from, config);
+  const enter = () => { if (!isMobile()) sp.to(to); };
+  const leave = () => { if (!isMobile()) sp.to(from); };
+  trigger.addEventListener("pointerenter", enter);
+  trigger.addEventListener("pointerleave", leave);
+  trigger.addEventListener("focusin", enter);
+  trigger.addEventListener("focusout", leave);
+  return sp;
+}
+
+/* =================================================================== *
+ *  Content data
+ * =================================================================== */
+const COLLECTIONS = [
+  { img: ASSETS + "/2.webp", brand: "Baseline Pro", title: "Featured Gear", cta: "Shop the kit", alt: "Player driving a backhand on a hard court" },
+  { img: ASSETS + "/3.webp", brand: "Court Series", title: "Summer Drop", cta: "View the line", alt: "Player stretching for a forehand on clay" },
+  { img: ASSETS + "/5.webp", brand: "Academy Kit", title: "Junior Range", cta: "Browse juniors", alt: "Player set in a ready stance on clay" }
+];
+const COACHES = [
+  { img: ASSETS + "/5.webp", name: "Marco Vidal", role: "Head Coach", alt: "Head coach set in a ready stance on clay", headline: ["Expert", "Result-", "Driven", "Coaching"] },
+  { img: ASSETS + "/4.webp", name: "Elena Sokolova", role: "Performance Coach", alt: "Performance coach following through on a serve", headline: ["Sharper", "Faster", "Stronger", "Player"] },
+  { img: ASSETS + "/1.webp", name: "James Okoro", role: "Juniors Lead", alt: "Juniors lead waiting to return on clay", headline: ["Future", "Champions", "Start", "Here"] }
+];
+const PROGRAMS = [
+  { index: "01", name: "Junior Development", desc: "Fundamentals, footwork, and match play for ages 6–14.", href: "#junior" },
+  { index: "02", name: "Performance Squad", desc: "High-volume training for competitive and ranked players.", href: "#performance" },
+  { index: "03", name: "Adult Clinics", desc: "Small-group sessions to sharpen technique and fitness.", href: "#adult" },
+  { index: "04", name: "Private Coaching", desc: "One-to-one sessions tailored to your goals and schedule.", href: "#private" }
+];
+const COURTS = [
+  { img: ASSETS + "/1.webp", tone: "clay", name: "Redline Clay", desc: "A fast outdoor clay court tuned for long, physical rallies.", alt: "Player on the baseline of an outdoor clay court" },
+  { img: ASSETS + "/4.webp", tone: "blue", name: "Harbor Court", desc: "A sheltered hard court built for precision and night play.", alt: "Player following through on a blue hard court" }
+];
+const STATS = [
+  { value: "24", label: "Certified coaches" },
+  { value: "12", label: "Championship courts" },
+  { value: "9K+", label: "Members training" },
+  { value: "15", label: "Years on the baseline" }
+];
+const TESTIMONIALS = [
+  { quote: "I added a level to my serve in one season. The coaching is detailed and it actually sticks.", name: "Priya Anand", role: "Performance Squad" },
+  { quote: "Best courts in the city and a team that treats every member like a competitor.", name: "Lukas Brenner", role: "Adult Clinics" },
+  { quote: "My daughter went from shy beginner to club champion. Worth every minute.", name: "Dana Okafor", role: "Parent, Junior Development" }
+];
+
+/* =================================================================== *
+ *  Carousel dots component
+ * =================================================================== */
+function buildDots(host, count, onPick) {
+  host.textContent = "";
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-label", "Go to slide " + (i + 1));
+    b.appendChild(document.createElement("span"));
+    b.addEventListener("click", () => onPick(i));
+    host.appendChild(b);
+  }
+  return (active) => {
+    Array.from(host.children).forEach((b, i) => {
+      if (i === active) b.setAttribute("aria-current", "true");
+      else b.removeAttribute("aria-current");
+    });
+  };
+}
+
+/* =================================================================== *
+ *  Render — programs
+ * =================================================================== */
+const programList = $("#program-list");
+PROGRAMS.forEach((p, i) => {
+  const li = document.createElement("li");
+  const a = document.createElement("a");
+  a.className = "program-row";
+  a.href = p.href;
+  a.dataset.inview = JSON.stringify({
+    from: { opacity: 0, y: 26 }, to: { opacity: 1, y: 0 },
+    config: { tension: 190, friction: 26 }, delayIn: i * 90
+  });
+  a.innerHTML =
+    '<span class="program-index">' + p.index + "</span>" +
+    '<span class="program-body"><span class="program-name">' + p.name + "</span>" +
+    '<span class="program-desc" style="display:block">' + p.desc + "</span></span>" +
+    '<span class="program-arrow"><span class="icon-wrap">' + ARROW_SVG + "</span></span>";
+  li.appendChild(a);
+  programList.appendChild(li);
+  hoverSpring(a, $(".icon-wrap", a), { x: 0, opacity: 0.55 }, { x: 8, opacity: 1 }, { tension: 300, friction: 20 });
+});
+
+/* =================================================================== *
+ *  Render — court cards
+ * =================================================================== */
+const courtHost = $("#court-cards");
+COURTS.forEach((c, i) => {
+  const fig = document.createElement("figure");
+  fig.className = "court-card";
+  fig.dataset.inview = JSON.stringify({
+    from: { opacity: 0, y: 48 }, to: { opacity: 1, y: 0 },
+    config: { tension: 180, friction: 26 }, delayIn: i * 140
+  });
+  fig.innerHTML =
+    '<span class="court-img-wrap"><img src="' + c.img + '" alt="' + c.alt + '" loading="lazy" decoding="async" /></span>' +
+    '<figcaption class="court-cap tone-' + c.tone + '"><span class="k-name" style="display:block">' + c.name + "</span>" +
+    '<span class="k-desc" style="display:block">' + c.desc + "</span></figcaption>";
+  courtHost.appendChild(fig);
+  hoverSpring(fig, $(".court-img-wrap", fig), { scale: 1 }, { scale: 1.03 }, { tension: 300, friction: 22 });
+});
+
+/* =================================================================== *
+ *  Render — stats
+ * =================================================================== */
+const statsGrid = $("#stats-grid");
+STATS.forEach((s, i) => {
+  const wrap = document.createElement("div");
+  wrap.className = "stat-cell";
+  wrap.dataset.inview = JSON.stringify({
+    from: { opacity: 0, y: 30 }, to: { opacity: 1, y: 0 },
+    config: { tension: 180, friction: 24 }, delayIn: i * 110
+  });
+  wrap.innerHTML =
+    '<dt class="sr-only">' + s.label + "</dt>" +
+    '<dd style="margin:0"><span class="stat-value" style="display:block">' + s.value + "</span>" +
+    '<span class="stat-label" style="display:block">' + s.label + "</span></dd>";
+  statsGrid.appendChild(wrap);
+});
+
+/* =================================================================== *
+ *  Render — testimonials
+ * =================================================================== */
+const testimonialGrid = $("#testimonial-grid");
+TESTIMONIALS.forEach((t, i) => {
+  const li = document.createElement("li");
+  li.dataset.inview = JSON.stringify({
+    from: { opacity: 0, y: 40 }, to: { opacity: 1, y: 0 },
+    config: { tension: 180, friction: 26 }, delayIn: i * 120
+  });
+  li.innerHTML =
+    '<figure class="testimonial-card"><span class="t-quote" aria-hidden="true">&ldquo;</span>' +
+    "<blockquote>" + t.quote + "</blockquote>" +
+    '<figcaption><span class="t-name" style="display:block">' + t.name + "</span>" +
+    '<span class="t-role" style="display:block">' + t.role + "</span></figcaption></figure>";
+  testimonialGrid.appendChild(li);
+  hoverSpring(li, $(".testimonial-card", li), { y: 0 }, { y: -8 }, { tension: 300, friction: 22 });
+});
+
+/* =================================================================== *
+ *  Boot — Inview elements
+ * =================================================================== */
+$$("[data-inview]").forEach(setupInview);
+
+/* =================================================================== *
+ *  Boot — text reveals
+ * =================================================================== */
+$$(".tx[data-lines]").forEach((el) => {
+  buildLines(el, el.dataset.lines.split("|"));
+  if (el.hasAttribute("data-manual")) return;
+  observeOnce(el, () => fireText(el));
+});
+$$(".tx[data-words]").forEach((el) => {
+  buildWords(el, el.dataset.words);
+  if (el.hasAttribute("data-manual")) return;
+  observeOnce(el, () => fireText(el));
+});
+
+/* =================================================================== *
+ *  Boot — scroll parallax
+ * =================================================================== */
+$$("[data-parallax-y]").forEach((el) => {
+  const [from, to] = el.dataset.parallaxY.split(",").map(Number);
+  registerParallax(el, "y", from, to);
+});
+$$("[data-px]").forEach((el) => {
+  const [from, to] = el.dataset.px.split(",").map(Number);
+  registerParallax(el, "x", from, to);
+});
+
+/* =================================================================== *
+ *  Hero — collection carousel
+ * =================================================================== */
+const collCard = $("#collection-card");
+const collImg = $("#collection-img");
+const collBrand = $("#collection-brand");
+const collTitle = $("#collection-title");
+const collCta = $("#collection-cta");
+const collSpring = new Spring(collCard, { opacity: 1, y: 0, scale: 1 }, { tension: 210, friction: 24 });
+let collIndex = 0;
+const setCollDots = buildDots($("#collection-dots"), COLLECTIONS.length, (i) => {
+  restartCollAutoplay();
+  goCollection(i);
+});
+setCollDots(0);
+
+function paintCollection(i) {
+  const c = COLLECTIONS[i];
+  collImg.src = c.img;
+  collImg.alt = c.alt;
+  collBrand.textContent = c.brand;
+  collTitle.textContent = c.title;
+  collCta.textContent = c.cta + " →";
+  setCollDots(i);
+}
+function goCollection(i) {
+  if (i === collIndex) return;
+  collIndex = i;
+  collSpring.to({ opacity: 0, y: 16, scale: 0.96 });
+  setTimeout(() => {
+    paintCollection(collIndex);
+    collSpring.set({ opacity: 0, y: 16, scale: 0.96 });
+    collSpring.to({ opacity: 1, y: 0, scale: 1 });
+  }, 240);
+}
+let collTimer = null;
+function restartCollAutoplay() {
+  clearInterval(collTimer);
+  collTimer = setInterval(() => goCollection((collIndex + 1) % COLLECTIONS.length), COLLECTION_INTERVAL);
+}
+whenReady(restartCollAutoplay);
+
+/* =================================================================== *
+ *  Trust — coach carousel + ghost headline
+ * =================================================================== */
+const ghostWords = $$("#trust-title [data-slot]").sort(
+  (a, b) => Number(a.dataset.slot) - Number(b.dataset.slot)
+);
+const coachImg = $("#coach-img");
+const coachName = $("#coach-name");
+const coachRole = $("#coach-role");
+const coachImgSpring = new Spring(coachImg, { opacity: 1 }, { tension: 260, friction: 26 });
+let trustIndex = 0;
+
+ghostWords.forEach((el) => {
+  el.dataset.duration = "700";
+  el.dataset.stagger = "0";
+  el.dataset.ease = "expo";
+  buildWords(el, COACHES[0].headline[Number(el.dataset.slot)]);
+});
+observeOnce($("#trust-title"), () => ghostWords.forEach(fireText));
+
+const setTrustDots = buildDots($("#trust-dots"), COACHES.length, (i) => goTrust(i));
+setTrustDots(0);
+
+function goTrust(i) {
+  if (i === trustIndex) return;
+  trustIndex = i;
+  const c = COACHES[i];
+  ghostWords.forEach((el) => replayWords(el, c.headline[Number(el.dataset.slot)]));
+  coachImgSpring.to({ opacity: 0 });
+  setTimeout(() => {
+    coachImg.src = c.img;
+    coachImg.alt = c.alt;
+    coachName.textContent = c.name;
+    coachRole.textContent = c.role;
+    coachImgSpring.set({ opacity: 0 });
+    coachImgSpring.to({ opacity: 1 });
+  }, 200);
+  setTrustDots(i);
+}
+$("#trust-prev").addEventListener("click", () => goTrust((trustIndex - 1 + COACHES.length) % COACHES.length));
+$("#trust-next").addEventListener("click", () => goTrust((trustIndex + 1) % COACHES.length));
+
+/* =================================================================== *
+ *  Shared hover micro-interactions
+ * =================================================================== */
+$$(".pill").forEach((el) => {
+  const w = $(".icon-wrap", el);
+  if (w) hoverSpring(el, w, { x: 0 }, { x: 5 }, { tension: 320, friction: 20 });
+});
+$$(".arrow-btn").forEach((el) => {
+  const w = $(".icon-wrap", el);
+  if (w) hoverSpring(el, w, { scale: 1 }, { scale: 1.15 }, { tension: 320, friction: 18 });
+});
+[$("#modal-close"), $("#menu-close")].forEach((el) => {
+  hoverSpring(el, $(".icon-wrap", el), { rotate: 0 }, { rotate: 90 }, { tension: 300, friction: 18 });
+});
+
+/* =================================================================== *
+ *  Anchor smooth scroll
+ * =================================================================== */
+function scrollToAnchor(hash) {
+  const target = document.querySelector(hash);
+  if (target) lenis.scrollTo(target, { offset: 0 });
+}
+$$("[data-anchor]").forEach((a) => {
+  a.addEventListener("click", (e) => {
+    const hash = a.getAttribute("href");
+    if (!hash || !hash.startsWith("#")) return;
+    e.preventDefault();
+    if (a.hasAttribute("data-menu-link")) closeMenu();
+    scrollToAnchor(hash);
+  });
+});
+
+/* =================================================================== *
+ *  Contact modal (stubbed submit — never hits a network)
+ * =================================================================== */
+const modalRoot = $("#modal-root");
+const modalPanel = $("#modal-panel");
+const modalBackdrop = $("#modal-backdrop");
+const modalForm = $("#modal-form");
+const modalSuccess = $("#modal-success");
+const modalSubmit = $("#modal-submit");
+const modalTitle = $("#modal-title");
+const nameField = $("#f-name");
+let modalOpen = false;
+
+const modalBackdropSpring = new Spring(modalBackdrop, { opacity: 0 }, { tension: 240, friction: 30 });
+const modalPanelSpring = new Spring(modalPanel, { opacity: 0, y: 28, scale: 0.96 }, { tension: 240, friction: 26 });
+
+function openModal() {
+  if (modalOpen) return;
+  modalOpen = true;
+  modalRoot.classList.add("is-open");
+  modalRoot.setAttribute("aria-hidden", "false");
+  modalRoot.removeAttribute("inert");
+  modalBackdropSpring.to({ opacity: 1 });
+  modalPanelSpring.to({ opacity: 1, y: 0, scale: 1 });
+  resetText(modalTitle);
+  requestAnimationFrame(() => requestAnimationFrame(() => fireText(modalTitle)));
+  lockScroll();
+  setTimeout(() => nameField.focus(), 120);
+}
+function closeModal() {
+  if (!modalOpen) return;
+  modalOpen = false;
+  modalRoot.classList.remove("is-open");
+  modalRoot.setAttribute("aria-hidden", "true");
+  modalRoot.setAttribute("inert", "");
+  modalBackdropSpring.to({ opacity: 0 });
+  modalPanelSpring.to({ opacity: 0, y: 28, scale: 0.96 });
+  unlockScroll();
+  setTimeout(() => {
+    modalForm.reset();
+    modalForm.hidden = false;
+    modalSuccess.hidden = true;
+    modalSubmit.disabled = false;
+    modalSubmit.textContent = "Request a visit";
+  }, 350);
+}
+$$("[data-open-modal]").forEach((b) => b.addEventListener("click", openModal));
+$("#modal-close").addEventListener("click", closeModal);
+$("#modal-done").addEventListener("click", closeModal);
+modalBackdrop.addEventListener("click", closeModal);
+
+modalForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  modalSubmit.disabled = true;
+  modalSubmit.textContent = "Sending…";
+  const raw = (nameField.value || "").trim();
+  const first = raw ? raw.split(/\s+/)[0] : "there";
+  setTimeout(() => {
+    $("#modal-success-text").textContent =
+      "Thanks, " + first + " — our team will be in touch to lock in your visit.";
+    modalForm.hidden = true;
+    modalSuccess.hidden = false;
+  }, 700);
+});
+
+/* =================================================================== *
+ *  Fullscreen menu overlay
+ * =================================================================== */
+const menuRoot = $("#menu-root");
+const menuPanel = $("#menu-panel");
+const menuBackdrop = $("#menu-backdrop");
+const menuLinks = $$("#menu-nav a");
+let menuOpen = false;
+
+const menuBackdropSpring = new Spring(menuBackdrop, { opacity: 0 }, { tension: 260, friction: 30 });
+const menuPanelSpring = new Spring(menuPanel, { opacity: 0, y: -24 }, { tension: 220, friction: 28 });
+const menuLinkSprings = menuLinks.map((el) => new Spring(el, { opacity: 0, y: 28 }, { tension: 200, friction: 26 }));
+
+function openMenu() {
+  if (menuOpen) return;
+  menuOpen = true;
+  menuRoot.classList.add("is-open");
+  menuRoot.setAttribute("aria-hidden", "false");
+  menuRoot.removeAttribute("inert");
+  menuBackdropSpring.to({ opacity: 1 });
+  menuPanelSpring.to({ opacity: 1, y: 0 });
+  menuLinkSprings.forEach((sp, i) => {
+    sp.set({ opacity: 0, y: 28 });
+    setTimeout(() => sp.to({ opacity: 1, y: 0 }), 120 + i * 70);
+  });
+  lockScroll();
+}
+function closeMenu() {
+  if (!menuOpen) return;
+  menuOpen = false;
+  menuRoot.classList.remove("is-open");
+  menuRoot.setAttribute("aria-hidden", "true");
+  menuRoot.setAttribute("inert", "");
+  menuBackdropSpring.to({ opacity: 0 });
+  menuPanelSpring.to({ opacity: 0, y: -24 });
+  menuLinkSprings.forEach((sp) => sp.to({ opacity: 0, y: 28 }));
+  unlockScroll();
+}
+$("[data-open-menu]").addEventListener("click", openMenu);
+$("#menu-close").addEventListener("click", closeMenu);
+menuBackdrop.addEventListener("click", closeMenu);
+$("#menu-book").addEventListener("click", () => { closeMenu(); openModal(); });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (modalOpen) closeModal();
+  else if (menuOpen) closeMenu();
+});
+
+/* =================================================================== *
+ *  Loader / reveal
+ * =================================================================== */
+const loader = $("#loader");
+const loaderFill = $("#loader-fill");
+const minVisible = REDUCED ? 200 : MIN_VISIBLE_MS;
+const exitMs = REDUCED ? 0 : EXIT_MS;
+
+lockScroll();
+new Spring($("#loader-mark"), { opacity: 0, y: 16 }, { tension: 200, friction: 22 }).to({ opacity: 1, y: 0 });
+
+const fillDuration = Math.max(0, minVisible - 120);
+loaderFill.style.transition = "transform " + fillDuration + "ms " + EASES.cubic + " 120ms";
+requestAnimationFrame(() => requestAnimationFrame(() => { loaderFill.style.transform = "scaleX(1)"; }));
+
+let countdownStarted = false;
+function startCountdown() {
+  if (countdownStarted) return;
+  countdownStarted = true;
+  setTimeout(revealSite, minVisible);
+}
+let revealed = false;
+function revealSite() {
+  if (revealed) return;
+  revealed = true;
+  ready = true;
+  while (readyQueue.length) readyQueue.shift()();
+  unlockScroll();
+  if (exitMs > 0) {
+    loader.style.transition = "transform " + exitMs + "ms " + EASES.cubic;
+    requestAnimationFrame(() => { loader.style.transform = "translateY(-105%)"; });
+  } else {
+    loader.style.transform = "translateY(-105%)";
+  }
+  setTimeout(() => loader.remove(), exitMs);
+}
+if (document.readyState === "complete") startCountdown();
+else window.addEventListener("load", startCountdown);
+setTimeout(startCountdown, MAX_VISIBLE_MS);
+</script>
+</body>
+</html>
