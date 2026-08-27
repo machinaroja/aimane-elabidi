@@ -97,6 +97,15 @@ function naviguer() {
   const parts = h.split("/").filter(Boolean);
 
   if (parts[0] === "reglages") { etat.vue = "reglages"; return rendre(); }
+
+  /* Raccourci de l'écran d'accueil : crée un rapport et l'ouvre directement. */
+  if (parts[0] === "nouveau") {
+    const neuf = nouveauRapport();
+    enregistrerRapport(neuf);
+    location.replace(`#/r/${neuf.id}/identite`);
+    return;
+  }
+
   if (parts[0] === "r" && parts[1]) {
     const r = lireRapport(parts[1]);
     if (!r) { toast("Rapport introuvable.", "erreur"); location.hash = "#/"; return; }
@@ -409,12 +418,15 @@ function etapeEvaluation(r, g) {
 
   const moyG = moyenneGenerale(r.notes);
 
+  /* Repliée par défaut sur téléphone pour accéder plus vite à la notation. */
+  const legendeOuverte = window.innerWidth > 760 ? " open" : "";
+
   return `
-  <div class="bloc bloc--legende no-print">
-    <h2>Échelle de notation</h2>
+  <details class="bloc bloc--legende no-print"${legendeOuverte}>
+    <summary><h2>Échelle de notation</h2></summary>
     <ul class="legende">${legende}</ul>
     <p class="aide">Chaque critère est noté sur deux colonnes — <strong>${esc(g.colonnes.P)}</strong> et <strong>${esc(g.colonnes.R)}</strong> — sauf la structure Coordination, évaluée sur une seule note. Les moyennes sont arrondies au dixième supérieur.</p>
-  </div>
+  </details>
 
   <div class="recap no-print">
     <span class="recap__label">Moyenne générale</span>

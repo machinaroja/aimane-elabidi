@@ -9,14 +9,75 @@ Il suffit d'ouvrir `index.html` dans un navigateur.
 
 ---
 
-## Démarrage
+## Démarrage sur ordinateur
 
 1. Ouvrir `index.html` (double-clic, ou glisser le fichier dans Chrome / Edge / Firefox).
 2. Cliquer sur **« + Nouveau rapport »**.
 3. Parcourir les six étapes, puis générer le PDF.
 
-Pour un usage en équipe, le dossier peut être publié tel quel sur n'importe quel hébergement
-statique (GitHub Pages, Netlify, un simple partage réseau).
+---
+
+## Installation sur téléphone et tablette
+
+L'application est une **PWA** : une fois mise en ligne, elle s'installe sur l'écran d'accueil
+comme une application classique, avec son icône, en plein écran et **sans connexion Internet**.
+
+### Étape 1 — Mettre l'application en ligne (une seule fois)
+
+Sur GitHub, dans le dépôt :
+
+1. **Settings** → **Pages**
+2. *Source* : **Deploy from a branch**
+3. *Branch* : `claude/machina-rapport-app-qtj6vy`, dossier `/ (root)` → **Save**
+
+Au bout d'une à deux minutes, l'adresse suivante est active :
+
+```
+https://machinaroja.github.io/aimane-elabidi/
+```
+
+L'adresse est publique : n'y publiez pas de rapports pré-remplis. Les données saisies, elles,
+ne quittent jamais l'appareil.
+
+### Étape 2 — Installer sur le téléphone
+
+**iPhone / iPad (Safari — obligatoire, Chrome iOS ne sait pas installer)**
+
+1. Ouvrir l'adresse dans **Safari**
+2. Bouton **Partager** (carré avec la flèche vers le haut)
+3. **Sur l'écran d'accueil**
+4. **Ajouter**
+
+**Android (Chrome)**
+
+1. Ouvrir l'adresse dans **Chrome**
+2. Bandeau **« Installer l'application »**, ou menu **⋮** → **Installer l'application**
+3. **Installer**
+
+L'icône apparaît sur l'écran d'accueil. L'application s'ouvre en plein écran, sans barre
+d'adresse, et fonctionne ensuite **sans réseau** : terrain, vestiaire, déplacement.
+
+### Générer le PDF depuis un téléphone
+
+- **iOS** : bouton *Générer le PDF* → **Partager** → **Imprimer** → écarter deux doigts sur
+  l'aperçu → **Partager** → *Enregistrer dans Fichiers* ou *Envoyer par mail*
+- **Android** : bouton *Générer le PDF* → destination **Enregistrer au format PDF**
+
+Pensez à activer les **graphiques d'arrière-plan** dans les options d'impression pour
+conserver les couleurs des structures.
+
+### Mettre à jour l'application
+
+À chaque nouvelle version poussée sur la branche, incrémenter `VERSION` dans `sw.js`
+(`machina-rapport-v1` → `v2`). Les téléphones récupèrent la mise à jour à la prochaine
+ouverture avec du réseau ; les rapports déjà saisis sont conservés.
+
+### Sans mise en ligne
+
+L'application fonctionne aussi en ouvrant `index.html` depuis le stockage du téléphone, mais
+l'installation sur l'écran d'accueil et le cache hors connexion nécessitent une adresse
+HTTPS. Pour un usage en équipe, tout hébergement statique convient : GitHub Pages, Netlify,
+ou un partage réseau interne.
 
 ---
 
@@ -177,6 +238,9 @@ navigateur les efface.
 
 ```
 index.html                     Point d'entrée
+manifest.webmanifest           Déclaration d'application installable (PWA)
+sw.js                          Service worker : cache et fonctionnement hors connexion
+assets/icones/                 Icônes d'écran d'accueil (192, 512, Apple 180)
 assets/css/app.css             Interface
 assets/css/print.css           Document et règles d'impression PDF
 assets/js/referentiel.js       6 structures, 20 critères, formulations, calculs

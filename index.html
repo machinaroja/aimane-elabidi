@@ -2,10 +2,21 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Machina Rapport — Rapports d'évaluation de stage</title>
   <meta name="description" content="Application de création de rapports d'évaluation pour les stagiaires : six structures, questionnaires joueur et parents, génération PDF.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f766e'/><text x='50' y='68' font-size='48' font-family='Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'>MR</text></svg>">
+
+  <!-- Application installable -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f766e">
+
+  <!-- iOS : écran d'accueil -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Machina">
+  <link rel="apple-touch-icon" href="assets/icones/icone-apple-180.png">
+
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icones/icone-192.png">
   <link rel="stylesheet" href="assets/css/app.css">
   <link rel="stylesheet" href="assets/css/print.css">
 </head>
@@ -18,5 +29,16 @@
   <script src="assets/js/store.js"></script>
   <script src="assets/js/rapport.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <script>
+    /* Mise en cache pour le fonctionnement hors connexion.
+       Nécessite une mise en ligne en HTTPS : sans serveur, l'application
+       fonctionne normalement, simplement sans cache hors connexion. */
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

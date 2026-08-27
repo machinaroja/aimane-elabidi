@@ -101,6 +101,21 @@ a { color: inherit; text-decoration: none; }
 .bloc h2 { font-size: 15.5px; margin-bottom: 14px; }
 .bloc h2:not(:first-child) { margin-top: 26px; }
 .bloc--legende { background: linear-gradient(180deg, #fff, #fbfdfd); }
+details.bloc--legende { padding: 0; }
+details.bloc--legende > summary {
+  list-style: none; cursor: pointer; padding: 18px 24px;
+  display: flex; align-items: center; gap: 9px;
+}
+details.bloc--legende > summary::-webkit-details-marker { display: none; }
+details.bloc--legende > summary h2 { margin: 0; }
+details.bloc--legende > summary::after {
+  content: "▾"; margin-left: auto; color: var(--encre-3);
+  font-size: 13px; transition: transform .18s;
+}
+details.bloc--legende[open] > summary::after { transform: rotate(180deg); }
+details.bloc--legende[open] > summary { padding-bottom: 4px; }
+details.bloc--legende > :not(summary) { margin-left: 24px; margin-right: 24px; }
+details.bloc--legende > :last-child { margin-bottom: 20px; }
 .bloc--danger { border-color: #fecaca; }
 .bloc--section { border-left: 4px solid var(--couleur, var(--bord-fort)); }
 .bloc--section h3 { font-size: 15px; margin-bottom: 4px; }
@@ -312,4 +327,26 @@ textarea.champ__saisie { resize: vertical; line-height: 1.5; min-height: 66px; }
   #apercu-rapport { padding: 20px; }
   .legende li { grid-template-columns: 22px 1fr; }
   .legende em { grid-column: 2; }
+  details.bloc--legende > summary { padding: 16px; }
+  details.bloc--legende > :not(summary) { margin-left: 16px; margin-right: 16px; }
+
+  /* Cibles tactiles : 44 px minimum. */
+  .note { width: 44px; height: 44px; font-size: 15px; }
+  .note--raz { width: 36px; }
+  .notes { gap: 6px; }
+  .puce { width: 30px; height: 30px; font-size: 13px; }
+  .btn { padding: 11px 16px; }
+  .btn--petit { padding: 9px 13px; }
+  .choix__opt { padding: 10px 15px; }
+  .champ__saisie { font-size: 16px; }   /* évite le zoom automatique sur iOS */
+  .critere__notes { gap: 18px; }
+  .questions { grid-template-columns: 1fr; }
+  .champs { grid-template-columns: 1fr; }
+}
+
+/* Encoche et barre gestuelle en mode application installée (iOS). */
+@supports (padding: max(0px)) {
+  .entete { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+  .contenu { padding-bottom: max(60px, calc(env(safe-area-inset-bottom) + 40px)); }
+  #toasts { bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px)); }
 }
