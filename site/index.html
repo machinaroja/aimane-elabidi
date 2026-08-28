@@ -1,0 +1,732 @@
+<title>PILOTA90</title>
+<meta name="description" content="Guides PDF de préparation mentale pour parents et éducateurs de jeunes sportifs. Téléchargement immédiat, garantie 30 jours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+  :root{
+    --pitch:#0E3A2C;
+    --pitch-2:#0A2B21;
+    --pitch-3:#124635;
+    --chalk:#F5F4EC;
+    --card:#FFFFFF;
+    --ink:#17251F;
+    --muted:#59685F;
+    --line:#DFE0D2;
+    --brass:#C08A1E;
+    --brass-2:#A67413;
+    --brass-soft:#F4E8CD;
+    --ok:#2F7D5B;
+    --chalk-on-pitch:rgba(245,244,236,.92);
+    --faint-on-pitch:rgba(245,244,236,.6);
+    --sans:"Bricolage Grotesque",system-ui,"Segoe UI",Arial,sans-serif;
+    --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+  body{
+    background:var(--chalk);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.55;
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- Bandeau ---------- */
+  .topbar{
+    background:var(--pitch-2);
+    color:var(--chalk-on-pitch);
+    font-size:13px;
+    letter-spacing:.04em;
+    text-align:center;
+    padding:9px 16px;
+  }
+  .topbar strong{color:#E8C878;font-weight:600}
+
+  /* ---------- Header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,244,236,.94);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:28px;height:64px}
+  .brand{font-weight:800;font-size:21px;letter-spacing:.02em;text-decoration:none;display:flex;align-items:baseline;gap:2px}
+  .brand .ninety{color:var(--brass)}
+  .nav-links{display:flex;gap:22px;margin-left:auto;font-size:14.5px;font-weight:500}
+  .nav-links a{text-decoration:none;color:var(--muted)}
+  .nav-links a:hover,.nav-links a:focus-visible{color:var(--ink)}
+  .btn{
+    display:inline-block;text-decoration:none;font-weight:700;font-family:var(--sans);
+    border-radius:6px;border:1px solid transparent;cursor:pointer;
+    transition:background .15s ease,transform .15s ease;
+    text-align:center;
+  }
+  .btn:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+  .btn-gold{background:var(--brass);color:#FFFDF6;padding:13px 26px;font-size:16px}
+  .btn-gold:hover{background:var(--brass-2)}
+  .btn-gold.sm{padding:9px 18px;font-size:14px}
+  .btn-ghost{border-color:var(--chalk-on-pitch);color:var(--chalk-on-pitch);padding:12px 24px;font-size:15px}
+  .btn-ghost:hover{background:rgba(245,244,236,.12)}
+  .btn-dark{background:var(--pitch);color:var(--chalk-on-pitch);padding:11px 20px;font-size:14.5px}
+  .btn-dark:hover{background:var(--pitch-3)}
+  @media(max-width:760px){.nav-links{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:var(--pitch);
+    color:var(--chalk-on-pitch);
+    position:relative;overflow:hidden;
+  }
+  .hero::before{ /* rond central + ligne médiane, à la craie */
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(circle at 100% 50%, transparent 258px, rgba(245,244,236,.14) 258px, rgba(245,244,236,.14) 261px, transparent 261px),
+      linear-gradient(rgba(245,244,236,.10),rgba(245,244,236,.10)) right 0 top 0/2px 100% no-repeat;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;
+    padding:76px 0 84px;position:relative;
+  }
+  .kicker{
+    display:inline-block;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:#E8C878;border:1px solid rgba(232,200,120,.45);border-radius:999px;padding:6px 14px;margin-bottom:22px;
+  }
+  .hero h1{
+    font-size:clamp(34px,4.6vw,54px);line-height:1.06;font-weight:800;letter-spacing:-.015em;
+    text-wrap:balance;margin-bottom:20px;color:#FBFAF4;
+  }
+  .hero h1 em{font-style:normal;color:#E8C878}
+  .hero .lede{
+    font-family:var(--serif);font-size:19px;line-height:1.6;color:var(--faint-on-pitch);
+    max-width:34em;margin-bottom:30px;
+  }
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+  .hero-note{font-size:13.5px;color:var(--faint-on-pitch)}
+  .hero-note b{color:var(--chalk-on-pitch);font-weight:600}
+  .hero-visual{position:relative;display:flex;justify-content:center}
+  .hero-visual img{
+    width:min(340px,100%);border-radius:10px;
+    box-shadow:0 30px 60px -18px rgba(0,0,0,.55);
+    transform:rotate(2.5deg);
+  }
+  .hero-badge{
+    position:absolute;top:-14px;right:6%;
+    background:var(--brass);color:#FFFDF6;font-weight:700;font-size:13px;letter-spacing:.06em;
+    padding:8px 14px;border-radius:6px;transform:rotate(3deg);
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+  }
+  @media(max-width:880px){
+    .hero-grid{grid-template-columns:1fr;padding:56px 0 64px}
+    .hero-visual{order:-1}
+    .hero-visual img{width:min(240px,70%)}
+  }
+
+  /* ---------- Barre de confiance ---------- */
+  .trust{border-bottom:1px solid var(--line);background:var(--card)}
+  .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .trust-item{
+    display:flex;align-items:center;gap:12px;padding:20px 18px;
+    border-left:1px solid var(--line);font-size:14px;line-height:1.35;
+  }
+  .trust-item:first-child{border-left:none}
+  .trust-item svg{flex:none;width:26px;height:26px;stroke:var(--brass);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .trust-item b{display:block;font-weight:700}
+  .trust-item span{color:var(--muted);font-size:12.5px}
+  @media(max-width:760px){
+    .trust-grid{grid-template-columns:1fr 1fr}
+    .trust-item:nth-child(3){border-left:none}
+    .trust-item{border-top:1px solid var(--line)}
+    .trust-item:nth-child(-n+2){border-top:none}
+  }
+
+  /* ---------- Sections ---------- */
+  section{padding:78px 0}
+  .eyebrow{
+    font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brass-2);margin-bottom:14px;
+  }
+  h2{font-size:clamp(27px,3.4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1.12;text-wrap:balance;margin-bottom:16px}
+  .section-intro{font-family:var(--serif);font-size:17.5px;color:var(--muted);max-width:38em;margin-bottom:40px}
+
+  /* ---------- Le problème ---------- */
+  .probleme{background:var(--chalk)}
+  .vignettes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:44px}
+  .vignette{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 24px;
+  }
+  .vignette .moment{
+    font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-2);
+    margin-bottom:12px;
+  }
+  .vignette p{font-family:var(--serif);font-size:16px;line-height:1.65;color:var(--ink)}
+  .pivot{
+    border-left:3px solid var(--brass);padding:6px 0 6px 26px;max-width:44em;
+  }
+  .pivot p{font-family:var(--serif);font-size:clamp(20px,2.5vw,25px);line-height:1.45;font-weight:600}
+  .pivot p em{font-style:italic;color:var(--brass-2)}
+  @media(max-width:820px){.vignettes{grid-template-columns:1fr}}
+
+  /* ---------- Offre pack ---------- */
+  .offre{background:var(--pitch);color:var(--chalk-on-pitch);position:relative;overflow:hidden}
+  .offre::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle at 0% 100%, transparent 300px, rgba(245,244,236,.08) 300px, rgba(245,244,236,.08) 303px, transparent 303px);
+  }
+  .offre .eyebrow{color:#E8C878}
+  .offre h2{color:#FBFAF4}
+  .offre-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center;position:relative}
+  .offre-visual img{
+    width:min(360px,100%);margin:0 auto;border-radius:10px;
+    box-shadow:0 30px 60px -18px rgba(0,0,0,.55);
+  }
+  .offre .lede{font-family:var(--serif);font-size:17.5px;color:var(--faint-on-pitch);max-width:36em;margin-bottom:26px}
+  .leviers{list-style:none;display:grid;gap:11px;margin-bottom:30px}
+  .leviers li{display:flex;gap:12px;align-items:baseline;font-size:16px}
+  .leviers .num{
+    flex:none;font-weight:800;font-size:13px;color:#E8C878;
+    border:1px solid rgba(232,200,120,.5);border-radius:999px;
+    width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;
+    transform:translateY(4px);font-variant-numeric:tabular-nums;
+  }
+  .leviers b{font-weight:700;color:#FBFAF4}
+  .leviers span{color:var(--faint-on-pitch)}
+  .prix-ligne{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .prix{font-size:44px;font-weight:800;color:#FBFAF4;font-variant-numeric:tabular-nums}
+  .prix-barre{font-size:19px;color:var(--faint-on-pitch);text-decoration:line-through;font-variant-numeric:tabular-nums}
+  .prix-econ{
+    background:var(--brass);color:#FFFDF6;font-size:13px;font-weight:700;letter-spacing:.04em;
+    border-radius:5px;padding:4px 10px;
+  }
+  .offre-note{font-size:13.5px;color:var(--faint-on-pitch);margin-top:14px}
+  .offre-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+  @media(max-width:880px){.offre-grid{grid-template-columns:1fr;gap:36px}}
+
+  /* ---------- Catalogue ---------- */
+  .catalogue{background:var(--chalk)}
+  .cat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .grid-guides{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:8px}
+  .guide{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .guide:hover{transform:translateY(-3px);box-shadow:0 16px 34px -16px rgba(23,37,31,.25)}
+  .guide-img{aspect-ratio:4/3;overflow:hidden;background:var(--pitch-2)}
+  .guide-img img{width:100%;height:100%;object-fit:cover}
+  .guide-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .guide-tags{display:flex;gap:7px;flex-wrap:wrap}
+  .tag{
+    font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ok);background:rgba(47,125,91,.1);border-radius:4px;padding:3px 8px;
+  }
+  .tag.or{color:var(--brass-2);background:var(--brass-soft)}
+  .guide h3{font-size:17.5px;font-weight:700;line-height:1.3;text-wrap:balance}
+  .guide h3 a{text-decoration:none}
+  .guide h3 a:hover{text-decoration:underline;text-decoration-color:var(--brass)}
+  .guide .accroche{font-family:var(--serif);font-size:14.5px;color:var(--muted);line-height:1.55;flex:1}
+  .guide-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
+  .guide-prix{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+  @media(max-width:960px){.grid-guides{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.grid-guides{grid-template-columns:1fr}}
+
+  /* ---------- Méthode ---------- */
+  .methode{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:etape}
+  .etape{position:relative;padding:28px 26px;border:1px solid var(--line);border-radius:10px;background:var(--chalk)}
+  .etape::before{
+    counter-increment:etape;content:counter(etape,decimal-leading-zero);
+    display:block;font-weight:800;font-size:14px;letter-spacing:.1em;color:var(--brass-2);
+    margin-bottom:14px;font-variant-numeric:tabular-nums;
+  }
+  .etape h3{font-size:18px;font-weight:700;margin-bottom:10px}
+  .etape p{font-family:var(--serif);font-size:15px;color:var(--muted);line-height:1.6}
+  @media(max-width:820px){.etapes{grid-template-columns:1fr}}
+
+  /* ---------- Dedans ---------- */
+  .dedans{background:var(--chalk)}
+  .dedans-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 32px;max-width:56em}
+  .dedans-item{display:flex;gap:14px;align-items:flex-start}
+  .dedans-item svg{flex:none;width:22px;height:22px;margin-top:2px;stroke:var(--ok);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dedans-item b{display:block;font-weight:700;font-size:15.5px}
+  .dedans-item span{font-family:var(--serif);font-size:14.5px;color:var(--muted)}
+  @media(max-width:720px){.dedans-grid{grid-template-columns:1fr}}
+
+  /* ---------- Garantie ---------- */
+  .garantie{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .garantie-box{
+    display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;
+    border:2px solid var(--brass);border-radius:12px;padding:36px 40px;background:var(--brass-soft);
+  }
+  .garantie-badge{
+    width:92px;height:92px;border-radius:50%;background:var(--brass);color:#FFFDF6;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;
+    font-weight:800;font-size:26px;flex:none;
+  }
+  .garantie-badge small{font-size:10.5px;font-weight:700;letter-spacing:.08em}
+  .garantie-box h2{margin-bottom:8px;font-size:clamp(22px,2.8vw,28px)}
+  .garantie-box p{font-family:var(--serif);font-size:16px;color:var(--ink);max-width:38em}
+  @media(max-width:820px){.garantie-box{grid-template-columns:1fr;text-align:center;justify-items:center;gap:20px}}
+
+  /* ---------- FAQ ---------- */
+  .faq{background:var(--chalk)}
+  .faq-list{max-width:46em;display:grid;gap:12px}
+  .faq details{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .faq summary{
+    cursor:pointer;list-style:none;padding:18px 22px;font-weight:700;font-size:15.5px;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:20px;font-weight:600;color:var(--brass-2);flex:none}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{font-family:var(--serif);font-size:15px;color:var(--muted);padding:0 22px 20px;line-height:1.65;max-width:60ch}
+  .faq summary:focus-visible{outline:3px solid var(--brass);outline-offset:-3px}
+
+  /* ---------- Final ---------- */
+  .final{background:var(--pitch);color:var(--chalk-on-pitch);text-align:center}
+  .final h2{color:#FBFAF4;max-width:22em;margin:0 auto 16px}
+  .final p{font-family:var(--serif);font-size:17px;color:var(--faint-on-pitch);max-width:36em;margin:0 auto 30px}
+  .final .eyebrow{color:#E8C878}
+
+  /* ---------- Footer ---------- */
+  footer.site{background:var(--pitch-2);color:var(--faint-on-pitch);font-size:13.5px}
+  .foot-grid{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:30px 0}
+  .foot-links{display:flex;gap:20px;flex-wrap:wrap}
+  .foot-links a{text-decoration:none}
+  .foot-links a:hover{color:var(--chalk-on-pitch);text-decoration:underline}
+</style>
+
+<div class="topbar">Téléchargement immédiat après commande · <strong>Garantie 30 jours</strong> satisfait ou remboursé</div>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#haut">PILOTA<span class="ninety">90</span></a>
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="#pack">Le Pack</a>
+      <a href="#guides">Les guides</a>
+      <a href="#methode">La méthode</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-gold sm" href="https://pilota90.com/cart/58672742105472:1">Pack Mental · 49&nbsp;€</a>
+  </div>
+</header>
+
+<main id="haut">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker">Préparation mentale · Jeunes sportifs</span>
+        <h1>À l’entraînement, il régale.<br>En match, <em>il disparaît.</em></h1>
+        <p class="lede">Le talent de votre enfant ne manque pas. Ce qui manque, c’est le mental du jour J — et ça s’entraîne, comme le reste. Des guides écrits pour les parents et les éducateurs, à appliquer au bord du terrain dès samedi.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-gold" href="#pack">Découvrir le Pack Mental — 49&nbsp;€</a>
+          <a class="btn btn-ghost" href="#guides">Voir tous les guides</a>
+        </div>
+        <p class="hero-note">PDF envoyé <b>immédiatement</b> par email · Paiement sécurisé · <b>Garantie 30 jours</b></p>
+      </div>
+      <div class="hero-visual">
+        <span class="hero-badge">MEILLEURE VENTE</span>
+        <img src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/pack-mental-complet-2x3-1080x1620.png?v=1786715995" alt="Pack Mental Complet — 5 guides PDF PILOTA90" width="340" height="510">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONFIANCE ============ -->
+  <div class="trust" aria-label="Garanties">
+    <div class="wrap trust-grid">
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m0 0l-4.5-4.5M12 16l4.5-4.5M4 20h16"/></svg>
+        <div><b>Téléchargement immédiat</b><span>PDF reçu par email en 2 minutes</span></div>
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <div><b>Paiement sécurisé</b><span>CB, Apple&nbsp;Pay, PayPal — via Shopify</span></div>
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4.5"/></svg>
+        <div><b>Garantie 30 jours</b><span>Satisfait ou intégralement remboursé</span></div>
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <div><b>Accès à vie</b><span>Relisez, imprimez, revenez-y chaque saison</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LE PROBLÈME ============ -->
+  <section class="probleme">
+    <div class="wrap">
+      <p class="eyebrow">Vous connaissez ces moments</p>
+      <h2>Ce n’est pas le talent qui lâche.<br>C’est tout ce qu’il y a autour.</h2>
+      <p class="section-intro">Trois scènes que chaque parent et chaque éducateur de jeune sportif a déjà vécues.</p>
+      <div class="vignettes">
+        <article class="vignette">
+          <p class="moment">Samedi, 12h04 — la voiture</p>
+          <p>Le match est fini. Il monte, la tête basse, et vous cherchez la phrase juste. Vous vouliez l’encourager&nbsp;; vous finissez par analyser le match. Le trajet se fait en silence.</p>
+        </article>
+        <article class="vignette">
+          <p class="moment">Mercredi, 18h30 — l’entraînement</p>
+          <p>Vous avez donné la consigne trois fois. Il a hoché la tête, puis fait exactement l’inverse. La voix monte d’un cran — et son regard descend d’autant.</p>
+        </article>
+        <article class="vignette">
+          <p class="moment">Dimanche, 10h15 — le jour J</p>
+          <p>Toute la semaine, il enchaîne les gestes justes. Puis vient la compétition&nbsp;: il se met en retrait, refuse le ballon, joue la sécurité. Il rentre la tête pleine de doutes.</p>
+        </article>
+      </div>
+      <div class="pivot">
+        <p>Le club entraîne le joueur. Vous, vous entraînez <em>son environnement</em> — et c’est lui qui décide de ce que le talent devient.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OFFRE PACK ============ -->
+  <section class="offre" id="pack">
+    <div class="wrap offre-grid">
+      <div class="offre-visual">
+        <img src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/pack-mental-complet-2x3-1080x1620.png?v=1786715995" alt="Couverture du Pack Mental Complet" width="360" height="540">
+      </div>
+      <div>
+        <p class="eyebrow">Meilleure vente · Pack 5 guides PDF</p>
+        <h2>Pack Mental Complet</h2>
+        <p class="lede">Les 5 leviers pour que votre enfant donne son vrai niveau le jour J. Dans le jardin, quand il n’y a rien en jeu, il ose tout. Dès que ça compte, il se retient. Ce pack travaille, un par un, les leviers qui font la différence entre les deux.</p>
+        <ul class="leviers">
+          <li><span class="num">1</span><span><b>Confiance en soi</b> — <span>l’aider à oser le jour de la compétition</span></span></li>
+          <li><span class="num">2</span><span><b>Stress &amp; anxiété</b> — <span>défaire le ventre noué d’avant-match</span></span></li>
+          <li><span class="num">3</span><span><b>Motivation</b> — <span>comprendre et raviver l’envie</span></span></li>
+          <li><span class="num">4</span><span><b>Concentration</b> — <span>revenir dans le match, seul</span></span></li>
+          <li><span class="num">5</span><span><b>Communication</b> — <span>les mots qui font progresser</span></span></li>
+        </ul>
+        <div class="prix-ligne">
+          <span class="prix">49&nbsp;€</span>
+          <span class="prix-barre">74,50&nbsp;€ à l’unité</span>
+          <span class="prix-econ">−25,50&nbsp;€</span>
+        </div>
+        <div class="offre-ctas">
+          <a class="btn btn-gold" href="https://pilota90.com/cart/58672742105472:1">Commander le Pack — paiement sécurisé</a>
+          <a class="btn btn-ghost" href="https://pilota90.com/products/pack-mental-complet-les-5-leviers-pour-que-votre-enfant-donne-son-vrai-niveau-le-jour-j">Voir le détail</a>
+        </div>
+        <p class="offre-note">Téléchargement immédiat · Garantie 30 jours satisfait ou remboursé · Tous sports</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATALOGUE ============ -->
+  <section class="catalogue" id="guides">
+    <div class="wrap">
+      <div class="cat-head">
+        <div>
+          <p class="eyebrow">La bibliothèque du bord de terrain</p>
+          <h2>Choisissez le guide qui répond<br>à votre situation d’aujourd’hui</h2>
+        </div>
+        <p class="section-intro" style="margin-bottom:24px">Chaque guide traite un problème précis, avec des exercices et des phrases types à appliquer dès la prochaine séance.</p>
+      </div>
+      <div class="grid-guides">
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/PARENTD_ATHLETE9.163.png?v=1785844169" alt="Guide Parent d’Athlète" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag or">Méthode complète</span><span class="tag">Parents</span></div>
+            <h3><a href="https://pilota90.com/products/parent-dathlete-la-methode-complete">Parent d’Athlète&nbsp;: tenir votre rôle, du premier club au haut niveau</a></h3>
+            <p class="accroche">Le club entraîne le joueur. Vous, vous entraînez son environnement — la méthode pour le faire bien.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">29,00&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58634679058816:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/confiance_7fccccb4-c1c8-4ab5-86df-d5ba299883c8.png?v=1785616303" alt="Guide Confiance en soi" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Confiance</span><span class="tag">Parents · Coachs</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-confiance-en-soi-resilience-de-lathlete-ebook-pdf">Manque de confiance&nbsp;: l’aider à oser le jour de la compétition</a></h3>
+            <p class="accroche">À l’entraînement, il enchaîne les gestes justes. En compétition, il se met en retrait et joue la sécurité.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58405378032000:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/stress_et_anxiete_0b4b9baf-dd59-4c05-91fb-4693ac526e6c.png?v=1785602235" alt="Guide Stress et anxiété de compétition" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Stress</span><span class="tag">Tous sports</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-stress-anxiete-de-competition">Stress et anxiété de compétition&nbsp;: l’aider à jouer son vrai niveau</a></h3>
+            <p class="accroche">Le ventre noué dans la voiture, le regard qui fuit — et un niveau de jeu qui n’a rien à voir avec la semaine.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58565613552000:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/la_motivation_dans_le_sport_56c8a031-b4a4-4ade-b894-2a93fe284b48.png?v=1785602182" alt="Guide Motivation" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Motivation</span><span class="tag">Parents · Coachs</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-la-motivation-dans-le-sport-ebook-pdf">Motivation en baisse&nbsp;: comprendre et raviver l’envie de vos athlètes</a></h3>
+            <p class="accroche">Il partait à l’entraînement en courant. Aujourd’hui, il traîne pour lacer ses chaussures.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58420626325888:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/ATTENTION_03238962-76e3-4849-9506-79fd08222d7e.png?v=1785602221" alt="Guide Concentration" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Concentration</span><span class="tag">Meilleure vente</span></div>
+            <h3><a href="https://pilota90.com/products/attention-concentration-guide-pdf">Concentration&nbsp;: apprenez-lui à revenir dans le match, seul</a></h3>
+            <p class="accroche">Dix minutes dedans, puis un mot du bord du terrain, une faute sifflée — et le fil casse.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58449004102016:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/communiquer_pour_performer_bce919da-60be-4636-81ba-3307a5a1c9bd.png?v=1785602190" alt="Guide Communication" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Communication</span><span class="tag">Parents · Coachs</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-communiquer-pour-performer-ebook-pdf">Consignes mal comprises&nbsp;? Communiquer pour le faire progresser</a></h3>
+            <p class="accroche">Vous avez donné la consigne trois fois. Il a hoché la tête, puis fait exactement l’inverse.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58401142964608:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/L_intelligence_du_jeu_710769e6-c5ee-4cdc-9e7d-236a95876dbf.png?v=1785602241" alt="Guide Intelligence de jeu" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Tactique</span><span class="tag">Football</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-les-bases-du-jeu-intelligent-ebook-pdf">Ils courent après le ballon&nbsp;: leur enseigner l’intelligence de jeu</a></h3>
+            <p class="accroche">Le placement expliqué trois fois cette semaine — et samedi, dès la première passe, tout retombe.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">19,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58393920438656:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/06ed8a3d-abb8-4b7f-bb84-cd3b6f5f4a61.png?v=1785738440" alt="Guide Nutrition sportive" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Nutrition</span><span class="tag">Tous sports</span></div>
+            <h3><a href="https://pilota90.com/products/la-nutrition-pour-performer-guide-pdf-44-pages">Crampes et coups de pompe&nbsp;: la nutrition sportive de l’athlète</a></h3>
+            <p class="accroche">Fin de match&nbsp;: les jambes se ferment, la crampe monte. La tête est là, le corps ne suit plus.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">19,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58623135875456:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/LA_FORCE_MENTAL_DES_EQUIPES_dc296975-e0c1-4d93-8164-40eaa98a316c.png?v=1785602196" alt="Guide Cohésion d’équipe" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Cohésion</span><span class="tag">Coachs</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-la-force-mentale-des-equipes-qui-gagnent-ebook-pdf">Équipe en dents de scie&nbsp;: le guide de la cohésion d’équipe</a></h3>
+            <p class="accroche">Les mêmes joueurs qui avaient tout gagné se regardent jouer, chacun dans son coin.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58402087633280:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/LA_CORRECTION_POSITIVE_b6faf367-9fc0-4e4d-9f39-dd4ce6b5f58b.png?v=1785602227" alt="Guide La correction positive" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Pédagogie</span><span class="tag">Coachs · Éducateurs</span></div>
+            <h3><a href="https://pilota90.com/products/la-correction-positive-guide-pdf">Corriger sans décourager&nbsp;: la méthode pour éducateurs et coachs</a></h3>
+            <p class="accroche">Repris trois fois sur le même geste&nbsp;: il hoche la tête, recommence — et le défaut est toujours là.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58477313163648:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/L_environnement-familial_82041388-f6c4-4359-b24c-ad2c30a2f3f7.png?v=1785602210" alt="Guide Environnement familial" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Famille</span><span class="tag">Parents</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-lenvironnement-familial-du-jeune-athlete-ebook-pdf">Parent de jeune sportif&nbsp;: le soutenir sans l’étouffer, au quotidien</a></h3>
+            <p class="accroche">Il monte dans la voiture, la tête basse. Vous voulez l’encourager, vous finissez par analyser.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58412370493824:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/FAMILLE_AMIS_d66eb09c-1411-46a5-b9ae-1dcd663dbdad.jpg?v=1785602215" alt="Guide Famille, amis et performance" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag">Entourage</span><span class="tag">Parents</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-famille-amis-et-performance-ebook-pdf">Amis, coéquipiers, club&nbsp;: l’autre entourage de votre jeune sportif</a></h3>
+            <p class="accroche">Il rate un geste, cherche votre regard une demi-seconde — encourager plus fort, ou se taire&nbsp;?</p>
+            <div class="guide-foot">
+              <span class="guide-prix">14,90&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58420638384512:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="guide">
+          <div class="guide-img"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/1003/5724/3264/files/PACK_5_08131afc-bff4-4dd9-9dbf-185ded50d217.png?v=1785602254" alt="Pack 5 guides parents et coachs" width="400" height="300"></div>
+          <div class="guide-body">
+            <div class="guide-tags"><span class="tag or">Pack 5 guides</span><span class="tag">Parents · Coachs</span></div>
+            <h3><a href="https://pilota90.com/products/pilota90-pack-complet-5-guides-pdf">Le mental sur 5 fronts&nbsp;: le Pack 5 guides pour parents et coachs</a></h3>
+            <p class="accroche">Cinq guides pour couvrir l’essentiel du rôle de l’adulte au bord du terrain — au prix de moins de trois.</p>
+            <div class="guide-foot">
+              <span class="guide-prix">39,75&nbsp;€</span>
+              <a class="btn btn-dark" href="https://pilota90.com/cart/58406942966144:1">Commander</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MÉTHODE ============ -->
+  <section class="methode" id="methode">
+    <div class="wrap">
+      <p class="eyebrow">Comment ça marche</p>
+      <h2>Du clic au bord du terrain,<br>en trois étapes</h2>
+      <p class="section-intro">Pas d’abonnement, pas de plateforme à apprendre. Un PDF, des exercices, et votre prochain match pour les appliquer.</p>
+      <div class="etapes">
+        <div class="etape">
+          <h3>Commandez en 2 minutes</h3>
+          <p>Paiement sécurisé par carte, Apple&nbsp;Pay ou PayPal, via le checkout Shopify de la boutique. Aucune création de compte obligatoire.</p>
+        </div>
+        <div class="etape">
+          <h3>Recevez le PDF immédiatement</h3>
+          <p>Le lien de téléchargement arrive par email juste après le paiement. Lisez-le sur téléphone, tablette, ou imprimez-le — il est à vous, à vie.</p>
+        </div>
+        <div class="etape">
+          <h3>Appliquez dès la prochaine séance</h3>
+          <p>Chaque chapitre se termine par des exercices concrets et des phrases types. Vous savez exactement quoi dire, et quoi ne plus dire, dès samedi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CE QU'IL Y A DEDANS ============ -->
+  <section class="dedans">
+    <div class="wrap">
+      <p class="eyebrow">Pas de théorie d’amphithéâtre</p>
+      <h2>Écrit pour le bord du terrain</h2>
+      <p class="section-intro">Chaque guide est construit sur la psychologie du sport appliquée, puis traduit en outils que vous pouvez utiliser sans être préparateur mental.</p>
+      <div class="dedans-grid">
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Des phrases types, mot pour mot</b><span>Quoi dire dans la voiture du retour, avant le match, après une défaite.</span></div>
+        </div>
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Des routines d’avant-match</b><span>Simples, courtes, que votre enfant peut s’approprier seul.</span></div>
+        </div>
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Des exercices de fin de chapitre</b><span>Pour passer de la lecture à l’application, séance après séance.</span></div>
+        </div>
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Des situations réelles décortiquées</b><span>La consigne répétée, le regard vers la tribune, le silence du retour.</span></div>
+        </div>
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Un format court et dense</b><span>Lisible en une soirée, conçu pour être relu chaque saison.</span></div>
+        </div>
+        <div class="dedans-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Valable pour tous les sports</b><span>Football, tennis, judo, natation — le mental ne change pas de maillot.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GARANTIE ============ -->
+  <section class="garantie">
+    <div class="wrap">
+      <div class="garantie-box">
+        <div class="garantie-badge">30<small>JOURS</small></div>
+        <div>
+          <h2>Lisez tout. Testez tout.<br>Décidez ensuite.</h2>
+          <p>Si dans les 30 jours vous estimez qu’un guide ne vous a rien apporté, un simple email à <a href="mailto:Contact@pilota90.com">Contact@pilota90.com</a> suffit&nbsp;: vous êtes intégralement remboursé, sans justification et sans renvoyer quoi que ce soit. Le risque est pour nous, pas pour vous.</p>
+        </div>
+        <a class="btn btn-gold" href="#pack">Commander sans risque</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <p class="eyebrow">Questions fréquentes</p>
+      <h2>Tout ce que vous voulez savoir<br>avant de commander</h2>
+      <div class="faq-list" style="margin-top:34px">
+        <details>
+          <summary>Comment je reçois mon guide après le paiement&nbsp;?</summary>
+          <p>Immédiatement. Le lien de téléchargement s’affiche sur la page de confirmation et arrive aussi par email. Si vous ne le voyez pas sous quelques minutes, vérifiez vos spams ou écrivez-nous&nbsp;: on vous le renvoie.</p>
+        </details>
+        <details>
+          <summary>Pour quel âge ces guides sont-ils faits&nbsp;?</summary>
+          <p>Ils sont écrits pour l’adulte — parent, éducateur, coach — qui accompagne un jeune sportif, de l’école de sport jusqu’aux années de formation. Les exercices s’adaptent à l’âge de l’enfant.</p>
+        </details>
+        <details>
+          <summary>C’est uniquement pour le football&nbsp;?</summary>
+          <p>Non. Les exemples parlent souvent football parce que c’est le terrain d’origine de PILOTA90, mais la confiance, le stress, la motivation ou la concentration se travaillent de la même façon dans tous les sports.</p>
+        </details>
+        <details>
+          <summary>Quelle est la différence entre le Pack Mental et les guides à l’unité&nbsp;?</summary>
+          <p>Le Pack Mental Complet regroupe les 5 leviers du jour J pour 49&nbsp;€ au lieu de 74,50&nbsp;€ à l’unité. Si votre problème est précis et unique — la nutrition, la cohésion d’équipe — un guide seul suffit. Si votre enfant «&nbsp;ne montre pas son vrai niveau en match&nbsp;», le Pack est fait pour ça.</p>
+        </details>
+        <details>
+          <summary>Puis-je imprimer les guides&nbsp;?</summary>
+          <p>Oui. Le PDF est à vous&nbsp;: lisez-le sur téléphone ou tablette, imprimez-le, annotez-le. Vous y avez accès à vie, y compris après un changement d’appareil.</p>
+        </details>
+        <details>
+          <summary>Comment fonctionne la garantie 30 jours&nbsp;?</summary>
+          <p>Un email à <a href="mailto:Contact@pilota90.com">Contact@pilota90.com</a> dans les 30 jours suivant l’achat, et vous êtes remboursé intégralement. Pas de formulaire, pas de justification demandée.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="final">
+    <div class="wrap">
+      <p class="eyebrow">Le prochain match arrive</p>
+      <h2>Son talent est déjà là.<br>Donnez-lui l’environnement qu’il mérite.</h2>
+      <p>Commandez ce soir, lisez cette semaine, appliquez samedi. Et si ça ne change rien, vous êtes remboursé.</p>
+      <a class="btn btn-gold" href="https://pilota90.com/cart/58672742105472:1">Commander le Pack Mental Complet — 49&nbsp;€</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot-grid">
+    <div><b style="color:var(--chalk-on-pitch)">PILOTA90</b> · Préparation mentale du jeune sportif · <a href="mailto:Contact@pilota90.com">Contact@pilota90.com</a></div>
+    <nav class="foot-links" aria-label="Liens légaux">
+      <a href="https://pilota90.com/policies/refund-policy">Remboursements</a>
+      <a href="https://pilota90.com/policies/privacy-policy">Confidentialité</a>
+      <a href="https://pilota90.com/policies/terms-of-service">CGV</a>
+      <a href="https://pilota90.com/policies/legal-notice">Mentions légales</a>
+    </nav>
+  </div>
+</footer>
