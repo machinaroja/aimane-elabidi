@@ -80,7 +80,7 @@
     "message": "Ton message",
     "submit": "Envoyer le message",
     "success": "Message envoyé. Nous te répondons dès que possible.",
-    "error_title": "Le message n’a pas été envoyé. corrige les champs suivants :",
+    "error_title": "Le message n’a pas été envoyé. Corrige les champs suivants :",
     "required": "obligatoire"
   },
   "customer": {
