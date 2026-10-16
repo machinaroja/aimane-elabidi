@@ -1,0 +1,73 @@
+{%- liquid
+  case collection.handle
+    when 'psychologie'
+      assign emblem = 'rings'
+    when 'developpement-personnel'
+      assign emblem = 'steps'
+    when 'argent'
+      assign emblem = 'coin'
+    when 'pouvoir-et-influence'
+      assign emblem = 'column'
+  endcase
+  assign rayons = section.settings.rayons
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+-%}
+<div class="wrap">
+  <header class="collection-head">
+    {%- if emblem -%}{% render 'emblem', name: emblem, class: 'collection-head__emblem' %}{%- endif -%}
+    <h1 class="page-title">{% if collection.handle == 'all' %}Tout le catalogue{% else %}{{ collection.title }}{% endif %}</h1>
+    {%- if collection.description != blank -%}<div class="page-intro rte">{{ collection.description }}</div>{%- endif -%}
+  </header>
+
+  <div class="toolbar">
+    {%- if rayons != blank -%}
+      <nav aria-label="{{ 'collections.all' | t }}">
+        <ul class="toolbar__filters">
+          <li><a class="chip" href="{{ routes.all_products_collection_url }}"{% if collection.handle == 'all' %} aria-current="page"{% endif %}>{{ 'collections.all' | t }}</a></li>
+          {%- for c in rayons -%}
+            <li><a class="chip" href="{{ c.url }}"{% if c.handle == collection.handle %} aria-current="page"{% endif %}>{{ c.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <form class="field" method="get" action="{{ collection.url }}">
+      <label for="sort-by">{{ 'collections.sort' | t }}</label>
+      <div style="display:flex;gap:var(--space-2xs)">
+        <select id="sort-by" name="sort_by" class="select" data-autosubmit>
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}"{% if option.value == current_sort %} selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+        <button type="submit" class="btn btn-ghost" data-autosubmit-button>{{ 'collections.apply' | t }}</button>
+      </div>
+    </form>
+  </div>
+
+  {%- paginate collection.products by 24 -%}
+    <p class="result-count" role="status">{{ 'collections.count' | t: count: collection.products_count }}</p>
+    {%- if collection.products.size > 0 -%}
+      <ul class="book-grid" style="margin-top: var(--space-m)">
+        {%- for product in collection.products -%}
+          {% render 'book-card', product: product, heading_level: 'h2' %}
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="empty-state">
+        <p>{{ 'collections.empty' | t }}</p>
+        <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">{{ 'collections.empty_cta' | t }}</a>
+      </div>
+    {%- endif -%}
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+<div class="section" style="padding-top:0"></div>
+
+{% schema %}
+{
+  "name": "Catalogue",
+  "settings": [
+    { "type": "collection_list", "id": "rayons", "label": "Rayons affichés en raccourcis", "limit": 8 }
+  ]
+}
+{% endschema %}
