@@ -1,0 +1,17 @@
+{%- comment -%}
+  Formulaire d'achat. Fonctionne sans JavaScript (envoi classique vers le panier) ;
+  avec JavaScript, l'ajout se fait sans quitter la page.
+  Paramètres : product, form_id
+{%- endcomment -%}
+{%- assign variant = product.selected_or_first_available_variant -%}
+{%- form 'product', product, id: form_id, class: 'add-to-cart-form', data-add-to-cart-form: '' -%}
+  <input type="hidden" name="id" value="{{ variant.id }}">
+  {%- if variant.available -%}
+    <button type="submit" name="add" class="btn btn-primary" data-add-to-cart>
+      <span data-label>{{ 'products.add_to_cart' | t }}</span><span class="visually-hidden"> : {{ product.title }}</span>
+    </button>
+  {%- else -%}
+    <button type="button" class="btn btn-primary" disabled>{{ 'products.unavailable' | t }}</button>
+  {%- endif -%}
+  <p class="form-error" data-form-error role="alert" hidden></p>
+{%- endform -%}

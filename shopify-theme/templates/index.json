@@ -1,0 +1,53 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-shelf",
+      "settings": {
+        "heading": "Des livres pour comprendre comment on pense, on gagne et on décide.",
+        "text": "BIBLIODOR édite des ebooks en français sur la psychologie, l’argent, le pouvoir et l’influence. Des textes clairs, structurés et utiles, à lire sur tous vos écrans.",
+        "collection": "a-la-une",
+        "primary_label": "Parcourir le catalogue",
+        "primary_link": "/collections/all",
+        "secondary_label": "Voir les nouveautés",
+        "secondary_link": "#nouveautes"
+      }
+    },
+    "rayons": {
+      "type": "rayons",
+      "blocks": {
+        "psy": { "type": "rayon", "settings": { "collection": "psychologie", "emblem": "rings", "summary": "Comprendre ce qui se passe dans la tête, la vôtre et celle des autres." } },
+        "dev": { "type": "rayon", "settings": { "collection": "developpement-personnel", "emblem": "steps", "summary": "Des méthodes concrètes pour changer une habitude, une routine, une trajectoire." } },
+        "argent": { "type": "rayon", "settings": { "collection": "argent", "emblem": "coin", "summary": "Gagner, épargner, investir : les mécanismes expliqués sans jargon." } },
+        "pouvoir": { "type": "rayon", "settings": { "collection": "pouvoir-et-influence", "emblem": "column", "summary": "Négocier, convaincre, décoder les rapports de force." } }
+      },
+      "block_order": ["psy", "dev", "argent", "pouvoir"],
+      "settings": {
+        "heading": "Les rayons",
+        "text": "Quatre domaines, choisis parce qu’ils changent concrètement la vie de ceux qui s’y intéressent."
+      }
+    },
+    "featured": {
+      "type": "featured-book",
+      "settings": { "kicker": "À lire en ce moment", "link_label": "Lire la présentation" }
+    },
+    "latest": {
+      "type": "latest-books",
+      "settings": { "heading": "Nouveautés", "collection": "nouveautes", "limit": 4, "link_label": "Tout le catalogue", "anchor": "nouveautes" }
+    },
+    "how": {
+      "type": "how-it-works",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "title": "Choisissez", "text": "Chaque fiche présente le sommaire, ce que vous apprendrez et le nombre de pages. Vous savez ce que vous achetez." } },
+        "s2": { "type": "step", "settings": { "title": "Payez en ligne", "text": "Le paiement est traité par Shopify. BIBLIODOR ne voit ni ne stocke vos coordonnées bancaires." } },
+        "s3": { "type": "step", "settings": { "title": "Téléchargez", "text": "Dès le paiement confirmé, vos ebooks sont téléchargeables depuis la page de confirmation et le lien reçu par e-mail." } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": { "heading": "De la page du livre à votre liseuse" }
+    },
+    "house": {
+      "type": "house",
+      "settings": {}
+    }
+  },
+  "order": ["hero", "rayons", "featured", "latest", "how", "house"]
+}

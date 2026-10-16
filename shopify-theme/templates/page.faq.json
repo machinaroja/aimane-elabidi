@@ -1,0 +1,81 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Comment se passe l’achat ?",
+            "answer": "<p>Ajoutez les livres au panier, puis payez sur la page de paiement sécurisée de Shopify. Une fois le paiement confirmé, vos ebooks sont immédiatement téléchargeables.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Où trouver mes ebooks après l’achat ?",
+            "answer": "<p>Les liens de téléchargement apparaissent sur la page de confirmation de commande et vous sont envoyés par e-mail. Conservez cet e-mail : il vous permet de retélécharger vos fichiers.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Dans quels formats sont les ebooks ?",
+            "answer": "<p>Les formats disponibles sont indiqués sur la fiche de chaque livre. L’EPUB s’adapte à la taille de l’écran (liseuses, smartphones) ; le PDF conserve une mise en page fixe, pratique sur ordinateur et tablette.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Sur quels appareils puis-je les lire ?",
+            "answer": "<p>Sur la plupart des liseuses (Kobo, PocketBook…), ainsi que sur smartphone, tablette et ordinateur avec une application de lecture comme Apple Livres, Google Play Livres ou Adobe Digital Editions. Pour une liseuse Kindle, envoyez le fichier EPUB avec le service « Send to Kindle » d’Amazon.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Quels moyens de paiement acceptez-vous ?",
+            "answer": "<p>Ceux proposés sur la page de paiement : ils s’affichent au moment de payer. BIBLIODOR ne voit ni ne stocke vos coordonnées bancaires.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Mon paiement a échoué, que faire ?",
+            "answer": "<p>Aucun montant n’est débité quand un paiement échoue. Vérifiez les informations saisies ou essayez un autre moyen de paiement. Si le problème continue, <a href=\"/pages/contact\">écrivez-nous</a> en précisant le message d’erreur affiché.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Je n’ai pas reçu l’e-mail de téléchargement.",
+            "answer": "<p>Regardez dans vos courriers indésirables. Si l’e-mail n’y est pas, <a href=\"/pages/contact\">contactez-nous</a> avec votre numéro de commande : nous vous renverrons vos liens.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je être remboursé ?",
+            "answer": "<p>Les conditions de rétractation propres aux contenus numériques sont détaillées dans nos <a href=\"/policies/terms-of-service\">conditions de vente</a> et notre <a href=\"/policies/refund-policy\">politique de remboursement</a>. En cas de fichier défectueux, nous le remplaçons ou vous remboursons.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8"
+      ],
+      "settings": {
+        "contact_text": "<p>Vous ne trouvez pas votre réponse ? <a href=\"/pages/contact\">Écrivez-nous</a>.</p>"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

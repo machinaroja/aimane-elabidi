@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": { "rayons": ["psychologie", "developpement-personnel", "argent", "pouvoir-et-influence"] }
+    }
+  },
+  "order": ["main"]
+}

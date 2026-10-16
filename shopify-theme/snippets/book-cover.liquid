@@ -1,0 +1,42 @@
+{%- comment -%}
+  Couverture « maison » BIBLIODOR, dessinée en HTML/CSS.
+  - Le ton se choisit avec une étiquette produit : ton:foret, ton:creme ou ton:or.
+  - L'emblème dépend du type de produit (le rayon).
+  - Ajouter l'étiquette couverture:image pour afficher l'image du produit à la place.
+  Paramètres : product, loading ('eager' | 'lazy'), sizes
+{%- endcomment -%}
+{%- liquid
+  assign tone = 'forest'
+  if product.tags contains 'ton:creme'
+    assign tone = 'cream'
+  elsif product.tags contains 'ton:or'
+    assign tone = 'gold'
+  endif
+  capture emblem
+    render 'emblem-for-type', type: product.type
+  endcapture
+  assign emblem = emblem | strip
+  assign use_image = false
+  if product.tags contains 'couverture:image' and product.featured_image
+    assign use_image = true
+  endif
+-%}
+{%- if use_image -%}
+  <div class="cover cover--image">
+    {{ product.featured_image | image_url: width: 900 | image_tag:
+      loading: loading,
+      sizes: sizes,
+      widths: '200, 300, 450, 600, 900',
+      alt: product.featured_image.alt | default: product.title
+    }}
+  </div>
+{%- else -%}
+  <div class="cover tone-{{ tone }}" role="img" aria-label="{{ 'products.cover_of' | t: title: product.title | escape }}">
+    <div class="cover__frame">
+      <p class="cover__house">{{ shop.name }}</p>
+      {% render 'emblem', name: emblem, class: 'cover__emblem' %}
+      <p class="cover__title">{{ product.title }}</p>
+      {%- if product.type != blank -%}<p class="cover__shelf">{{ product.type }}</p>{%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

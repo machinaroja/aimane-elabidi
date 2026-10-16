@@ -1,0 +1,48 @@
+<div class="wrap">
+  <h1 class="page-title" style="padding-top: var(--space-xl)">{{ 'cart.title' | t }}</h1>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart">
+      <section aria-labelledby="cart-items-title">
+        <h2 id="cart-items-title" class="visually-hidden">{{ 'cart.items' | t }}</h2>
+        <ul class="cart__items">
+          {%- for item in cart.items -%}
+            <li class="cart-line">
+              <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">{% render 'book-cover', product: item.product, loading: 'lazy', sizes: '5rem' %}</a>
+              <div>
+                <h2><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+                {%- if item.product.type != blank -%}<p class="book-meta">{{ item.product.type }}</p>{%- endif -%}
+                {%- if item.quantity > 1 -%}<p class="book-meta">× {{ item.quantity }}</p>{%- endif -%}
+                <a class="cart-line__remove text-link" href="{{ item.url_to_remove }}">
+                  {{- 'cart.remove' | t -}}<span class="visually-hidden"> « {{ item.product.title }} »</span>
+                </a>
+              </div>
+              <p class="price">{{ item.final_line_price | money }}</p>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </section>
+
+      <form action="{{ routes.cart_url }}" method="post" class="cart-summary" aria-labelledby="cart-summary-title">
+        <h2 id="cart-summary-title" class="visually-hidden">{{ 'cart.summary' | t }}</h2>
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <p class="book-meta">{{ discount.title }} : −{{ discount.total_allocated_amount | money }}</p>
+        {%- endfor -%}
+        <p class="cart-summary__total"><span>{{ 'cart.subtotal' | t }}</span><span class="price">{{ cart.total_price | money_with_currency }}</span></p>
+        <small>{{ 'cart.taxes' | t }}</small>
+        <button type="submit" name="checkout" class="btn btn-primary">{{ 'cart.checkout' | t }}</button>
+        <small>{{ 'cart.secure_note' | t }}</small>
+      </form>
+    </div>
+  {%- else -%}
+    <div class="empty-state">
+      <p>{{ 'cart.empty' | t }}</p>
+      <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.empty_cta' | t }}</a>
+    </div>
+    <div class="section" style="padding-top:0"></div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Panier" }
+{% endschema %}

@@ -1,0 +1,48 @@
+<div class="wrap page">
+  <div class="contact-grid">
+    <div>
+      <h1 class="page-title">{{ page.title }}</h1>
+      {%- if page.content != blank -%}<div class="rte page-intro" style="margin-top: var(--space-s)">{{ page.content }}</div>{%- endif -%}
+    </div>
+
+    {%- form 'contact', class: 'contact-form', novalidate: 'novalidate' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="notice notice--success" role="status" tabindex="-1" autofocus>{{ 'contact.success' | t }}</p>
+      {%- elsif form.errors -%}
+        <div class="notice notice--error" role="alert" tabindex="-1" autofocus>
+          <p>{{ 'contact.error_title' | t }}</p>
+          <ul>
+            {%- for field in form.errors -%}
+              <li><a href="#contact-{{ field }}">{{ form.errors.translated_fields[field] | capitalize }}</a> {{ form.errors.messages[field] }}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="field">
+        <label for="contact-name">{{ 'contact.name' | t }}</label>
+        <input class="input" id="contact-name" type="text" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+      </div>
+      <div class="field">
+        <label for="contact-email">{{ 'contact.email' | t }} <span class="field__hint">({{ 'contact.required' | t }})</span></label>
+        <input class="input" id="contact-email" type="email" name="contact[email]" autocomplete="email" required aria-describedby="contact-email-hint"
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}>
+        <span class="field__hint" id="contact-email-hint">{{ 'contact.email_hint' | t }}</span>
+      </div>
+      <div class="field">
+        <label for="contact-order">{{ 'contact.order' | t }}</label>
+        <input class="input" id="contact-order" type="text" name="contact[commande]" value="{{ form.commande }}">
+      </div>
+      <div class="field">
+        <label for="contact-body">{{ 'contact.message' | t }} <span class="field__hint">({{ 'contact.required' | t }})</span></label>
+        <textarea class="textarea" id="contact-body" name="contact[body]" required {% if form.errors contains 'body' %}aria-invalid="true"{% endif %}>{{ form.body }}</textarea>
+      </div>
+      <div><button type="submit" class="btn btn-primary">{{ 'contact.submit' | t }}</button></div>
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Formulaire de contact" }
+{% endschema %}

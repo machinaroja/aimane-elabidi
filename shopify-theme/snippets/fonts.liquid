@@ -1,0 +1,26 @@
+{%- comment -%} Polices auto-hébergées (Literata, Atkinson Hyperlegible Next). {%- endcomment -%}
+    {{ 'literata-latin-opsz-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {{ 'atkinson-hyperlegible-next-latin-wght-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    <style>
+      @font-face {
+        font-family: 'Literata Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 200 900;
+        src: url({{ 'literata-latin-opsz-normal.woff2' | asset_url }}) format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Literata Variable';
+        font-style: italic;
+        font-display: swap;
+        font-weight: 200 900;
+        src: url({{ 'literata-latin-opsz-italic.woff2' | asset_url }}) format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Atkinson Hyperlegible Next Variable';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 200 800;
+        src: url({{ 'atkinson-hyperlegible-next-latin-wght-normal.woff2' | asset_url }}) format('woff2-variations');
+      }
+    </style>

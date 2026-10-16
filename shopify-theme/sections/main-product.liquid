@@ -1,0 +1,116 @@
+{%- liquid
+  assign subtitle = product.metafields.custom.sous_titre.value
+  assign takeaways = product.metafields.custom.points_cles.value
+  assign contents = product.metafields.custom.sommaire.value
+  assign pages = product.metafields.custom.pages.value
+  assign formats = product.metafields.custom.formats.value
+  assign type_handle = product.type | handleize
+  assign rayon = nil
+  for c in product.collections
+    if c.handle == type_handle
+      assign rayon = c
+    endif
+  endfor
+-%}
+<nav class="wrap breadcrumb" aria-label="{{ 'general.breadcrumb' | t }}">
+  <ol>
+    <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+    {%- if rayon -%}<li><a href="{{ rayon.url }}">{{ rayon.title }}</a></li>{%- endif -%}
+    <li><span aria-current="page">{{ product.title }}</span></li>
+  </ol>
+</nav>
+
+<section class="section wrap book-feature book-feature--sticky" aria-labelledby="product-title">
+  <div class="book-feature__cover">
+    {% render 'book-cover', product: product, loading: 'eager', sizes: '(min-width: 52rem) 22rem, 72vw' %}
+  </div>
+  <div>
+    {%- if product.type != blank -%}<p class="kicker">{{ product.type }}</p>{%- endif -%}
+    <h1 id="product-title">{{ product.title }}</h1>
+    {%- if subtitle != blank -%}<p class="subtitle">{{ subtitle }}</p>{%- endif -%}
+    {%- if product.vendor != blank and product.vendor != shop.name -%}<p class="facts">{{ product.vendor }}</p>{%- endif -%}
+
+    {%- if takeaways != blank -%}
+      <h2 class="book-feature__label">{{ 'products.takeaways' | t }}</h2>
+      <ul class="takeaways">
+        {%- for item in takeaways -%}<li>{{ item }}</li>{%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="buy">
+      {% render 'price', product: product %}
+      {% render 'add-to-cart', product: product, form_id: 'product-form' %}
+    </div>
+    <p class="facts">{{ 'products.delivery_value' | t }}. {{ 'cart.taxes' | t }}</p>
+  </div>
+</section>
+
+<div class="wrap product-details">
+  <div>
+    {%- if product.description != blank -%}
+      <h2>{{ 'products.about' | t }}</h2>
+      <div class="rte">{{ product.description }}</div>
+    {%- endif -%}
+    {%- if contents != blank -%}
+      <h2 style="margin-top: var(--space-xl)">{{ 'products.contents' | t }}</h2>
+      <ol class="contents">
+        {%- for chapter in contents -%}<li>{{ chapter }}</li>{%- endfor -%}
+      </ol>
+    {%- endif -%}
+  </div>
+  <aside aria-labelledby="specs">
+    <h2 id="specs">{{ 'products.details' | t }}</h2>
+    <dl class="spec">
+      {%- if product.type != blank -%}<dt>{{ 'products.category' | t }}</dt><dd>{{ product.type }}</dd>{%- endif -%}
+      {%- if pages -%}<dt>{{ 'products.pages' | t }}</dt><dd>{{ pages }}</dd>{%- endif -%}
+      {%- if formats -%}<dt>{{ 'products.formats' | t }}</dt><dd>{{ formats }}</dd>{%- endif -%}
+      <dt>{{ 'products.delivery' | t }}</dt><dd>{{ 'products.delivery_value' | t }}</dd>
+    </dl>
+  </aside>
+</div>
+
+{%- if rayon and rayon.products_count > 1 -%}
+  <section class="section wrap" aria-labelledby="related">
+    <header class="section-head section-head--row">
+      <h2 id="related">{{ 'products.related' | t }}</h2>
+      <a class="text-link" href="{{ rayon.url }}">{{ rayon.title }}</a>
+    </header>
+    <ul class="book-grid">
+      {%- assign shown = 0 -%}
+      {%- for p in rayon.products -%}
+        {%- if p.id != product.id and shown < 4 -%}
+          {% render 'book-card', product: p %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}
+
+{%- comment -%} Données structurées : uniquement des informations réelles du produit. {%- endcomment -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    "inLanguage": "fr",
+    "bookFormat": "https://schema.org/EBook",
+    {%- if pages %}"numberOfPages": {{ pages | json }},{% endif %}
+    {%- if product.vendor != blank %}"publisher": { "@type": "Organization", "name": {{ shop.name | json }} },{% endif %}
+    "description": {{ product.description | strip_html | strip_newlines | truncate: 300 | json }},
+    "offers": {
+      "@type": "Offer",
+      "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+      "url": {{ request.origin | append: product.url | json }}
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Fiche ebook"
+}
+{% endschema %}

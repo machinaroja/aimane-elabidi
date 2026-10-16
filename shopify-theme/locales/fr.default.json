@@ -1,0 +1,109 @@
+{
+  "general": {
+    "skip_to_content": "Aller au contenu",
+    "home": "Accueil",
+    "menu": "Ouvrir le menu",
+    "search": "Rechercher un ebook",
+    "cart": "Panier",
+    "account": "Mon compte",
+    "back_home": "Retour à l’accueil",
+    "breadcrumb": "Fil d’Ariane",
+    "pagination": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "main_nav": "Navigation principale",
+    "mobile_nav": "Menu mobile"
+  },
+  "products": {
+    "cover_of": "Couverture de « {{ title }} »",
+    "add_to_cart": "Ajouter au panier",
+    "view_cart": "Voir le panier",
+    "added": "Ajouté au panier.",
+    "add_error": "L’ajout au panier a échoué. Réessayez dans un instant.",
+    "unavailable": "Indisponible",
+    "sale_price": "Prix réduit",
+    "regular_price": "Prix habituel",
+    "takeaways": "Ce que vous en retirerez",
+    "contents": "Sommaire",
+    "about": "Présentation",
+    "details": "Caractéristiques",
+    "pages": "Pages",
+    "pages_count": "{{ count }} pages",
+    "formats": "Formats",
+    "category": "Rayon",
+    "delivery": "Livraison",
+    "delivery_value": "Téléchargement après confirmation du paiement",
+    "related": "Dans le même rayon"
+  },
+  "collections": {
+    "count": {
+      "one": "{{ count }} titre",
+      "other": "{{ count }} titres"
+    },
+    "sort": "Trier",
+    "apply": "Appliquer",
+    "all": "Tous",
+    "empty": "Aucun ebook ne correspond pour l’instant.",
+    "empty_cta": "Voir tout le catalogue"
+  },
+  "search": {
+    "title": "Rechercher",
+    "label": "Titre, thème ou mot-clé",
+    "submit": "Rechercher",
+    "results": {
+      "one": "{{ count }} résultat pour « {{ terms }} »",
+      "other": "{{ count }} résultats pour « {{ terms }} »"
+    },
+    "none": "Aucun résultat pour « {{ terms }} ». Essayez un mot plus court ou parcourez les rayons."
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "empty_cta": "Parcourir le catalogue",
+    "remove": "Retirer",
+    "remove_label": "Retirer « {{ title }} » du panier",
+    "subtotal": "Total TTC",
+    "checkout": "Passer au paiement",
+    "secure_note": "Le paiement est réalisé sur la page sécurisée de Shopify. Vos ebooks sont disponibles au téléchargement dès la confirmation du paiement, et un lien vous est envoyé par e-mail.",
+    "taxes": "TVA incluse.",
+    "items": "Articles du panier",
+    "summary": "Récapitulatif",
+    "update_error": "La mise à jour du panier a échoué. Rechargez la page et réessayez."
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "Adresse e-mail",
+    "email_hint": "Nous vous répondons à cette adresse.",
+    "subject": "Sujet",
+    "order": "Numéro de commande (facultatif)",
+    "message": "Votre message",
+    "submit": "Envoyer le message",
+    "success": "Message envoyé. Nous vous répondons sous deux jours ouvrés.",
+    "error_title": "Le message n’a pas été envoyé. Corrigez les champs suivants :",
+    "required": "obligatoire"
+  },
+  "customer": {
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "orders": "Mes commandes",
+    "library": "Ma bibliothèque",
+    "no_orders": "Vous n’avez pas encore passé de commande.",
+    "order": "Commande",
+    "date": "Date",
+    "payment": "Paiement",
+    "total": "Total",
+    "view": "Voir la commande {{ name }}",
+    "back": "Retour au compte",
+    "downloads_note": "Vos ebooks se téléchargent depuis la page de confirmation de commande et depuis l’e-mail reçu après l’achat."
+  },
+  "404": {
+    "title": "Page introuvable",
+    "text": "Cette page n’existe pas ou a été déplacée. Le catalogue, lui, est toujours là."
+  },
+  "password": {
+    "title": "Ouverture prochaine",
+    "enter": "Accès réservé",
+    "password": "Mot de passe",
+    "submit": "Entrer"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "header",
+  "name": "En-tête",
+  "sections": {
+    "announcement": {
+      "type": "announcement",
+      "settings": { "text": "", "link": "" }
+    },
+    "header": {
+      "type": "header",
+      "settings": { "logo_width": 150, "menu": "main-menu" }
+    }
+  },
+  "order": ["announcement", "header"]
+}

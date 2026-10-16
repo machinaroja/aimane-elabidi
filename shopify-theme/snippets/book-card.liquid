@@ -1,0 +1,12 @@
+{%- comment -%}
+  Carte d'un livre dans une grille. Paramètres : product, heading_level (par défaut h3)
+{%- endcomment -%}
+{%- assign h = heading_level | default: 'h3' -%}
+<li class="book-item">
+  {% render 'book-cover', product: product, loading: 'lazy', sizes: '(min-width: 52rem) 22vw, 45vw' %}
+  <{{ h }} class="book-item__title">
+    <a href="{{ product.url }}" class="stretch">{{ product.title }}</a>
+  </{{ h }}>
+  {%- if product.type != blank -%}<p class="book-meta">{{ product.type }}</p>{%- endif -%}
+  {% render 'price', product: product %}
+</li>

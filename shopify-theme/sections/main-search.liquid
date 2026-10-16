@@ -1,0 +1,39 @@
+<div class="section wrap">
+  <header class="section-head">
+    <h1 class="page-title">{{ 'search.title' | t }}</h1>
+  </header>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+    <input type="hidden" name="type" value="product">
+    <label class="visually-hidden" for="search-q">{{ 'search.label' | t }}</label>
+    <input class="input" id="search-q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.label' | t }}" autocomplete="off">
+    <button class="btn btn-primary" type="submit">{{ 'search.submit' | t }}</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <p class="result-count" role="status" style="margin-top: var(--space-l)">
+        {%- if search.results_count > 0 -%}
+          {{ 'search.results' | t: count: search.results_count, terms: search.terms }}
+        {%- else -%}
+          {{ 'search.none' | t: terms: search.terms }}
+        {%- endif -%}
+      </p>
+      {%- if search.results_count > 0 -%}
+        <ul class="book-grid" style="margin-top: var(--space-m)">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'book-card', product: item, heading_level: 'h2' %}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <a class="btn btn-ghost" style="margin-top: var(--space-m)" href="{{ routes.all_products_collection_url }}">{{ 'collections.empty_cta' | t }}</a>
+      {%- endif -%}
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Recherche" }
+{% endschema %}
