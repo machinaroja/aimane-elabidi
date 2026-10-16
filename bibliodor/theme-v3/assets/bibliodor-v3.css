@@ -1,0 +1,115 @@
+/* BIBLIODOR — couche dynamique v3 : bandeau défilant, apparitions au défilement,
+   cartes vivantes, boutons lumineux, pastille d'offre, toast panier.
+   Tout est désactivé si l'utilisateur demande moins d'animations. */
+
+/* ---------- Bandeau défilant ---------- */
+.ticker { background: linear-gradient(90deg, #c9a24a, #e2c378 50%, #c9a24a); color: #1a2a24; overflow: hidden; position: relative; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em; }
+.ticker::before, .ticker::after { content: ""; position: absolute; top: 0; bottom: 0; width: 3rem; z-index: 2; pointer-events: none; }
+.ticker::before { left: 0; background: linear-gradient(90deg, #c9a24a, transparent); }
+.ticker::after { right: 0; background: linear-gradient(-90deg, #c9a24a, transparent); }
+.ticker__link { color: inherit; text-decoration: none; display: block; }
+.ticker__track { display: flex; width: max-content; animation: ticker 38s linear infinite; }
+.ticker:hover .ticker__track, .ticker:focus-within .ticker__track { animation-play-state: paused; }
+.ticker__group { display: flex; list-style: none; margin: 0; padding: 0.55rem 0; }
+.ticker__group li { white-space: nowrap; padding: 0 1.6rem; display: flex; align-items: center; gap: 1.6rem; }
+.ticker__group li::after { content: "◆"; font-size: 0.55rem; opacity: 0.6; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---------- Apparition au défilement ---------- */
+.js-reveal .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s cubic-bezier(.2,.7,.2,1), transform 0.7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
+.js-reveal .reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- Cartes de livres ---------- */
+.book-item { position: relative; transition: transform 0.35s cubic-bezier(.2,.7,.2,1); }
+.book-item .cover { transition: transform 0.45s cubic-bezier(.2,.7,.2,1), filter 0.45s; }
+.book-item:hover .cover { transform: translateY(-8px) rotate(-1.2deg) scale(1.02); filter: drop-shadow(0 18px 22px rgb(22 42 36 / 0.28)); }
+.book-item__badge { position: absolute; top: 0.6rem; left: 0.6rem; z-index: 2; background: #1f3a32; color: #f3dfa6; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.55rem; border-radius: 999px; box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.4); }
+.book-item__badge.is-pack { background: #c9a24a; color: #1a2a24; }
+
+/* ---------- Étagère de l'accueil : livres qui flottent ---------- */
+.shelf__books li { animation: float 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * -2s); }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+/* ---------- Boutons : reflet doré ---------- */
+.btn-gold, .btn-primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn-gold::after, .btn-primary::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%); transform: translateX(-120%); }
+.btn-gold:hover::after, .btn-primary:hover::after { transform: translateX(120%); transition: transform 0.9s ease; }
+.btn-gold { animation: glow 3.2s ease-in-out infinite; }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 0 0 rgb(221 187 98 / 0); } 50% { box-shadow: 0 0 0 6px rgb(221 187 98 / 0.22); } }
+
+/* ---------- Encadré d'offre de la fiche produit ---------- */
+.promo-box { position: relative; overflow: hidden; }
+.promo-box::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -50%; background: linear-gradient(100deg, transparent, rgb(221 187 98 / 0.18), transparent); animation: sweep 4.5s ease-in-out infinite; pointer-events: none; }
+@keyframes sweep { 0%, 55% { left: -50%; } 100% { left: 120%; } }
+.promo-box__kicker::before { content: ""; display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #3f9a6b; margin-right: 0.45rem; vertical-align: 0.05em; animation: pulse 1.8s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgb(63 154 107 / 0.55); } 100% { box-shadow: 0 0 0 9px rgb(63 154 107 / 0); } }
+
+/* ---------- Pastille d'offre flottante ---------- */
+.offer-pill { position: fixed; left: 1rem; bottom: 1rem; z-index: 40; display: flex; align-items: center; gap: 0.6rem; background: #1f3a32; color: #f8f4ec; padding: 0.6rem 0.6rem 0.6rem 0.9rem; border-radius: 999px; box-shadow: 0 14px 30px -12px rgb(0 0 0 / 0.45); font-size: 0.85rem; font-weight: 600; transform: translateY(140%); transition: transform 0.6s cubic-bezier(.2,.8,.2,1); max-width: calc(100vw - 2rem); }
+.offer-pill.is-shown { transform: none; }
+.offer-pill a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.55rem; }
+.offer-pill__gift { width: 1.9rem; height: 1.9rem; border-radius: 50%; background: #ddbb62; color: #1a2a24; display: grid; place-items: center; font-size: 0.95rem; animation: wiggle 5s ease-in-out infinite; flex: none; }
+@keyframes wiggle { 0%, 88%, 100% { transform: rotate(0); } 91% { transform: rotate(-14deg); } 94% { transform: rotate(12deg); } 97% { transform: rotate(-6deg); } }
+.offer-pill strong { color: #ddbb62; }
+.offer-pill__close { background: rgb(255 255 255 / 0.12); border: 0; color: inherit; width: 1.6rem; height: 1.6rem; border-radius: 50%; cursor: pointer; font-size: 1rem; line-height: 1; flex: none; }
+.offer-pill__close:hover { background: rgb(255 255 255 / 0.22); }
+.template-cart .offer-pill { display: none; }
+
+/* ---------- Toast d'ajout au panier ---------- */
+.cart-toast { position: fixed; right: 1rem; top: 1rem; z-index: 60; width: min(22rem, calc(100vw - 2rem)); background: #fffdf8; color: #1f2128; border: 1px solid #ddbb62; border-radius: 12px; padding: 0.9rem 1rem; box-shadow: 0 20px 40px -18px rgb(0 0 0 / 0.4); transform: translateY(-130%); opacity: 0; transition: transform 0.5s cubic-bezier(.2,.8,.2,1), opacity 0.4s; }
+.cart-toast.is-shown { transform: none; opacity: 1; }
+.cart-toast__title { font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+.cart-toast__title::before { content: "✓"; display: grid; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #3f9a6b; color: #fff; font-size: 0.8rem; }
+.cart-toast p { margin: 0.35rem 0 0; font-size: 0.85rem; color: #55575e; }
+.cart-toast__bar { height: 6px; border-radius: 3px; background: #ece4d2; margin-top: 0.6rem; overflow: hidden; }
+.cart-toast__bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c9a24a, #e2c378); transition: width 0.8s cubic-bezier(.2,.8,.2,1) 0.2s; }
+.cart-toast__actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.cart-toast__actions a { flex: 1; text-align: center; padding: 0.5rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-decoration: none; }
+.cart-toast__go { background: #1f3a32; color: #f8f4ec; }
+.cart-toast__more { border: 1px solid #1f3a32; color: #1f3a32; }
+
+/* Compteur du panier qui rebondit */
+[data-cart-count].bump { animation: bump 0.5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
+
+/* ---------- Barre d'achat fixe (tous écrans) ---------- */
+.sticky-buy { display: block; padding: 0; background: transparent; border: 0; box-shadow: none; left: 0; right: 0; bottom: 0; animation: slideup 0.45s cubic-bezier(.2,.8,.2,1); }
+.sticky-buy[hidden] { display: none !important; }
+@media (min-width: 52rem) { .sticky-buy { display: block !important; } .sticky-buy[hidden] { display: none !important; } }
+.sticky-buy__inner { display: flex; align-items: center; gap: 0.8rem; margin: 0 auto; max-width: 64rem; background: #fffdf8; border-top: 2px solid #ddbb62; padding: 0.6rem 1rem; box-shadow: 0 -12px 30px -14px rgb(22 42 36 / 0.45); }
+@media (min-width: 52rem) { .sticky-buy { bottom: 1rem; padding: 0 1rem; } .sticky-buy__inner { border: 1px solid #ddbb62; border-radius: 14px; padding: 0.7rem 0.8rem 0.7rem 0.8rem; } }
+.sticky-buy__thumb { width: 3.2rem; height: 3.2rem; object-fit: contain; flex: none; border-radius: 6px; background: #f3ede1; }
+.sticky-buy__info { display: grid; min-width: 0; flex: 1; gap: 0.1rem; }
+.sticky-buy__title { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sticky-buy__meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.sticky-buy__offer { font-size: 0.75rem; font-weight: 700; color: #7d5f17; background: #f6ecd2; padding: 0.15rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+.sticky-buy .add-to-cart-form { min-width: 0; flex: none; }
+.sticky-buy .btn { white-space: nowrap; padding-inline: 1.2rem; }
+.sticky-buy .form-error { position: absolute; bottom: 100%; right: 1rem; background: #fff; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.8rem; }
+@media (max-width: 30rem) { .sticky-buy__thumb { width: 2.6rem; height: 2.6rem; } .sticky-buy__offer { display: none; } }
+@keyframes slideup { from { transform: translateY(110%); } to { transform: none; } }
+
+/* ---------- Mini-panier flottant ---------- */
+.mini-cart { position: fixed; right: 1rem; bottom: 1rem; z-index: 45; display: flex; align-items: center; gap: 0.7rem; background: #1f3a32; color: #f8f4ec; text-decoration: none; padding: 0.55rem 0.9rem 0.55rem 0.6rem; border-radius: 999px; box-shadow: 0 16px 34px -14px rgb(0 0 0 / 0.55); border: 1px solid rgb(221 187 98 / 0.5); max-width: calc(100vw - 2rem); }
+.mini-cart[hidden] { display: none; }
+.mini-cart:hover { background: #24453b; }
+.mini-cart.pop { animation: pop 0.55s cubic-bezier(.3,1.6,.5,1); }
+@keyframes pop { 0% { transform: scale(0.85); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+.mini-cart__icon { position: relative; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: #ddbb62; color: #1a2a24; display: grid; place-items: center; flex: none; }
+.mini-cart__count { position: absolute; top: -0.3rem; right: -0.35rem; min-width: 1.15rem; height: 1.15rem; padding: 0 0.25rem; border-radius: 999px; background: #c0392b; color: #fff; font-size: 0.68rem; font-weight: 700; display: grid; place-items: center; }
+.mini-cart__count[hidden] { display: grid; }
+.mini-cart__text { display: grid; line-height: 1.2; min-width: 0; }
+.mini-cart__text strong { font-size: 0.88rem; }
+.mini-cart__text span { font-size: 0.72rem; color: #cfdad3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-cart__total { font-weight: 700; color: #ddbb62; font-size: 0.9rem; padding-left: 0.3rem; border-left: 1px solid rgb(255 255 255 / 0.18); margin-left: 0.1rem; padding-left: 0.6rem; }
+body.has-sticky-buy .mini-cart, body.has-sticky-buy .offer-pill { opacity: 0; pointer-events: none; transform: translateY(120%); transition: opacity 0.3s, transform 0.4s; }
+@media (max-width: 52rem) { body.has-mini-cart .offer-pill { display: none; } .mini-cart__total { display: none; } }
+
+/* ---------- Respect des préférences d'accessibilité ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+  .ticker__group[aria-hidden="true"], .ticker__group li[aria-hidden="true"] { display: none; }
+  .sticky-buy, .mini-cart.pop, .shelf__books li, .btn-gold, .promo-box::after, .promo-box__kicker::before, .offer-pill__gift { animation: none; }
+  .js-reveal .reveal { opacity: 1; transform: none; transition: none; }
+  .book-item:hover .cover { transform: none; }
+}

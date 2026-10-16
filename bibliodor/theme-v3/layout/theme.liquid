@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1F3A32">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'favicon-bibliodor.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'favicon-bibliodor.png' | asset_url }}">
+    {%- endif -%}
+
+    <title>
+      {%- if template.name == 'index' -%}
+        {{ page_title }}
+      {%- else -%}
+        {{ page_title }}
+        {%- if current_tags %} – {{ current_tags | join: ', ' }}{% endif -%}
+        {%- if current_page != 1 %} – page {{ current_page }}{% endif -%}
+        {%- unless page_title contains shop.name %} | {{ shop.name }}{% endunless -%}
+      {%- endif -%}
+    </title>
+    {%- assign meta_description = page_description | default: shop.description | default: settings.default_description -%}
+    {%- if meta_description != blank -%}
+      <meta name="description" content="{{ meta_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {% render 'fonts' %}
+    {{ 'bibliodor.css' | asset_url | stylesheet_tag }}
+    {{ 'bibliodor-v2.css' | asset_url | stylesheet_tag }}
+    {{ 'bibliodor-v3.css' | asset_url | stylesheet_tag }}
+    <script>
+      window.BIBLIODOR_STRINGS = {
+        viewCart: {{ 'products.view_cart' | t | json }},
+        added: {{ 'products.added' | t | json }},
+        addError: {{ 'products.add_error' | t | json }}
+      };
+    </script>
+    <script src="{{ 'bibliodor.js' | asset_url }}" defer></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name }}">
+    <a class="skip-link" href="#contenu">{{ 'general.skip_to_content' | t }}</a>
+    {% sections 'header-group' %}
+    <main id="contenu" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+    {% sections 'footer-group' %}
+    <p id="cart-status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <div class="cart-toast" data-cart-toast hidden>
+      <p class="cart-toast__title" data-toast-title>Ajouté au panier</p>
+      <p data-toast-text></p>
+      <div class="cart-toast__bar" aria-hidden="true"><span data-toast-bar></span></div>
+      <div class="cart-toast__actions">
+        <a class="cart-toast__go" href="{{ routes.cart_url }}">Voir mon panier</a>
+        <a class="cart-toast__more" href="{{ routes.all_products_collection_url }}">Continuer</a>
+      </div>
+    </div>
+
+    {%- unless template.name == 'cart' -%}
+      {%- liquid
+        assign mc_ebooks = 0
+        for it in cart.items
+          if it.product.type == 'Ebook'
+            assign mc_ebooks = mc_ebooks | plus: it.quantity
+          endif
+        endfor
+      -%}
+      <a class="mini-cart" href="{{ routes.cart_url }}" data-mini-cart {% if cart.item_count == 0 %}hidden{% endif %}>
+        <span class="mini-cart__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="mini-cart__count" data-cart-count>{{ cart.item_count }}</span>
+        </span>
+        <span class="mini-cart__text">
+          <strong>Passer commande</strong>
+          <span data-mini-cart-hint>{%- assign r = mc_ebooks | modulo: 3 -%}{%- if mc_ebooks == 0 -%}Ton panier t’attend{%- elsif r == 1 -%}Encore 2 ebooks et le 3ᵉ est offert{%- elsif r == 2 -%}Plus qu’un ebook pour le 3ᵉ offert{%- else -%}Ton 3ᵉ ebook est offert ✓{%- endif -%}</span>
+        </span>
+        <span class="mini-cart__total">{{ cart.total_price | money }}</span>
+      </a>
+      <aside class="offer-pill" data-offer-pill aria-label="Offre en cours">
+        <a href="{{ routes.all_products_collection_url }}">
+          <span class="offer-pill__gift" aria-hidden="true">🎁</span>
+          <span>2 ebooks achetés, <strong>le 3ᵉ offert</strong></span>
+        </a>
+        <button class="offer-pill__close" type="button" data-offer-pill-close aria-label="Masquer l’offre">×</button>
+      </aside>
+    {%- endunless -%}
+  </body>
+</html>
