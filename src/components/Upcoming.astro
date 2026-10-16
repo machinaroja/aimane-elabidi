@@ -1,0 +1,35 @@
+---
+/* Page d'attente pendant la phase de validation de la page d'accueil. */
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<Base title={title} description={description} noindex>
+  <section class="wrap upcoming">
+    <h1>{title}</h1>
+    <p>Cette page est en cours de conception et sera disponible dans la prochaine étape du projet.</p>
+    <a class="btn btn-primary" href="/">Retour à l’accueil</a>
+  </section>
+</Base>
+
+<style>
+  .upcoming {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    padding-block: var(--space-2xl);
+    min-height: 50vh;
+  }
+  h1 {
+    font-size: var(--step-3);
+  }
+  p {
+    color: var(--ink-muted);
+    max-width: 50ch;
+  }
+</style>

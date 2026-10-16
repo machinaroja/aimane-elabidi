@@ -1,0 +1,63 @@
+/*
+  BIBLIODOR — jetons de design.
+  Palette imposée par la marque + teintes dérivées pour respecter WCAG AA.
+  Contrastes mesurés (WCAG 2.x) :
+    forest  sur cream   11.2:1  texte courant
+    gold    sur cream    2.7:1  décoratif uniquement (filets, ornements) — jamais pour du texte
+    gold-ink sur cream   5.4:1  texte or sur fond clair
+    gold-light sur forest 6.6:1 texte or sur fond sombre
+    cream   sur forest  11.2:1
+*/
+:root {
+  /* Couleurs de marque */
+  --forest: #1f3a32;
+  --gold: #b8902f;
+  --cream: #f8f4ec;
+  --gold-light: #ddbb62; /* uniquement sur fond sombre */
+
+  /* Teintes dérivées */
+  --forest-deep: #162a24;   /* fond pied de page */
+  --forest-soft: #2b4b41;   /* survol sur fond sombre */
+  --gold-ink: #7d5f17;      /* or lisible sur crème */
+  --paper: #fffdf8;         /* surface claire surélevée */
+  --ink-muted: #4a5a54;     /* texte secondaire sur crème (6.6:1) */
+  --line: #e2dacb;          /* filets sur crème */
+  --line-dark: rgb(221 187 98 / 0.28);
+  --sage: #c9d3cd;          /* texte secondaire sur forest (8:1) */
+  --danger: #9b2c1f;
+  --success: #2f6b47;
+
+  /* Typographie */
+  --font-serif: 'Literata Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Atkinson Hyperlegible Next Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Échelle typographique (quarte augmentée ~1.333, fluide) */
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.1rem);
+  --step-1: clamp(1.25rem, 1.18rem + 0.35vw, 1.45rem);
+  --step-2: clamp(1.6rem, 1.45rem + 0.7vw, 2rem);
+  --step-3: clamp(2rem, 1.7rem + 1.4vw, 2.9rem);
+  --step-4: clamp(2.5rem, 1.9rem + 2.8vw, 4.4rem);
+
+  /* Espacements */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.25rem;
+  --space-xl: 3.5rem;
+  --space-2xl: clamp(4rem, 3rem + 4vw, 7rem);
+
+  /* Mise en page */
+  --measure: 66ch;
+  --page-max: 78rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+
+  /* Formes : seules les surfaces interactives sont arrondies, les livres restent droits */
+  --radius-control: 0.375rem;
+  --radius-book: 2px;
+  --shadow-book: 0 1px 1px rgb(22 42 36 / 0.18), 0 10px 24px -12px rgb(22 42 36 / 0.45);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

@@ -1,0 +1,53 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  class?: string;
+}
+const { slug, title, class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={['btn btn-primary add-to-cart', className]}
+  data-add-to-cart={slug}
+>
+  <span data-label>Ajouter au panier</span><span class="visually-hidden"> : {title}</span>
+</button>
+
+<script>
+  import { cart } from '../lib/cart';
+
+  const sync = () => {
+    document.querySelectorAll<HTMLButtonElement>('[data-add-to-cart]').forEach((btn) => {
+      const inCart = cart.has(btn.dataset.addToCart!);
+      const label = btn.querySelector('[data-label]')!;
+      label.textContent = inCart ? 'Voir le panier' : 'Ajouter au panier';
+      btn.classList.toggle('is-added', inCart);
+    });
+  };
+
+  document.addEventListener('click', (event) => {
+    const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-add-to-cart]');
+    if (!btn) return;
+    const slug = btn.dataset.addToCart!;
+    if (cart.has(slug)) {
+      window.location.href = '/panier/';
+      return;
+    }
+    cart.add(slug);
+    const status = document.getElementById('cart-status');
+    if (status) status.textContent = 'Ajouté au panier.';
+  });
+
+  sync();
+  cart.subscribe(sync);
+</script>
+
+<style>
+  .add-to-cart.is-added {
+    background: transparent;
+    color: var(--forest);
+    border-color: var(--forest);
+  }
+</style>

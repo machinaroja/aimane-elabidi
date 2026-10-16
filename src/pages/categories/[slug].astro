@@ -1,0 +1,11 @@
+---
+import Upcoming from '../../components/Upcoming.astro';
+import { categories } from '../../data/categories';
+
+export function getStaticPaths() {
+  return categories.map((category) => ({ params: { slug: category.slug }, props: { category } }));
+}
+const { category } = Astro.props;
+---
+
+<Upcoming title={category.name} description={category.summary} />

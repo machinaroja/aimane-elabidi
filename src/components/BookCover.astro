@@ -1,0 +1,116 @@
+---
+/*
+  Couverture « maison » BIBLIODOR : un gabarit commun à toute la collection,
+  décliné en trois tons et un emblème par rayon. Rendue en HTML/CSS (pas
+  d'image à charger), elle reste nette à toutes les tailles.
+  Quand de vraies couvertures existeront, passer `image` pour les afficher.
+*/
+import type { Book } from '../data/books';
+import { categoryBySlug } from '../data/categories';
+import Emblem from './Emblem.astro';
+
+interface Props {
+  book: Book;
+  /** Largeur indicative pour l'attribut sizes des futures images. */
+  size?: 's' | 'm' | 'l';
+  class?: string;
+}
+
+const { book, size = 'm', class: className } = Astro.props;
+const category = categoryBySlug(book.category);
+---
+
+<div
+  class:list={['cover', `tone-${book.coverTone}`, `size-${size}`, className]}
+  role="img"
+  aria-label={`Couverture de « ${book.title} »`}
+>
+  <div class="frame">
+    <p class="house">Bibliodor</p>
+    <Emblem name={category.emblem} class="emblem" />
+    <p class="title">{book.title}</p>
+    <p class="shelf">{category.name}</p>
+  </div>
+</div>
+
+<style>
+  .cover {
+    container-type: inline-size;
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    border-radius: var(--radius-book);
+    box-shadow: var(--shadow-book);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Le dos : un léger relief sur le bord gauche, comme une reliure */
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4%;
+    background: linear-gradient(90deg, rgb(0 0 0 / 0.16), rgb(0 0 0 / 0) 70%);
+  }
+
+  .tone-forest {
+    background: var(--forest);
+    color: var(--cream);
+    --accent: var(--gold-light);
+  }
+
+  .tone-cream {
+    background: var(--paper);
+    color: var(--forest);
+    --accent: var(--gold);
+  }
+
+  .tone-gold {
+    background: var(--gold);
+    color: var(--forest-deep);
+    --accent: var(--forest-deep);
+  }
+
+  .frame {
+    position: absolute;
+    inset: 6cqi;
+    border: 1px solid var(--accent);
+    outline: 1px solid var(--accent);
+    outline-offset: -2.4cqi;
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    justify-items: center;
+    text-align: center;
+    padding: 7cqi 8cqi 6cqi;
+  }
+
+  .house {
+    font-family: var(--font-serif);
+    font-size: 5.2cqi;
+    letter-spacing: 0.32em;
+    font-variant-caps: all-small-caps;
+    color: var(--accent);
+  }
+
+  .emblem {
+    width: 42cqi;
+    align-self: center;
+    color: var(--accent);
+  }
+
+  .title {
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 48;
+    font-weight: 500;
+    font-size: 9.6cqi;
+    line-height: 1.12;
+    text-wrap: balance;
+    margin-bottom: 5cqi;
+  }
+
+  .shelf {
+    font-family: var(--font-sans);
+    font-size: 4.6cqi;
+    opacity: 0.85;
+  }
+</style>

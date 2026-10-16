@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import { SITE } from '../config/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  /** Titre unique de la page, sans le nom du site. */
+  title: string;
+  description: string;
+  /** Laisse la page hors index (panier, compte, confirmation…). */
+  noindex?: boolean;
+  ogType?: 'website' | 'book';
+}
+
+const { title, description, noindex = false, ogType = 'website' } = Astro.props;
+const fullTitle = Astro.url.pathname === '/' ? title : `${title} | ${SITE.name}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#1F3A32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    {
+      SITE.demoCatalog && (
+        <p class="demo-banner" role="note">
+          Aperçu du site : les ouvrages affichés sont des exemples et ne sont pas encore en vente.
+        </p>
+      )
+    }
+    <Header />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
+    <p id="cart-status" class="visually-hidden" role="status" aria-live="polite"></p>
+  </body>
+</html>
+
+<style>
+  .demo-banner {
+    background: var(--gold-light);
+    color: var(--forest-deep);
+    text-align: center;
+    font-size: var(--step--1);
+    font-weight: 600;
+    padding: var(--space-2xs) var(--gutter);
+  }
+</style>

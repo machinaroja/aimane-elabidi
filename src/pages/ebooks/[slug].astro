@@ -1,0 +1,11 @@
+---
+import Upcoming from '../../components/Upcoming.astro';
+import { books } from '../../data/books';
+
+export function getStaticPaths() {
+  return books.map((book) => ({ params: { slug: book.slug }, props: { book } }));
+}
+const { book } = Astro.props;
+---
+
+<Upcoming title={book.title} description={book.pitch} />

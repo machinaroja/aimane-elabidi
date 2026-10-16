@@ -1,0 +1,241 @@
+---
+import { NAV } from '../config/site';
+import Logo from './Logo.astro';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="home" aria-label="BIBLIODOR, retour à l’accueil">
+      <Logo />
+    </a>
+
+    <nav aria-label="Navigation principale" class="nav">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="tools">
+      <a href="/catalogue/#recherche" class="tool" aria-label="Rechercher un ebook">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="m16 16 4.5 4.5"></path>
+        </svg>
+      </a>
+      <a href="/panier/" class="tool cart-link">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M5 7h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 7Z"></path>
+          <path d="M9 9.5V6a3 3 0 0 1 6 0v3.5"></path>
+        </svg>
+        <span class="cart-label">Panier</span>
+        <span class="cart-count" data-cart-count hidden>0</span>
+        <span class="visually-hidden" data-cart-count-label></span>
+      </a>
+      <details class="menu">
+        <summary aria-label="Ouvrir le menu">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </summary>
+        <nav aria-label="Menu mobile">
+          <ul>
+            {NAV.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+            <li><a href="/contact/">Contact</a></li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { cart } from '../lib/cart';
+
+  const render = () => {
+    const count = cart.count();
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((el) => {
+      el.textContent = String(count);
+      el.hidden = count === 0;
+    });
+    document.querySelectorAll<HTMLElement>('[data-cart-count-label]').forEach((el) => {
+      el.textContent = count === 0 ? ', vide' : `, ${count} article${count > 1 ? 's' : ''}`;
+    });
+  };
+  render();
+  cart.subscribe(render);
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgb(248 244 236 / 0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-l);
+    min-height: 4.25rem;
+  }
+
+  .home {
+    text-decoration: none;
+    padding-block: var(--space-2xs);
+  }
+
+  .nav {
+    display: none;
+    margin-right: auto;
+  }
+
+  .nav ul,
+  .menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav ul {
+    display: flex;
+    gap: var(--space-m);
+  }
+
+  .nav a {
+    text-decoration: none;
+    font-weight: 500;
+    padding-block: var(--space-2xs);
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav a:hover {
+    border-bottom-color: var(--line);
+  }
+
+  .nav a[aria-current='page'] {
+    border-bottom-color: var(--gold);
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    margin-left: auto;
+  }
+
+  .tool,
+  .menu summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    justify-content: center;
+    padding-inline: var(--space-2xs);
+    text-decoration: none;
+    border-radius: var(--radius-control);
+    cursor: pointer;
+  }
+
+  .tool:hover,
+  .menu summary:hover {
+    background: rgb(31 58 50 / 0.06);
+  }
+
+  /* Masqué visuellement sur mobile, mais toujours lu par les lecteurs d'écran */
+  .cart-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .cart-count {
+    min-width: 1.4rem;
+    height: 1.4rem;
+    padding-inline: 0.35rem;
+    border-radius: 1rem;
+    background: var(--forest);
+    color: var(--cream);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.4rem;
+    text-align: center;
+  }
+
+  .menu {
+    position: relative;
+  }
+
+  .menu summary {
+    list-style: none;
+  }
+
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu nav {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    min-width: 14rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-control);
+    box-shadow: 0 12px 28px -14px rgb(22 42 36 / 0.4);
+    padding: var(--space-2xs);
+  }
+
+  .menu a {
+    display: block;
+    padding: var(--space-xs) var(--space-s);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: var(--radius-control);
+  }
+
+  .menu a:hover {
+    background: var(--cream);
+  }
+
+  @media (min-width: 52rem) {
+    .nav {
+      display: block;
+    }
+    .tools {
+      margin-left: 0;
+    }
+    .cart-label {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+    }
+    .menu {
+      display: none;
+    }
+  }
+</style>

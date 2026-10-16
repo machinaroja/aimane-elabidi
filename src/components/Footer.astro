@@ -1,0 +1,110 @@
+---
+import { categories } from '../data/categories';
+import Logo from './Logo.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-dark">
+  <div class="wrap grid">
+    <div class="brand">
+      <Logo />
+      <p>Maison d’édition numérique. Des ebooks en français, écrits pour être utiles.</p>
+    </div>
+
+    <nav aria-labelledby="f-rayons">
+      <h2 id="f-rayons">Rayons</h2>
+      <ul>
+        {categories.map((c) => (
+          <li><a href={`/categories/${c.slug}/`}>{c.name}</a></li>
+        ))}
+        <li><a href="/catalogue/">Tout le catalogue</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="f-maison">
+      <h2 id="f-maison">La maison</h2>
+      <ul>
+        <li><a href="/a-propos/">Notre histoire</a></li>
+        <li><a href="/faq/">Questions fréquentes</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/compte/">Mon compte</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="f-legal">
+      <h2 id="f-legal">Informations légales</h2>
+      <ul>
+        <li><a href="/mentions-legales/">Mentions légales</a></li>
+        <li><a href="/conditions-de-vente/">Conditions de vente</a></li>
+        <li><a href="/confidentialite/">Confidentialité</a></li>
+        <li><a href="/cookies/">Cookies</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap base">
+    <p>© {year} BIBLIODOR</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--forest-deep);
+    color: var(--cream);
+    padding-top: var(--space-2xl);
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-xl) var(--space-l);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    padding-bottom: var(--space-xl);
+  }
+
+  .brand {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+    color: var(--gold-light);
+  }
+
+  .brand p {
+    color: var(--sage);
+    max-width: 30ch;
+  }
+
+  h2 {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: var(--space-s);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--cream);
+    display: inline-block;
+    padding-block: 0.2rem;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--gold-light);
+  }
+
+  .base {
+    border-top: 1px solid var(--line-dark);
+    padding-block: var(--space-m);
+    font-size: var(--step--1);
+    color: var(--sage);
+  }
+</style>

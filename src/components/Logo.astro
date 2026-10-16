@@ -1,0 +1,26 @@
+---
+/*
+  LOGO PROVISOIRE.
+  Le logo BIBLIODOR de référence n'a pas encore été fourni. Ce mot-symbole
+  typographique tient sa place ; le remplacer ici seulement (un seul point
+  d'entrée pour tout le site) par le fichier SVG officiel.
+*/
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<span class:list={['logo', className]}>BIBLIODOR</span>
+
+<style>
+  .logo {
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 36;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+</style>
