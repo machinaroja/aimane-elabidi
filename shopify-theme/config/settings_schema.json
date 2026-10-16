@@ -10,7 +10,19 @@
   {
     "name": "Identité",
     "settings": [
-      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Image carrée, 64 × 64 px minimum." }
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Image carrée, 64 × 64 px minimum."
+      },
+      {
+        "type": "textarea",
+        "id": "default_description",
+        "label": "Description par défaut pour les moteurs de recherche",
+        "info": "Utilisée quand une page n’a pas sa propre description (par exemple l’accueil).",
+        "default": "Bibliodor, bibliothèque numérique d’ebooks en français : psychologie, développement personnel, argent, pouvoir et influence. Des livres clairs et utiles, à télécharger."
+      }
     ]
   }
 ]
