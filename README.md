@@ -50,6 +50,7 @@ Les variables du paiement et de la livraison seront ajoutées à l'étape 3, une
 ## Ce qui fonctionne / ce qui reste à faire
 
 Fonctionnel et testé :
+- le logo officiel, dans l'en-tête et le pied de page (fichiers sources dans `brand/`) ;
 - la page d'accueil, sur ordinateur et sur mobile ;
 - le panier côté navigateur (ajout, compteur, persistance après rechargement) ;
 - le sitemap et le robots.txt ;
@@ -63,8 +64,5 @@ Pages d'attente, qui seront développées après validation de l'accueil :
 - les pages légales.
 
 Non commencé, car en attente de décisions :
-
-Le logo officiel est intégré (fichiers sources dans `brand/`).
-
 - le paiement et la livraison numérique sécurisée ;
 - le formulaire de contact ;
