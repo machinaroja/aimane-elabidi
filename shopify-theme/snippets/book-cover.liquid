@@ -1,7 +1,7 @@
 {%- comment -%}
   Couverture « maison » BIBLIODOR, dessinée en HTML/CSS.
   - Le ton se choisit avec une étiquette produit : ton:foret, ton:creme ou ton:or.
-  - L'emblème dépend du type de produit (le rayon).
+  - L'emblème dépend du rayon (collection psychologie, argent…).
   - Ajouter l'étiquette couverture:image pour afficher l'image du produit à la place.
   Paramètres : product, loading ('eager' | 'lazy'), sizes
 {%- endcomment -%}
@@ -12,8 +12,15 @@
   elsif product.tags contains 'ton:or'
     assign tone = 'gold'
   endif
+  capture rayon_handle
+    render 'rayon', product: product, output: 'handle'
+  endcapture
+  capture rayon_title
+    render 'rayon', product: product, output: 'title'
+  endcapture
+  assign rayon_title = rayon_title | strip
   capture emblem
-    render 'emblem-for-type', type: product.type
+    render 'emblem-for-type', type: rayon_handle
   endcapture
   assign emblem = emblem | strip
   assign use_image = false
@@ -36,7 +43,7 @@
       <p class="cover__house">{{ shop.name }}</p>
       {% render 'emblem', name: emblem, class: 'cover__emblem' %}
       <p class="cover__title">{{ product.title }}</p>
-      {%- if product.type != blank -%}<p class="cover__shelf">{{ product.type }}</p>{%- endif -%}
+      {%- if rayon_title != blank -%}<p class="cover__shelf">{{ rayon_title }}</p>{%- endif -%}
     </div>
   </div>
 {%- endif -%}

@@ -16,7 +16,7 @@
               {%- if summary != blank -%}<span class="toc__summary">{{ summary }}</span>{%- endif -%}
             </span>
             <span class="toc__leader" aria-hidden="true"></span>
-            <span class="toc__count">{{ 'collections.count' | t: count: c.products_count }}</span>
+            <span class="toc__count">{% if c.products_count > 0 %}{{ 'collections.count' | t: count: c.products_count }}{% else %}{{ 'collections.soon' | t }}{% endif %}</span>
           </a>
         </li>
       {%- endif -%}

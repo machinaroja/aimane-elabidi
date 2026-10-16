@@ -35,7 +35,7 @@
           "type": "question",
           "settings": {
             "question": "Quels moyens de paiement acceptez-vous ?",
-            "answer": "<p>Ceux proposés sur la page de paiement : ils s’affichent au moment de payer. BIBLIODOR ne voit ni ne stocke vos coordonnées bancaires.</p>"
+            "answer": "<p>Ceux proposés sur la page de paiement : ils s’affichent au moment de payer. BIBLIODOR ne voit ni ne stocke tes coordonnées bancaires.</p>"
           }
         },
         "q6": {
@@ -71,7 +71,7 @@
         "q8"
       ],
       "settings": {
-        "contact_text": "<p>Vous ne trouvez pas votre réponse ? <a href=\"/pages/contact\">Écrivez-nous</a>.</p>"
+        "contact_text": "<p>Tu ne trouves pas ta réponse ? <a href=\"/pages/contact\">Écris-nous</a>.</p>"
       }
     }
   },

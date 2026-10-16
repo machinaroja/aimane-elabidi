@@ -11,7 +11,9 @@
               <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">{% render 'book-cover', product: item.product, loading: 'lazy', sizes: '5rem' %}</a>
               <div>
                 <h2><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
-                {%- if item.product.type != blank -%}<p class="book-meta">{{ item.product.type }}</p>{%- endif -%}
+                {%- capture rayon_title -%}{% render 'rayon', product: item.product, output: 'title' %}{%- endcapture -%}
+                {%- assign rayon_title = rayon_title | strip -%}
+                {%- if rayon_title != blank -%}<p class="book-meta">{{ rayon_title }}</p>{%- endif -%}
                 {%- if item.quantity > 1 -%}<p class="book-meta">× {{ item.quantity }}</p>{%- endif -%}
                 <a class="cart-line__remove text-link" href="{{ item.url_to_remove }}">
                   {{- 'cart.remove' | t -}}<span class="visually-hidden"> « {{ item.product.title }} »</span>

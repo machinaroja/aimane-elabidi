@@ -78,7 +78,7 @@
       markInCart(new Set(cart.items.map((i) => i.variant_id)));
       announce(t.added || 'Ajouté au panier.');
     } catch (err) {
-      const message = (err && err.message) || t.addError || "L'ajout au panier a échoué. Réessayez dans un instant.";
+      const message = (err && err.message) || t.addError || "L'ajout au panier a échoué. Réessaie dans un instant.";
       if (error) {
         error.textContent = message;
         error.hidden = false;

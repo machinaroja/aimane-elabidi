@@ -19,11 +19,11 @@
     "add_to_cart": "Ajouter au panier",
     "view_cart": "Voir le panier",
     "added": "Ajouté au panier.",
-    "add_error": "L’ajout au panier a échoué. Réessayez dans un instant.",
+    "add_error": "L’ajout au panier a échoué. Réessaie dans un instant.",
     "unavailable": "Indisponible",
     "sale_price": "Prix réduit",
     "regular_price": "Prix habituel",
-    "takeaways": "Ce que vous en retirerez",
+    "takeaways": "Ce que tu en retireras",
     "contents": "Sommaire",
     "about": "Présentation",
     "details": "Caractéristiques",
@@ -40,6 +40,7 @@
       "one": "{{ count }} titre",
       "other": "{{ count }} titres"
     },
+    "soon": "Bientôt",
     "sort": "Trier",
     "apply": "Appliquer",
     "all": "Tous",
@@ -54,32 +55,32 @@
       "one": "{{ count }} résultat pour « {{ terms }} »",
       "other": "{{ count }} résultats pour « {{ terms }} »"
     },
-    "none": "Aucun résultat pour « {{ terms }} ». Essayez un mot plus court ou parcourez les rayons."
+    "none": "Aucun résultat pour « {{ terms }} ». Essaie un mot plus court ou parcours les rayons."
   },
   "cart": {
     "title": "Panier",
-    "empty": "Votre panier est vide.",
+    "empty": "Ton panier est vide.",
     "empty_cta": "Parcourir le catalogue",
     "remove": "Retirer",
     "remove_label": "Retirer « {{ title }} » du panier",
     "subtotal": "Total TTC",
     "checkout": "Passer au paiement",
-    "secure_note": "Le paiement est réalisé sur la page sécurisée de Shopify. Vos ebooks sont disponibles au téléchargement dès la confirmation du paiement, et un lien vous est envoyé par e-mail.",
+    "secure_note": "Le paiement se fait sur la page sécurisée de Shopify. Tes ebooks sont téléchargeables dès la confirmation du paiement, et un lien t’est envoyé par e-mail.",
     "taxes": "TVA incluse.",
     "items": "Articles du panier",
     "summary": "Récapitulatif",
-    "update_error": "La mise à jour du panier a échoué. Rechargez la page et réessayez."
+    "update_error": "La mise à jour du panier a échoué. Recharge la page et réessaie."
   },
   "contact": {
     "name": "Nom",
     "email": "Adresse e-mail",
-    "email_hint": "Nous vous répondons à cette adresse.",
+    "email_hint": "Nous te répondons à cette adresse.",
     "subject": "Sujet",
     "order": "Numéro de commande (facultatif)",
-    "message": "Votre message",
+    "message": "Ton message",
     "submit": "Envoyer le message",
-    "success": "Message envoyé. Nous vous répondons sous deux jours ouvrés.",
-    "error_title": "Le message n’a pas été envoyé. Corrigez les champs suivants :",
+    "success": "Message envoyé. Nous te répondons dès que possible.",
+    "error_title": "Le message n’a pas été envoyé. corrige les champs suivants :",
     "required": "obligatoire"
   },
   "customer": {
@@ -87,14 +88,14 @@
     "logout": "Se déconnecter",
     "orders": "Mes commandes",
     "library": "Ma bibliothèque",
-    "no_orders": "Vous n’avez pas encore passé de commande.",
+    "no_orders": "Tu n’as pas encore passé de commande.",
     "order": "Commande",
     "date": "Date",
     "payment": "Paiement",
     "total": "Total",
     "view": "Voir la commande {{ name }}",
     "back": "Retour au compte",
-    "downloads_note": "Vos ebooks se téléchargent depuis la page de confirmation de commande et depuis l’e-mail reçu après l’achat."
+    "downloads_note": "Tes ebooks se téléchargent depuis la page de confirmation de commande et depuis l’e-mail reçu après l’achat."
   },
   "404": {
     "title": "Page introuvable",

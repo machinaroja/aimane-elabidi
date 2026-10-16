@@ -4,13 +4,14 @@
   assign contents = product.metafields.custom.sommaire.value
   assign pages = product.metafields.custom.pages.value
   assign formats = product.metafields.custom.formats.value
-  assign type_handle = product.type | handleize
+  capture rayon_handle
+    render 'rayon', product: product, output: 'handle'
+  endcapture
+  assign rayon_handle = rayon_handle | strip
   assign rayon = nil
-  for c in product.collections
-    if c.handle == type_handle
-      assign rayon = c
-    endif
-  endfor
+  if rayon_handle != blank
+    assign rayon = collections[rayon_handle]
+  endif
 -%}
 <nav class="wrap breadcrumb" aria-label="{{ 'general.breadcrumb' | t }}">
   <ol>
@@ -25,7 +26,7 @@
     {% render 'book-cover', product: product, loading: 'eager', sizes: '(min-width: 52rem) 22rem, 72vw' %}
   </div>
   <div>
-    {%- if product.type != blank -%}<p class="kicker">{{ product.type }}</p>{%- endif -%}
+    {%- if rayon -%}<p class="kicker">{{ rayon.title }}</p>{%- endif -%}
     <h1 id="product-title">{{ product.title }}</h1>
     {%- if subtitle != blank -%}<p class="subtitle">{{ subtitle }}</p>{%- endif -%}
     {%- if product.vendor != blank and product.vendor != shop.name -%}<p class="facts">{{ product.vendor }}</p>{%- endif -%}
@@ -61,7 +62,7 @@
   <aside aria-labelledby="specs">
     <h2 id="specs">{{ 'products.details' | t }}</h2>
     <dl class="spec">
-      {%- if product.type != blank -%}<dt>{{ 'products.category' | t }}</dt><dd>{{ product.type }}</dd>{%- endif -%}
+      {%- if rayon -%}<dt>{{ 'products.category' | t }}</dt><dd><a href="{{ rayon.url }}">{{ rayon.title }}</a></dd>{%- endif -%}
       {%- if pages -%}<dt>{{ 'products.pages' | t }}</dt><dd>{{ pages }}</dd>{%- endif -%}
       {%- if formats -%}<dt>{{ 'products.formats' | t }}</dt><dd>{{ formats }}</dd>{%- endif -%}
       <dt>{{ 'products.delivery' | t }}</dt><dd>{{ 'products.delivery_value' | t }}</dd>

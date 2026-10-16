@@ -1,0 +1,31 @@
+{%- comment -%}
+  Rayon d'un livre, déduit de ses collections (ou à défaut de ses étiquettes).
+  Paramètres : product, output ('handle' | 'title')
+  Le type de produit reste libre (ex. « Ebook ») et n'est pas utilisé ici.
+{%- endcomment -%}
+{%- liquid
+  assign rayon_handles = 'psychologie,developpement-personnel,argent,pouvoir-et-influence' | split: ','
+  assign found_handle = ''
+  assign found_title = ''
+  for c in product.collections
+    if rayon_handles contains c.handle
+      assign found_handle = c.handle
+      assign found_title = c.title
+      break
+    endif
+  endfor
+  if found_handle == ''
+    for h in rayon_handles
+      if product.tags contains h
+        assign found_handle = h
+        assign found_title = collections[h].title | default: h
+        break
+      endif
+    endfor
+  endif
+  if output == 'title'
+    echo found_title
+  else
+    echo found_handle
+  endif
+-%}
