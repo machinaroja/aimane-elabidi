@@ -164,7 +164,13 @@
   };
   // Mini-panier flottant : toujours visible dès qu'il y a un article
   const mini = document.querySelector('[data-mini-cart]');
-  const fmt = (cents) => (cents / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  const fmt = (cents) => {
+    const f = (window.BIBLIODOR_STRINGS && window.BIBLIODOR_STRINGS.moneyFormat) || '{{amount_with_comma_separator}} €';
+    const n = (cents / 100).toFixed(2);
+    const comma = n.replace('.', ',');
+    const dot = Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 });
+    return f.replace(/\{\{\s*amount_with_comma_separator\s*\}\}/, comma).replace(/\{\{\s*amount\s*\}\}/, dot).replace(/\{\{\s*amount_no_decimals\s*\}\}/, String(Math.round(cents / 100))).replace(/<[^>]+>/g, '');
+  };
   window.BIBLIODOR_MINICART = (cart) => {
     if (!mini) return;
     const ebooks = cart.items.filter((i) => (i.product_type || '').toLowerCase() === 'ebook').reduce((n, i) => n + i.quantity, 0);

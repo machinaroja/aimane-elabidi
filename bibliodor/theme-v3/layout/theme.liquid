@@ -37,7 +37,8 @@
       window.BIBLIODOR_STRINGS = {
         viewCart: {{ 'products.view_cart' | t | json }},
         added: {{ 'products.added' | t | json }},
-        addError: {{ 'products.add_error' | t | json }}
+        addError: {{ 'products.add_error' | t | json }},
+        moneyFormat: {{ shop.money_format | json }}
       };
     </script>
     <script src="{{ 'bibliodor.js' | asset_url }}" defer></script>
