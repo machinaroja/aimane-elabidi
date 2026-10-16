@@ -186,12 +186,19 @@
     (() => {
       const bar = document.querySelector('[data-sticky-buy]');
       const target = document.getElementById('acheter');
-      if (!bar || !target || !('IntersectionObserver' in window)) return;
-      new IntersectionObserver(([e]) => {
-        const show = !e.isIntersecting && e.boundingClientRect.top < 0;
+      if (!bar || !target) return;
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const show = target.getBoundingClientRect().bottom < 0;
+        if (bar.hidden === !show) return;
         bar.hidden = !show;
         document.body.classList.toggle('has-sticky-buy', show);
-      }).observe(target);
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
     })();
   </script>
 {%- endif -%}
