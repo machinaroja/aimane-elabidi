@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer on-dark">
   <div class="wrap grid">
     <div class="brand">
-      <Logo />
+      <Logo variant="signature" />
       <p>Maison d’édition numérique. Des ebooks en français, écrits pour être utiles.</p>
     </div>
 
@@ -66,6 +66,11 @@ const year = new Date().getFullYear();
     gap: var(--space-s);
     align-content: start;
     color: var(--gold-light);
+  }
+
+  .brand :global(.logo) {
+    width: 15rem;
+    max-width: 100%;
   }
 
   .brand p {

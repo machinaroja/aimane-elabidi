@@ -63,6 +63,8 @@ Pages d'attente, qui seront développées après validation de l'accueil :
 - les pages légales.
 
 Non commencé, car en attente de décisions :
+
+Le logo officiel est intégré (fichiers sources dans `brand/`).
+
 - le paiement et la livraison numérique sécurisée ;
 - le formulaire de contact ;
-- le logo officiel (un mot-symbole provisoire est utilisé, voir `src/components/Logo.astro`).

@@ -1,7 +1,7 @@
 <footer class="site-footer">
   <div class="wrap site-footer__grid">
     <div class="site-footer__brand">
-      <span class="logo">{{ shop.name | upcase }}</span>
+      <img class="site-footer__logo" src="{{ 'logo-bibliodor-signature-640.png' | asset_url }}" width="240" height="45" alt="{{ shop.name }}, les idées qui valent de l’or" loading="lazy">
       {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
     </div>
     {%- for block in section.blocks -%}

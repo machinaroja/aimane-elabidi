@@ -1,26 +1,43 @@
 ---
 /*
-  LOGO PROVISOIRE.
-  Le logo BIBLIODOR de référence n'a pas encore été fourni. Ce mot-symbole
-  typographique tient sa place ; le remplacer ici seulement (un seul point
-  d'entrée pour tout le site) par le fichier SVG officiel.
+  Logo officiel BIBLIODOR, détouré à partir du fichier fourni (brand/).
+  Il est dessiné pour un fond sombre : ne l'utiliser que sur vert forêt.
+  - wordmark  : « BIBLIODOR » seul (en-tête)
+  - signature : avec « Les idées qui valent de l'or » (pied de page)
 */
 interface Props {
+  variant?: 'wordmark' | 'signature';
   class?: string;
 }
-const { class: className } = Astro.props;
+const { variant = 'wordmark', class: className } = Astro.props;
+
+const files = {
+  wordmark: { name: 'logo-bibliodor', small: 240, large: 480, ratio: 1196 / 139, width: 168 },
+  signature: { name: 'logo-bibliodor-signature', small: 320, large: 640, ratio: 1196 / 223, width: 240 },
+}[variant];
+const height = Math.round(files.width / files.ratio);
+const src = (w: number, ext: string) => `/brand/${files.name}-${w}.${ext}`;
 ---
 
-<span class:list={['logo', className]}>BIBLIODOR</span>
+<picture class:list={['logo', className]}>
+  <source type="image/webp" srcset={`${src(files.small, 'webp')} 1x, ${src(files.large, 'webp')} 2x`} />
+  <img
+    src={src(files.large, 'png')}
+    srcset={`${src(files.small, 'png')} 1x, ${src(files.large, 'png')} 2x`}
+    width={files.width}
+    height={height}
+    alt={variant === 'signature' ? 'BIBLIODOR, les idées qui valent de l’or' : 'BIBLIODOR'}
+    decoding="async"
+  />
+</picture>
 
 <style>
-  .logo {
-    font-family: var(--font-serif);
-    font-variation-settings: 'opsz' 36;
-    font-weight: 600;
-    font-size: 1.3rem;
-    letter-spacing: 0.16em;
-    line-height: 1;
-    white-space: nowrap;
+  .logo,
+  .logo img {
+    display: block;
+  }
+  .logo img {
+    height: auto;
+    max-width: 100%;
   }
 </style>

@@ -13,6 +13,17 @@ L'élément mémorable, à ne pas diluer : **la couverture maison**. Toute la co
 
 Les couvertures sont dessinées en HTML/CSS : aucune image à charger, un rendu net à toutes les tailles, et un nouveau titre ne demande qu'une ligne de données. De vraies couvertures illustrées pourront les remplacer plus tard sans changer la mise en page.
 
+## Logo
+
+Le logo officiel (`brand/`) est utilisé tel quel, sans retouche. Il a seulement été détouré pour avoir un fond transparent. Il en existe deux versions :
+
+- `logo-bibliodor.png` : le mot « BIBLIODOR » seul, utilisé dans l'en-tête ;
+- `logo-bibliodor-signature.png` : le mot accompagné de la signature « Les idées qui valent de l'or », utilisée dans le pied de page.
+
+Le logo est dessiné en crème et or pour un fond sombre. **On ne le pose donc que sur du vert forêt** : c'est pour cette raison que l'en-tête est vert forêt. Sur fond crème, ses lettres claires disparaîtraient. Si une version pour fond clair devient nécessaire, elle doit être fournie par la personne qui a dessiné le logo, et non recolorée ici.
+
+La signature n'apparaît qu'une seule fois, dans le pied de page, pour ne pas multiplier les slogans.
+
 ## Couleurs
 
 | Rôle | Valeur | Usage |

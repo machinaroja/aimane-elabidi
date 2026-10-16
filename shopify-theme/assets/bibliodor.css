@@ -246,9 +246,9 @@ main:focus {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgb(248 244 236 / 0.94);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
+  background: var(--forest);
+  color: var(--cream);
+  border-bottom: 1px solid var(--line-dark);
 }
 
 .site-header__bar {
@@ -261,6 +261,21 @@ main:focus {
 .site-header__home {
   text-decoration: none;
   padding-block: var(--space-2xs);
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 46vw;
+}
+
+.site-header__home img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.site-footer__logo {
+  width: 15rem;
+  max-width: 100%;
+  height: auto;
 }
 
 .logo {
@@ -302,11 +317,11 @@ main:focus {
 }
 
 .site-nav a:hover {
-  border-bottom-color: var(--line);
+  border-bottom-color: var(--line-dark);
 }
 
 .site-nav a[aria-current='page'] {
-  border-bottom-color: var(--gold);
+  border-bottom-color: var(--gold-light);
 }
 
 .tools {
@@ -332,7 +347,7 @@ main:focus {
 
 .tool:hover,
 .menu summary:hover {
-  background: rgb(31 58 50 / 0.06);
+  background: var(--forest-soft);
 }
 
 .tool__label {
@@ -350,8 +365,8 @@ main:focus {
   height: 1.4rem;
   padding-inline: 0.35rem;
   border-radius: 1rem;
-  background: var(--forest);
-  color: var(--cream);
+  background: var(--gold-light);
+  color: var(--forest-deep);
   font-size: 0.8rem;
   font-weight: 700;
   line-height: 1.4rem;
@@ -380,6 +395,11 @@ main:focus {
   border-radius: var(--radius-control);
   box-shadow: 0 12px 28px -14px rgb(22 42 36 / 0.4);
   padding: var(--space-2xs);
+  color: var(--forest);
+}
+
+.menu nav :focus-visible {
+  outline-color: var(--forest);
 }
 
 .menu a {

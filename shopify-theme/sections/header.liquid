@@ -4,7 +4,7 @@
     assign logo_height = section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round
   endif
 -%}
-<header class="site-header">
+<header class="site-header on-dark">
   <div class="wrap site-header__bar">
     <a href="{{ routes.root_url }}" class="site-header__home" aria-label="{{ shop.name }}, {{ 'general.home' | t | downcase }}">
       {%- if section.settings.logo != blank -%}
@@ -17,7 +17,8 @@
           loading: 'eager'
         }}
       {%- else -%}
-        <span class="logo">{{ shop.name | upcase }}</span>
+        {%- comment -%} Logo officiel BIBLIODOR (détouré, prévu pour fond sombre). {%- endcomment -%}
+        <img class="logo-image" src="{{ 'logo-bibliodor-480.png' | asset_url }}" width="{{ section.settings.logo_width }}" height="{{ section.settings.logo_width | times: 139 | divided_by: 1196 }}" alt="{{ shop.name }}">
       {%- endif -%}
     </a>
 
@@ -77,9 +78,9 @@
       "type": "image_picker",
       "id": "logo",
       "label": "Logo",
-      "info": "Sans logo, le nom de la boutique s’affiche en lettres capitales espacées."
+      "info": "Facultatif : le logo officiel BIBLIODOR est inclus dans le thème. Utilisez une version claire, prévue pour fond sombre."
     },
-    { "type": "range", "id": "logo_width", "label": "Largeur du logo", "min": 80, "max": 260, "step": 4, "unit": "px", "default": 150 },
+    { "type": "range", "id": "logo_width", "label": "Largeur du logo", "min": 120, "max": 260, "step": 4, "unit": "px", "default": 184 },
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
   ]
 }

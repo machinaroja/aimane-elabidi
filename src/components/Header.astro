@@ -6,7 +6,7 @@ const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(href);
 ---
 
-<header class="site-header">
+<header class="site-header on-dark">
   <div class="wrap bar">
     <a href="/" class="home" aria-label="BIBLIODOR, retour à l’accueil">
       <Logo />
@@ -85,9 +85,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgb(248 244 236 / 0.94);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
+    background: var(--forest);
+    color: var(--cream);
+    border-bottom: 1px solid var(--line-dark);
   }
 
   .bar {
@@ -100,6 +100,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
   .home {
     text-decoration: none;
     padding-block: var(--space-2xs);
+    flex-shrink: 1;
+    min-width: 0;
+    width: clamp(8.5rem, 32vw, 11.5rem);
   }
 
   .nav {
@@ -127,11 +130,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
   }
 
   .nav a:hover {
-    border-bottom-color: var(--line);
+    border-bottom-color: var(--line-dark);
   }
 
   .nav a[aria-current='page'] {
-    border-bottom-color: var(--gold);
+    border-bottom-color: var(--gold-light);
   }
 
   .tools {
@@ -157,7 +160,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
 
   .tool:hover,
   .menu summary:hover {
-    background: rgb(31 58 50 / 0.06);
+    background: var(--forest-soft);
   }
 
   /* Masqué visuellement sur mobile, mais toujours lu par les lecteurs d'écran */
@@ -176,8 +179,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
     height: 1.4rem;
     padding-inline: 0.35rem;
     border-radius: 1rem;
-    background: var(--forest);
-    color: var(--cream);
+    background: var(--gold-light);
+    color: var(--forest-deep);
     font-size: 0.8rem;
     font-weight: 700;
     line-height: 1.4rem;
@@ -206,6 +209,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
     border-radius: var(--radius-control);
     box-shadow: 0 12px 28px -14px rgb(22 42 36 / 0.4);
     padding: var(--space-2xs);
+    color: var(--forest);
   }
 
   .menu a {
@@ -218,6 +222,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
 
   .menu a:hover {
     background: var(--cream);
+  }
+
+  .menu nav :focus-visible {
+    outline-color: var(--forest);
   }
 
   @media (min-width: 52rem) {
