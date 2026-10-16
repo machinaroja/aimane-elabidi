@@ -33,7 +33,8 @@
     "category": "Rayon",
     "delivery": "Livraison",
     "delivery_value": "Téléchargement après confirmation du paiement",
-    "related": "Dans le même rayon"
+    "related": "Dans le même rayon",
+    "withdrawal_notice_html": "Accès immédiat : au moment de payer, tu demandes la fourniture immédiate de l’ebook et renonces à ton droit de rétractation dès le téléchargement. <a href=\"{{ terms_url }}\">Conditions de vente</a>"
   },
   "collections": {
     "count": {
@@ -69,7 +70,11 @@
     "taxes": "TVA incluse.",
     "items": "Articles du panier",
     "summary": "Récapitulatif",
-    "update_error": "La mise à jour du panier a échoué. Recharge la page et réessaie."
+    "update_error": "La mise à jour du panier a échoué. Recharge la page et réessaie.",
+    "withdrawal_label": "Je demande l’accès immédiat à mes ebooks et je renonce expressément à mon droit de rétractation de 14 jours dès le début du téléchargement.",
+    "withdrawal_value": "Oui, accès immédiat demandé, renonciation au droit de rétractation acceptée",
+    "withdrawal_attribute": "Renonciation au droit de rétractation",
+    "withdrawal_terms_html": "Voir les <a href=\"{{ terms_url }}\">conditions de vente</a>."
   },
   "contact": {
     "name": "Nom",
@@ -81,7 +86,8 @@
     "submit": "Envoyer le message",
     "success": "Message envoyé. Nous te répondons dès que possible.",
     "error_title": "Le message n’a pas été envoyé. Corrige les champs suivants :",
-    "required": "obligatoire"
+    "required": "obligatoire",
+    "privacy_html": "Tes informations servent uniquement à répondre à ton message. <a href=\"{{ privacy_url }}\">Politique de confidentialité</a>"
   },
   "customer": {
     "login": "Se connecter",

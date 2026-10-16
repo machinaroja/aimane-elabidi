@@ -32,6 +32,15 @@
         {%- endfor -%}
         <p class="cart-summary__total"><span>{{ 'cart.subtotal' | t }}</span><span class="price">{{ cart.total_price | money_with_currency }}</span></p>
         <small>{{ 'cart.taxes' | t }}</small>
+        {%- liquid
+          assign terms_url = shop.terms_of_service.url | default: '/policies/terms-of-service'
+          assign withdrawal_key = 'cart.withdrawal_attribute' | t
+        -%}
+        <div class="consent">
+          <input type="checkbox" id="withdrawal-consent" name="attributes[{{ withdrawal_key }}]" value="{{ 'cart.withdrawal_value' | t }}" required aria-describedby="withdrawal-terms">
+          <label for="withdrawal-consent">{{ 'cart.withdrawal_label' | t }}</label>
+          <small id="withdrawal-terms">{{ 'cart.withdrawal_terms_html' | t: terms_url: terms_url }}</small>
+        </div>
         <button type="submit" name="checkout" class="btn btn-primary">{{ 'cart.checkout' | t }}</button>
         <small>{{ 'cart.secure_note' | t }}</small>
       </form>

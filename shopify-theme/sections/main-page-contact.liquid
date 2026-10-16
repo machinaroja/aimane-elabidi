@@ -38,6 +38,8 @@
         <label for="contact-body">{{ 'contact.message' | t }} <span class="field__hint">({{ 'contact.required' | t }})</span></label>
         <textarea class="textarea" id="contact-body" name="contact[body]" required {% if form.errors contains 'body' %}aria-invalid="true"{% endif %}>{{ form.body }}</textarea>
       </div>
+      {%- assign privacy_url = shop.privacy_policy.url | default: '/policies/privacy-policy' -%}
+      <p class="field__hint">{{ 'contact.privacy_html' | t: privacy_url: privacy_url }}</p>
       <div><button type="submit" class="btn btn-primary">{{ 'contact.submit' | t }}</button></div>
     {%- endform -%}
   </div>

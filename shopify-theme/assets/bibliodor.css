@@ -1536,3 +1536,37 @@ main:focus {
   padding: var(--space-xs) var(--space-s) var(--space-xs) 0;
   border-bottom: 1px solid var(--line);
 }
+
+/* ================= Consentement (rétractation) ================= */
+.consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2xs) var(--space-xs);
+  align-items: start;
+  padding: var(--space-s);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--cream);
+}
+
+.consent input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.15rem;
+  accent-color: var(--forest);
+}
+
+.consent label {
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.consent small {
+  grid-column: 2;
+}
+
+.legal-note a,
+.consent a {
+  text-decoration-color: var(--gold);
+}

@@ -43,6 +43,8 @@
       {% render 'add-to-cart', product: product, form_id: 'product-form' %}
     </div>
     <p class="facts">{{ 'products.delivery_value' | t }}. {{ 'cart.taxes' | t }}</p>
+    {%- assign terms_url = shop.terms_of_service.url | default: '/policies/terms-of-service' -%}
+    <p class="facts legal-note">{{ 'products.withdrawal_notice_html' | t: terms_url: terms_url }}</p>
   </div>
 </section>
 
