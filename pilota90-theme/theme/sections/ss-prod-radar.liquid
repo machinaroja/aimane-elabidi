@@ -1,0 +1,107 @@
+{%- comment %} PILOTA90 — Fiche produit : RADAR ANIMÉ DU PILIER CIBLÉ {% endcomment -%}
+{%- liquid
+  assign axe = 'all'
+  assign hx = ''
+  assign hy = ''
+  if product.handle contains 'motivation'
+    assign axe = 'MOTIVATION'
+    assign hx = '170'
+    assign hy = '40'
+  elsif product.handle contains 'confiance'
+    assign axe = 'CONFIANCE'
+    assign hx = '274.6'
+    assign hy = '116'
+  elsif product.handle contains 'attention' or product.handle contains 'concentration'
+    assign axe = 'CONCENTRATION'
+    assign hx = '234.7'
+    assign hy = '239'
+  elsif product.handle contains 'communiquer'
+    assign axe = 'COMMUNICATION'
+    assign hx = '105.3'
+    assign hy = '239'
+  elsif product.handle contains 'stress'
+    assign axe = 'STRESS'
+    assign hx = '65.4'
+    assign hy = '116'
+  endif
+-%}
+<style>
+  .ssp-radar{ --paper:#FFFFFF; --paper2:#F5F7FA; --navy:#152D52; --muted:#3E4E63; --goldink:#C9962B; --gold:#F4B740; --red:#D64545;
+    box-sizing:border-box; background:var(--paper); color:var(--navy); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(16,40,74,.08); }
+  .ssp-radar *,.ssp-radar *::before,.ssp-radar *::after{ box-sizing:border-box; }
+  .ssp-radar .head{ max-width:640px; margin:0 auto 26px; text-align:center; }
+  .ssp-radar .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:#C13333; margin:0; }
+  .ssp-radar h2{ font-family:'Oswald',sans-serif; font-weight:600; font-size:clamp(22px,5vw,32px); line-height:1.15; margin:12px 0 8px; letter-spacing:.01em; }
+  .ssp-radar .sub{ color:var(--muted); font-size:14.5px; line-height:1.6; margin:0; }
+  .ssp-radar .panel{ max-width:520px; margin:0 auto; background:var(--paper2); border:1px solid rgba(16,40,74,.08); border-radius:20px; padding:24px 18px 20px; text-align:center;
+    transition:transform .4s cubic-bezier(.2,.8,.25,1), box-shadow .4s; transform-style:preserve-3d; }
+  .ssp-radar .panel:hover{ transform:perspective(1000px) rotateX(4deg) rotateY(-4deg) translateY(-6px); box-shadow:0 28px 56px -26px rgba(11,30,56,.4); }
+  .ssp-radar svg{ max-width:100%; height:auto; display:block; margin:0 auto; }
+  .ssp-radar .note{ font-size:12px; color:var(--muted); margin:10px 0 0; }
+  .ssp-radar .r-gold{ stroke-dasharray:1000; stroke-dashoffset:1000; fill-opacity:0; animation:p90rdraw 1.5s ease-out .3s forwards, p90rfill .8s ease 1.3s forwards; }
+  .ssp-radar .vdot{ transform-box:fill-box; transform-origin:center; animation:p90rpulse 2.2s ease-in-out infinite; }
+  .ssp-radar .vdot:nth-of-type(2){ animation-delay:.3s } .ssp-radar .vdot:nth-of-type(3){ animation-delay:.6s } .ssp-radar .vdot:nth-of-type(4){ animation-delay:.9s } .ssp-radar .vdot:nth-of-type(5){ animation-delay:1.2s }
+  .ssp-radar .hring{ transform-box:fill-box; transform-origin:center; animation:p90ring 1.8s ease-out infinite; }
+  .ssp-radar .axl-hot{ fill:#C13333; font-weight:700; }
+  @keyframes p90rdraw{ to{ stroke-dashoffset:0; } }
+  @keyframes p90rfill{ to{ fill-opacity:1; } }
+  @keyframes p90rpulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.6); opacity:.45; } }
+  @keyframes p90ring{ 0%{ transform:scale(.55); opacity:1; } 100%{ transform:scale(1.9); opacity:0; } }
+  @media(prefers-reduced-motion:reduce){
+    .ssp-radar .r-gold{ animation:none; stroke-dashoffset:0; fill-opacity:1; }
+    .ssp-radar .vdot,.ssp-radar .hring{ animation:none; }
+    .ssp-radar .panel,.ssp-radar .panel:hover{ transform:none; }
+  }
+</style>
+<div class="ssp-radar">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+    <p class="sub">{% if axe == 'all' %}Ce guide agit sur l'ensemble du profil mental du sportif.{% else %}Ce guide cible en priorité le pilier <strong>{{ axe | capitalize }}</strong> — et renforce tout le reste du profil.{% endif %}</p>
+  </div>
+  <div class="panel">
+    <svg viewBox="0 0 340 300" width="340" height="300" role="img" aria-label="Radar des 5 piliers du mental">
+      <g stroke="rgba(16,40,74,.15)" fill="none" stroke-width="1">
+        <polygon points="170,40 274.6,116 234.7,239 105.3,239 65.4,116"/>
+        <polygon points="170,67.5 248.5,124.5 218.5,216.7 121.5,216.7 91.5,124.5"/>
+        <polygon points="170,95 222.3,133 202.3,194.5 137.7,194.5 117.7,133"/>
+        <polygon points="170,122.5 196.2,141.5 186.2,172.2 153.8,172.2 143.8,141.5"/>
+        <line x1="170" y1="150" x2="170" y2="40"/>
+        <line x1="170" y1="150" x2="274.6" y2="116"/>
+        <line x1="170" y1="150" x2="234.7" y2="239"/>
+        <line x1="170" y1="150" x2="105.3" y2="239"/>
+        <line x1="170" y1="150" x2="65.4" y2="116"/>
+      </g>
+      <polygon class="r-gold" points="170,48.8 262.1,120.1 225,225.6 111.8,230.1 80,120.8" fill="rgba(244,183,64,.30)" stroke="#C9962B" stroke-width="2.2"/>
+      <g fill="#C9962B">
+        <circle class="vdot" cx="170" cy="48.8" r="4"/>
+        <circle class="vdot" cx="262.1" cy="120.1" r="4"/>
+        <circle class="vdot" cx="225" cy="225.6" r="4"/>
+        <circle class="vdot" cx="111.8" cy="230.1" r="4"/>
+        <circle class="vdot" cx="80" cy="120.8" r="4"/>
+      </g>
+      {%- unless axe == 'all' -%}
+        <circle class="hring" cx="{{ hx }}" cy="{{ hy }}" r="12" fill="none" stroke="#D64545" stroke-width="2.5"/>
+        <circle cx="{{ hx }}" cy="{{ hy }}" r="5" fill="#D64545"/>
+      {%- endunless -%}
+      <g font-family="Oswald,sans-serif" font-size="11.5" fill="#152D52" letter-spacing=".04em">
+        <text x="170" y="26" text-anchor="middle"{% if axe == 'MOTIVATION' %} class="axl-hot"{% endif %}>MOTIVATION</text>
+        <text x="281" y="110" text-anchor="start"{% if axe == 'CONFIANCE' %} class="axl-hot"{% endif %}>CONFIANCE</text>
+        <text x="240" y="260" text-anchor="middle"{% if axe == 'CONCENTRATION' %} class="axl-hot"{% endif %}>CONCENTRATION</text>
+        <text x="100" y="260" text-anchor="middle"{% if axe == 'COMMUNICATION' %} class="axl-hot"{% endif %}>COMMUNICATION</text>
+        <text x="59" y="110" text-anchor="end"{% if axe == 'STRESS' %} class="axl-hot"{% endif %}>STRESS</text>
+      </g>
+    </svg>
+    <p class="note">Illustration pédagogique — les 5 piliers de la méthode PILOTA90.</p>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Radar pilier",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Le pilier travaillé" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ce que ce guide entraîne" }
+  ],
+  "presets": [{ "name": "Produit — Radar pilier" }]
+}
+{% endschema %}

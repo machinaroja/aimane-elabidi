@@ -1,0 +1,49 @@
+{%- comment %} PILOTA90 — Preuve sociale boutique + badges d'offre (fiche produit). Usage : {% render 'p90-proof-offers', part: 'stars' %} / part: 'offers'. Le badge « 2 achetés = le 3ᵉ offert » n'apparaît que sur les guides de la collection « Guides PDF » (ceux couverts par la réduction automatique). {% endcomment -%}
+{%- if part == 'stars' -%}
+  {%- assign jr = shop.metafields.judgeme.all_reviews_rating | times: 1.0 -%}
+  {%- assign jc = shop.metafields.judgeme.all_reviews_count | times: 1 -%}
+  {%- if jr > 0 and jc > 0 -%}
+    {%- assign pct = jr | divided_by: 5.0 | times: 100 | round: 1 -%}
+    {%- assign jr1 = jr | round: 1 | replace: '.', ',' -%}
+<style>
+  .p90-shop-rating{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px; margin:0 0 10px; }
+  .p90-stars{ position:relative; display:inline-block; font-size:18px; line-height:1; letter-spacing:2px; white-space:nowrap; color:#D9DEE5; }
+  .p90-stars__fg{ position:absolute; left:0; top:0; overflow:hidden; white-space:nowrap; color:#C9962B; }
+  .p90-shop-rating .txt{ font-size:13.5px; color:#152D52; font-weight:600; }
+  .p90-shop-rating .txt span{ font-weight:400; color:#5B6B80; }
+</style>
+<div class="p90-shop-rating" aria-label="Note de la boutique {{ jr1 }} sur 5 basée sur {{ jc }} avis">
+  <span class="p90-stars" aria-hidden="true">★★★★★<span class="p90-stars__fg" style="width:{{ pct }}%">★★★★★</span></span>
+  <span class="txt">{{ jr1 }}/5 <span>· {{ jc }} avis clients vérifiés</span></span>
+</div>
+  {%- endif -%}
+{%- elsif part == 'offers' -%}
+  {%- assign on_sale = false -%}
+  {%- if product.compare_at_price and product.compare_at_price > product.price -%}
+    {%- assign on_sale = true -%}
+    {%- assign dpct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+  {%- endif -%}
+  {%- assign is_pack = false -%}
+  {%- if product.handle contains 'pack' -%}{%- assign is_pack = true -%}{%- endif -%}
+  {%- assign in_deal = false -%}
+  {%- for c in product.collections -%}
+    {%- if c.handle == 'ebooks-guides-pdf' -%}{%- assign in_deal = true -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if on_sale or is_pack or in_deal -%}
+<style>
+  .p90-offers{ display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 4px; }
+  .p90-off{ display:inline-flex; align-items:center; gap:6px; font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; line-height:1; padding:8px 13px; border-radius:999px; white-space:nowrap; }
+  .p90-off--pct{ background:#C13333; color:#FFFFFF; }
+  .p90-off--deal{ background:#FFFFFF; color:#0B1E38; border:2px solid #0B1E38; }
+  .p90-off--best{ background:#0B1E38; color:#F4B740; }
+</style>
+<div class="p90-offers">
+  {%- if on_sale -%}<span class="p90-off p90-off--pct">−{{ dpct }} %</span>{%- endif -%}
+  {%- if is_pack -%}
+    <span class="p90-off p90-off--best">🔥 Meilleur prix</span>
+  {%- elsif in_deal -%}
+    <span class="p90-off p90-off--deal">🎁 2 achetés = le 3ᵉ offert</span>
+  {%- endif -%}
+</div>
+  {%- endif -%}
+{%- endif -%}

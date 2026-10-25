@@ -1,0 +1,106 @@
+{%- comment %} PILOTA90 — Produit : AVIS CLIENTS (Judge.me) {% endcomment -%}
+<style>
+  .ssp-rev{ --night:#0E1A15; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ssp-rev *,.ssp-rev *::before,.ssp-rev *::after{ box-sizing:border-box; }
+  .ssp-rev .head{ max-width:640px; margin:0 auto 28px; text-align:center; }
+  .ssp-rev .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ssp-rev h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,36px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ssp-rev .wrap{ max-width:820px; margin:0 auto; }
+  /* Lisibilité du widget Judge.me sur fond sombre */
+  .ssp-rev .jdgm-rev-widg__title,
+  .ssp-rev .jdgm-rev__author,
+  .ssp-rev .jdgm-rev__title,
+  .ssp-rev .jdgm-rev__body,
+  .ssp-rev .jdgm-histogram__label,
+  .ssp-rev .jdgm-rev-widg__summary-text,
+  .ssp-rev .jdgm-rev-widg__sort-wrapper,
+  .ssp-rev .jdgm-histogram__bar-content{ color:var(--chalk) !important; }
+  .ssp-rev .jdgm-rev__timestamp,
+  .ssp-rev .jdgm-rev__location,
+  .ssp-rev .jdgm-rev__pic-label{ color:var(--muted) !important; }
+  .ssp-rev .jdgm-histogram__bar{ background:rgba(255,255,255,.08) !important; }
+  .ssp-rev .jdgm-rev__prod-link,
+  .ssp-rev .jdgm-write-rev-link,
+  .ssp-rev .jdgm-all-reviews-rating,
+  .ssp-rev a{ color:var(--gold) !important; }
+  .ssp-rev .jdgm-write-rev-link{ border-color:var(--gold) !important; }
+  .ssp-rev .jdgm-rev{ border-color:rgba(241,238,230,.1) !important; }
+  .ssp-rev .jdgm-star{ color:var(--gold) !important; }
+  .ssp-rev .jdgm-empty{ color:var(--muted) !important; }
+  /* 29.09 — Avis rendus directement depuis les données Judge.me du produit (sans dépendre du script Judge.me) */
+  .ssp-rev .p90r-sum{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:0 0 22px; font-size:15px; color:var(--muted); }
+  .ssp-rev .p90r-sum strong{ color:var(--chalk); font-size:17px; }
+  .ssp-rev .p90r-stars{ color:#F4B740; letter-spacing:2px; font-size:17px; line-height:1; }
+  .ssp-rev .p90r-list{ display:grid; gap:14px; }
+  @media (min-width:750px){ .ssp-rev .p90r-list{ grid-template-columns:1fr 1fr; } }
+  .ssp-rev .p90r-card{ background:var(--surface); border:1px solid rgba(16,40,74,.10); border-radius:16px; padding:18px 18px 16px; text-align:left; }
+  .ssp-rev .p90r-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 10px; }
+  .ssp-rev .p90r-body{ margin:0 0 12px; font-size:15px; line-height:1.6; color:var(--chalk); }
+  .ssp-rev .p90r-meta{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--muted); }
+  .ssp-rev .p90r-name{ font-weight:600; color:var(--chalk); }
+  .ssp-rev .p90r-ok{ display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600; color:#1F8A5B; }
+  .ssp-rev .p90r-date{ font-size:12px; color:var(--muted); white-space:nowrap; }
+</style>
+<div class="ssp-rev">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="wrap">
+    {{ product.metafields.judgeme.widget }}
+    {%- liquid
+      assign p90r_widget = product.metafields.judgeme.widget | strip_html | strip
+      assign p90r_data = product.metafields.judgeme.review_widget_data.value
+      assign p90r_reviews = p90r_data.reviews
+      assign p90r_count = p90r_data.number_of_reviews | default: 0 | plus: 0
+    -%}
+    {%- if p90r_widget == blank -%}
+      {%- if p90r_count > 0 and p90r_reviews.size > 0 -%}
+        <p class="p90r-sum">
+          <span class="p90r-stars" aria-hidden="true">★★★★★</span>
+          <strong>{{ p90r_data.average_rating | plus: 0 | round: 1 | replace: '.', ',' }}/5</strong>
+          <span>· {{ p90r_count }} avis {% if p90r_count > 1 %}vérifiés{% else %}vérifié{% endif %}</span>
+        </p>
+        <div class="p90r-list">
+          {%- for r in p90r_reviews -%}
+            {%- if r.body != blank -%}
+            <div class="p90r-card">
+              <div class="p90r-top">
+                <span class="p90r-stars" aria-label="{{ r.rating }} sur 5">{% for i in (1..5) %}{% if i <= r.rating %}★{% else %}☆{% endif %}{% endfor %}</span>
+                <span class="p90r-date">{{ r.created_at | date: '%d/%m/%Y' }}</span>
+              </div>
+              {%- if r.title != blank -%}<p class="p90r-body"><strong>{{ r.title | escape }}</strong></p>{%- endif -%}
+              <p class="p90r-body">{{ r.body | escape | newline_to_br }}</p>
+              <div class="p90r-meta">
+                <span class="p90r-name">{{ r.reviewer_name | default: 'Anonyme' | escape }}</span>
+                {%- if r.verified_buyer -%}<span class="p90r-ok">✓ Achat vérifié</span>{%- endif -%}
+              </div>
+            </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        {%- assign p90r_shop_rating = shop.metafields.judgeme.all_reviews_rating -%}
+        {%- assign p90r_shop_count = shop.metafields.judgeme.all_reviews_count | plus: 0 -%}
+        {%- if p90r_shop_count > 0 -%}
+          <p class="p90r-sum">
+            <span class="p90r-stars" aria-hidden="true">★★★★★</span>
+            <strong>{{ p90r_shop_rating | plus: 0 | round: 1 | replace: '.', ',' }}/5</strong>
+          </p>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Avis",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Avis clients" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ils l'ont lu, ils en parlent" },
+    { "type": "paragraph", "content": "Les avis proviennent de l'application Judge.me. Le style des couleurs se règle dans Judge.me." }
+  ],
+  "presets": [{ "name": "Produit — Avis" }]
+}
+{% endschema %}

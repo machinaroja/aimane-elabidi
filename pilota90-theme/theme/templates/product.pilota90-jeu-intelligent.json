@@ -1,0 +1,172 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "custom_liquid_cm9jxw": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<style>.product__tax,.product__shipping,.product-form__tax,.product-form__shipping,.product-form__shipping-policy,.shipping-policy-link,[data-shipping-policy],.product__tax-and-shipping,.product__tax-shipping,.product-form__tax-shipping{display:none !important;}</style>"
+          }
+        },
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"product__title\"><h1>{{ product.title | escape }}</h1></div>"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "teaser": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<style>.ssp-teaser{font-family:'Inter',sans-serif;color:#8FA396;font-size:15px;line-height:1.65;margin:10px 0 14px;max-width:52ch;}</style><p class='ssp-teaser'>{{ product.description | strip_html | truncatewords: 35 }}</p>"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        }
+      },
+      "block_order": [
+        "custom_liquid_cm9jxw",
+        "vendor",
+        "title",
+        "price",
+        "teaser",
+        "buy_buttons"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 20
+      }
+    },
+    "ssp_benefits": {
+      "type": "ss-prod-benefits",
+      "settings": {
+        "eyebrow": "Pourquoi ce guide",
+        "heading": "Concret, rapide, fait pour le terrain",
+        "t1": "Court et actionnable",
+        "d1": "Pas un pavé théorique : l'essentiel, à appliquer dès le prochain entraînement.",
+        "t2": "Fondé sur la méthode",
+        "d2": "Neurobiologie et psychologie du sport, adaptées au football des jeunes.",
+        "t3": "Accès immédiat",
+        "d3": "Fichier PDF reçu tout de suite après l'achat, lisible sur téléphone, tablette ou papier.",
+        "t4": "Utile toute la saison",
+        "d4": "À relire et réutiliser aussi souvent que nécessaire, match après match."
+      }
+    },
+    "ssp_detail": {
+      "type": "ss-prod-detail",
+      "settings": {
+        "eyebrow": "Au programme",
+        "heading": "Ce que contient ce guide"
+      }
+    },
+    "ssp_faq": {
+      "type": "ss-prod-faq",
+      "settings": {
+        "eyebrow": "Questions fréquentes",
+        "heading": "Tout ce qu'il faut savoir",
+        "q1": "C'est quoi exactement ?",
+        "r1": "Un guide numérique au format PDF, concret et court, dédié à la préparation mentale du jeune footballeur. Actionnable, pas théorique.",
+        "q2": "Comment je le reçois ?",
+        "r2": "Immédiatement après le paiement : le lien de téléchargement s'affiche et vous est aussi envoyé par e-mail. Pas d'attente, pas de livraison physique.",
+        "q3": "Sur quels appareils je peux le lire ?",
+        "r3": "Sur tout : téléphone, tablette, ordinateur. Le PDF s'ouvre partout et vous pouvez l'imprimer si vous préférez le papier.",
+        "q4": "À partir de quel âge c'est utile ?",
+        "r4": "Pensé pour les jeunes joueurs : avec l'aide d'un parent ou d'un éducateur pour les plus jeunes, en autonomie pour les ados.",
+        "q5": "Le paiement est-il sécurisé ?",
+        "r5": "Oui. Le paiement passe par l'infrastructure sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises.",
+        "q6": "Et si ça ne me convient pas ?",
+        "r6": "Garantie 14 jours, satisfait ou remboursé : un simple e-mail à contact@pilota90.com et nous vous remboursons intégralement. Sans question, sans justificatif."
+      }
+    },
+    "ssp_cta": {
+      "type": "ss-prod-cta",
+      "settings": {
+        "heading_before": "Prêt à passer",
+        "heading_highlight": "un cap ?",
+        "subtext": "Reçu tout de suite, lu ce soir. Applicable dès le prochain entraînement.",
+        "button_label": "Obtenir ce guide"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "disabled": true,
+      "settings": {
+        "heading": "<strong>Découvrez aussi</strong>",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-2",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    },
+    "178560343894c70f2a": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_eiANUH": {
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "maxwidth": 1080
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_eiANUH"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "ssp_benefits",
+    "178560343894c70f2a",
+    "ssp_detail",
+    "ssp_faq",
+    "ssp_cta",
+    "related-products"
+  ]
+}

@@ -1,0 +1,89 @@
+{%- comment %} PILOTA90 — Produit : COMPARATIF + PREUVES (barres animées) {% endcomment -%}
+<style>
+  .ssp-cmp{ --night:#0A1310; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ssp-cmp *,.ssp-cmp *::before,.ssp-cmp *::after{ box-sizing:border-box; }
+  .ssp-cmp .head{ max-width:640px; margin:0 auto 30px; text-align:center; }
+  .ssp-cmp .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ssp-cmp h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,36px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ssp-cmp__stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:640px; margin:0 auto 34px; }
+  .ssp-cmp__stat{ background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:14px; padding:18px 10px; text-align:center; }
+  .ssp-cmp__num{ font-family:'Oswald',sans-serif; font-weight:600; font-size:clamp(26px,7vw,38px); color:var(--gold); line-height:1; display:block; }
+  .ssp-cmp__lbl{ display:block; color:var(--muted); font-size:12px; line-height:1.4; margin-top:8px; }
+  .ssp-cmp__table{ max-width:820px; margin:0 auto; }
+  .ssp-cmp__legend{ display:flex; justify-content:flex-end; gap:18px; margin-bottom:10px; font-size:11.5px; color:var(--muted); }
+  .ssp-cmp__legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .ssp-cmp__dot{ width:9px; height:9px; border-radius:50%; }
+  .ssp-cmp__dot--bad{ background:#D9524A; } .ssp-cmp__dot--good{ background:#2FA36B; }
+  .ssp-cmp__row{ padding:16px 0; border-bottom:1px solid rgba(241,238,230,.08); }
+  .ssp-cmp__row:last-child{ border-bottom:none; }
+  .ssp-cmp__q{ font-family:'Oswald',sans-serif; font-weight:500; font-size:15px; letter-spacing:.01em; margin:0 0 12px; }
+  .ssp-cmp__bars{ display:grid; grid-template-columns:1fr; gap:10px; }
+  .ssp-cmp__side{ display:grid; grid-template-columns:70px 1fr; align-items:center; gap:12px; }
+  .ssp-cmp__side small{ font-size:11.5px; color:var(--muted); }
+  @media(min-width:640px){ .ssp-cmp__bars{ grid-template-columns:1fr 1fr; gap:14px 22px; } }
+</style>
+<div class="ssp-cmp">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="ssp-cmp__stats">
+    <div class="ssp-cmp__stat ps-reveal"><span class="ssp-cmp__num"><span data-count="100">0</span>&nbsp;%</span><span class="ssp-cmp__lbl">100 % digital, lisible partout</span></div>
+    <div class="ssp-cmp__stat ps-reveal"><span class="ssp-cmp__num"><span data-count="14">0</span>&nbsp;j</span><span class="ssp-cmp__lbl">satisfait ou remboursé</span></div>
+    <div class="ssp-cmp__stat ps-reveal"><span class="ssp-cmp__num">∞</span><span class="ssp-cmp__lbl">accès à vie, paiement unique</span></div>
+  </div>
+  <div class="ssp-cmp__table">
+    <div class="ssp-cmp__legend"><span><i class="ssp-cmp__dot ssp-cmp__dot--bad"></i>Sans préparation</span><span><i class="ssp-cmp__dot ssp-cmp__dot--good"></i>Avec PILOTA90</span></div>
+    <div class="ssp-cmp__row">
+      <p class="ssp-cmp__q">{{ section.settings.r1 }}</p>
+      <div class="ssp-cmp__bars">
+        <div class="ssp-cmp__side"><small>Sans</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--bad" style="--w:40%"></span></div></div>
+        <div class="ssp-cmp__side"><small>Avec</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--good" style="--w:95%"></span></div></div>
+      </div>
+    </div>
+    <div class="ssp-cmp__row">
+      <p class="ssp-cmp__q">{{ section.settings.r2 }}</p>
+      <div class="ssp-cmp__bars">
+        <div class="ssp-cmp__side"><small>Sans</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--bad" style="--w:35%"></span></div></div>
+        <div class="ssp-cmp__side"><small>Avec</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--good" style="--w:100%"></span></div></div>
+      </div>
+    </div>
+    <div class="ssp-cmp__row">
+      <p class="ssp-cmp__q">{{ section.settings.r3 }}</p>
+      <div class="ssp-cmp__bars">
+        <div class="ssp-cmp__side"><small>Sans</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--bad" style="--w:45%"></span></div></div>
+        <div class="ssp-cmp__side"><small>Avec</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--good" style="--w:95%"></span></div></div>
+      </div>
+    </div>
+    <div class="ssp-cmp__row">
+      <p class="ssp-cmp__q">{{ section.settings.r4 }}</p>
+      <div class="ssp-cmp__bars">
+        <div class="ssp-cmp__side"><small>Sans</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--bad" style="--w:40%"></span></div></div>
+        <div class="ssp-cmp__side"><small>Avec</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--good" style="--w:90%"></span></div></div>
+      </div>
+    </div>
+    <div class="ssp-cmp__row">
+      <p class="ssp-cmp__q">{{ section.settings.r5 }}</p>
+      <div class="ssp-cmp__bars">
+        <div class="ssp-cmp__side"><small>Sans</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--bad" style="--w:38%"></span></div></div>
+        <div class="ssp-cmp__side"><small>Avec</small><div class="ps-bar"><span class="ps-bar__fill ps-bar__fill--good" style="--w:100%"></span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Comparatif",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "La différence" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ce qui change, concrètement" },
+    { "type": "text", "id": "r1", "label": "Ligne 1", "default": "Gérer la pression le jour J" },
+    { "type": "text", "id": "r2", "label": "Ligne 2", "default": "Rebondir après une erreur" },
+    { "type": "text", "id": "r3", "label": "Ligne 3", "default": "Rester motivé sur la durée" },
+    { "type": "text", "id": "r4", "label": "Ligne 4", "default": "Rester concentré en compétition" },
+    { "type": "text", "id": "r5", "label": "Ligne 5", "default": "Confiance en soi" }
+  ],
+  "presets": [{ "name": "Produit — Comparatif" }]
+}
+{% endschema %}

@@ -1,0 +1,106 @@
+{%- comment -%}
+  PILOTA90 — Carré pack DYNAMIQUE sous le bouton d'achat, sur TOUTES les fiches (12.10 soir).
+  - Guides du Pack Mental (Parent d'Athlète, Stress, Confiance, Concentration, Motivation) -> Pack Mental Complet, « ce guide + 4 autres »
+  - Guides du Pack Coach (Communiquer, Cohésion / force mentale, Jeu intelligent) -> Pack Coach, « ce guide + 4 autres »
+  - Corriger sans décourager -> Pack Coach en complément
+  - Autres guides -> Pack Mental Complet en complément
+  - Fiche Pack Mental -> propose le Pack Coach ; fiche Pack Coach -> propose le Pack Mental
+  Prix des packs lus en direct. Valeur à l'unité = somme des prix réellement pratiqués :
+  Pack Mental 98,60 € / Pack Coach 79,50 € (12.10). Bouton = ajout direct au panier.
+{%- endcomment -%}
+{%- liquid
+  assign h = product.handle
+  assign h_mental = 'pack-mental-complet-les-5-leviers-pour-que-votre-enfant-donne-son-vrai-niveau-le-jour-j'
+  assign h_coach = 'pilota90-pack-complet-5-guides-pdf'
+  if h == h_mental
+    assign mode = 'coach'
+    assign kicker = 'Vous entraînez aussi ?'
+    assign line = "Le Pack Coach ajoute 3 guides pour l'éducateur : communication, cohésion d'équipe et intelligence de jeu."
+    assign cta = 'Prendre le Pack Coach →'
+  elsif h == h_coach
+    assign mode = 'mental'
+    assign kicker = 'Parent aussi ?'
+    assign line = "Le Pack Mental Complet ajoute 3 guides pour le jour J : stress, concentration et le guide Parent d'Athlète."
+    assign cta = 'Prendre le Pack Mental →'
+  elsif h contains 'intelligent' or h contains 'communiquer' or h contains 'force-mentale'
+    assign mode = 'coach'
+    assign kicker = '★ Offre pack'
+    assign line = "Ce guide + 4 autres pour faire progresser vos joueurs, dans le jeu et dans la tête."
+    assign cta = 'Prendre le pack complet →'
+  elsif h contains 'correction'
+    assign mode = 'coach'
+    assign kicker = '★ Pack éducateur'
+    assign line = "Complétez avec le Pack Coach : 5 guides pour faire progresser vos joueurs, dans le jeu et dans la tête."
+    assign cta = 'Prendre le Pack Coach →'
+  elsif h contains 'parent-dathlete' or h contains 'stress-anxiete' or h contains 'confiance-en-soi' or h contains 'concentration' or h contains 'motivation'
+    assign mode = 'mental'
+    assign kicker = '★ Offre pack'
+    assign line = "Ce guide + 4 autres : les 5 leviers pour que votre enfant donne son vrai niveau le jour J."
+    assign cta = 'Prendre le pack complet →'
+  else
+    assign mode = 'mental'
+    assign kicker = '★ Le plus complet'
+    assign line = "Complétez avec le Pack Mental Complet : les 5 leviers pour que votre enfant donne son vrai niveau le jour J."
+    assign cta = 'Prendre le Pack Mental →'
+  endif
+  if mode == 'coach'
+    assign pk = all_products[h_coach]
+    assign pk_sep = 7950
+    assign chips = "Motivation|Communication|Confiance en soi|Cohésion d'équipe|Intelligence de jeu" | split: '|'
+  else
+    assign pk = all_products[h_mental]
+    assign pk_sep = 9860
+    assign chips = "Parent d'Athlète|Stress & anxiété|Confiance en soi|Concentration|Motivation" | split: '|'
+  endif
+-%}
+{%- if pk != blank and pk.available -%}
+{%- liquid
+  assign pk_save = pk_sep | minus: pk.price
+  assign pk_pct = pk_save | times: 100 | divided_by: pk_sep
+  assign pk_v = pk.selected_or_first_available_variant
+-%}
+<style>
+  .p90-pd{position:relative;overflow:hidden;margin:16px 0 8px;padding:16px;border-radius:12px;background:#10284a;color:#fff;border:2px solid #C9962B;box-shadow:0 8px 22px rgba(16,40,74,.28);font-size:14px;line-height:1.45;animation:p90pdIn .55s ease-out both,p90pdGlow 2.6s ease-in-out 1s infinite}
+  .p90-pd__top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .p90-pd__k{padding:3px 9px;border-radius:999px;background:#C9962B;color:#10284a;font-size:11.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+  .p90-pd__save{padding:3px 9px;border-radius:6px;background:#fff;color:#10284a;font-size:13px;font-weight:800;animation:p90pdPulse 1.8s ease-in-out infinite}
+  .p90-pd__t{margin:0 0 10px;font-weight:600}
+  .p90-pd__list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;padding:0;list-style:none}
+  .p90-pd__list li{padding:3px 8px;border:1px solid rgba(255,255,255,.3);border-radius:999px;font-size:12px}
+  .p90-pd__price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 12px}
+  .p90-pd__price b{font-size:24px;color:#C9962B}
+  .p90-pd__price s{opacity:.7;font-size:14px}
+  .p90-pd__price span{font-size:13px;font-weight:700;color:#fff}
+  .p90-pd form{margin:0}
+  .p90-pd__b{position:relative;overflow:hidden;display:block;width:100%;padding:13px 14px;border:0;border-radius:8px;background:#C9962B;color:#10284a;font-size:15px;font-weight:800;text-align:center;cursor:pointer;transition:transform .12s}
+  .p90-pd__b::after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(110deg,transparent,rgba(255,255,255,.6),transparent);animation:p90pdShine 2.8s ease-in-out infinite}
+  .p90-pd__b:active{transform:scale(.98)}
+  .p90-pd__l{display:block;margin-top:9px;color:#fff;font-size:13px;text-align:center;text-decoration:underline;opacity:.85}
+  @keyframes p90pdIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes p90pdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+  @keyframes p90pdShine{0%,55%{left:-60%}100%{left:130%}}
+  @keyframes p90pdGlow{0%,100%{box-shadow:0 8px 22px rgba(16,40,74,.28)}50%{box-shadow:0 8px 26px rgba(201,150,43,.55)}}
+  @media (prefers-reduced-motion:reduce){.p90-pd,.p90-pd *,.p90-pd__b::after{animation:none!important}}
+</style>
+<div class='p90-pd' role='complementary' aria-label='Offre pack'>
+  <div class='p90-pd__top'>
+    <span class='p90-pd__k'>{{ kicker }}</span>
+    {%- if pk_pct > 0 -%}<span class='p90-pd__save'>−{{ pk_pct }} %</span>{%- endif -%}
+  </div>
+  <p class='p90-pd__t'>{{ line }}</p>
+  <ul class='p90-pd__list'>
+    {%- for c in chips -%}<li>{{ c | escape }}</li>{%- endfor -%}
+  </ul>
+  <div class='p90-pd__price'>
+    <b>{{ pk.price | money_without_currency | replace: '.', ',' }} €</b>
+    <s>{{ pk_sep | money_without_currency | replace: '.', ',' }} € à l'unité</s>
+    {%- if pk_save > 0 -%}<span>Vous économisez {{ pk_save | money_without_currency | replace: '.', ',' }} €</span>{%- endif -%}
+  </div>
+  <form method='post' action='{{ routes.cart_add_url }}'>
+    <input type='hidden' name='id' value='{{ pk_v.id }}'>
+    <input type='hidden' name='quantity' value='1'>
+    <button type='submit' class='p90-pd__b'>{{ cta }}</button>
+  </form>
+  <a class='p90-pd__l' href='{{ pk.url }}'>Voir le contenu du pack</a>
+</div>
+{%- endif -%}

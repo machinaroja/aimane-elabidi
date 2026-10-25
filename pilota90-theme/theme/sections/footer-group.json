@@ -1,0 +1,55 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand_text": {
+          "type": "text",
+          "settings": {
+            "heading": "<em>PILOTA90</em>",
+            "subtext": "<p>La préparation mentale du sportif — toutes disciplines.</p><p>Des guides concrets, à accès immédiat. Satisfait ou remboursé 14 jours.</p>"
+          }
+        },
+        "explore": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Explorer",
+            "menu": "footer-2509"
+          }
+        }
+      },
+      "block_order": [
+        "brand_text",
+        "explore"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "newsletter_enable": true,
+        "newsletter_heading": "Recevez nos conseils de préparation mentale",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 48,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

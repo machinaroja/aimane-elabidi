@@ -1,0 +1,25 @@
+{%- comment -%}
+  PILOTA90 (10.10) — « Continuer les achats » ramène vers la collection Guides PDF
+  (ordre manuel : Pack Mental Complet, Parent d'Athlète, Stress… en premier)
+  au lieu de « Tous les produits ». Couvre la fenêtre « Article ajouté au panier »,
+  le tiroir panier et la page panier. Ajout seul, aucun fichier d'origine modifié.
+{%- endcomment -%}
+<script>
+(function(){
+  var URL_GUIDES = '/collections/ebooks-guides-pdf';
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var btn = t.closest('.cart-notification__links button.link');
+    if (btn) { e.preventDefault(); e.stopPropagation(); window.location.href = URL_GUIDES; return; }
+    var a = t.closest('a[href]');
+    if (a && a.closest('cart-drawer, #main-cart-items, .cart__warnings, .title-wrapper-with-link, cart-items')) {
+      var p = a.getAttribute('href').split('?')[0].replace(/\/$/, '');
+      if (/\/collections\/all$/.test(p)) { e.preventDefault(); window.location.href = URL_GUIDES; }
+    }
+  }, true);
+})();
+</script>
+{% schema %}
+{ "name": "P90 continuer les achats", "settings": [] }
+{% endschema %}

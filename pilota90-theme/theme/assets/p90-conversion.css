@@ -1,0 +1,40 @@
+/* PILOTA90 — Blocs de conversion « above the fold ». Mobile d'abord. */
+.p90-c{--p90-nav:#10284a;--p90-ink:#3E4E63;--p90-gold:#F4B740;--p90-gold2:#C9962B;--p90-soft:#F5F7FA;--p90-line:rgba(16,40,74,.12)}
+.p90-c,.p90-c *,.p90-c *::before,.p90-c *::after{box-sizing:border-box}
+
+/* Sous-titre : la promesse (répond à « comprend-il mon problème ? ») */
+.p90-sub{margin:10px 0 0;font-size:clamp(15px,4.1vw,17.5px);line-height:1.5;color:#22405f;font-weight:500}
+.p90-who{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 2px;padding:0;list-style:none}
+.p90-who li{display:inline-flex;align-items:center;background:var(--p90-soft);border:1px solid var(--p90-line);border-radius:999px;padding:4px 10px;font-size:11.5px;line-height:1.3;color:var(--p90-nav);font-weight:600;letter-spacing:.02em}
+
+/* Sous le prix : bénéfices + preuve sociale réelle */
+.p90-bul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.p90-bul li{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;line-height:1.4;color:var(--p90-ink)}
+.p90-bul svg{flex:none;margin-top:2px}
+.p90-proof{display:flex;align-items:center;gap:7px;margin:11px 0 0;font-size:12.5px;line-height:1.35;color:var(--p90-nav);font-weight:600}
+.p90-proof svg{flex:none}
+
+/* Urgence de valeur — jamais de fausse rareté */
+.p90-urg{display:flex;align-items:flex-start;gap:10px;margin:16px 0 0;padding:12px 14px;background:linear-gradient(180deg,#FFFAEF,#FFF6E4);border:1px solid rgba(244,183,64,.45);border-left:3px solid var(--p90-gold2);border-radius:12px}
+.p90-urg svg{flex:none;margin-top:1px}
+.p90-urg p{margin:0;font-size:13.5px;line-height:1.45;color:#5A4413;font-weight:600}
+.p90-bonus{margin:10px 0 0;padding:12px 14px;background:#F4F8FF;border:1px dashed rgba(16,40,74,.3);border-radius:12px}
+.p90-bonus b{display:block;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--p90-nav);margin:0 0 4px}
+.p90-bonus p{margin:0;font-size:13.5px;line-height:1.45;color:var(--p90-ink)}
+
+/* Moyens de paiement réellement activés sur la boutique */
+.p90-pay{margin:16px 0 0;padding:14px;background:var(--p90-soft);border:1px solid var(--p90-line);border-radius:14px;text-align:center}
+.p90-pay__label{display:inline-flex;align-items:center;gap:7px;font-family:'Oswald',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--p90-nav)}
+.p90-pay__icons{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;margin:10px 0 0}
+.p90-pay__icons svg{width:38px;height:24px;display:block;border-radius:4px;box-shadow:0 1px 3px rgba(11,30,56,.14)}
+.p90-pay__note{margin:9px 0 0;font-size:11.5px;line-height:1.4;color:var(--p90-ink)}
+
+@media(min-width:750px){
+  .p90-pay{text-align:left}
+  .p90-pay__icons{justify-content:flex-start}
+}
+@media(max-width:389px){
+  .p90-pay__icons svg{width:34px;height:22px}
+  .p90-bul li{font-size:13px}
+  .p90-urg p{font-size:13px}
+}

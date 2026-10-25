@@ -1,0 +1,208 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ss_hero_pro": {
+      "type": "ss-hero-pro",
+      "settings": {
+        "sold_label": "+300 guides vendus",
+        "reviews_url": "#shopify-section-1785603247d3af1aaf",
+        "heading_line1": "La performance se joue d'abord",
+        "heading_highlight": "dans la tête.",
+        "subheading": "Stress, doute, motivation en dents de scie… Des guides fondés sur la neurobiologie et la psychologie du sport, pour faire du mental un avantage.",
+        "product": "parent-dathlete-la-methode-complete",
+        "feat_tag": "N°1 des ventes",
+        "feat_title": "Parent d'Athlète — la méthode complète",
+        "feat_meta": "93 pages · 5-25 ans",
+        "cta_label": "Découvrir le guide",
+        "who_label": "Ou trouvez le guide fait pour vous :",
+        "all_label": "Voir tous les guides",
+        "all_url": "#ss-guides"
+      }
+    },
+    "ss_hero": {
+      "type": "ss-hero",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Préparation mentale du sportif · toutes disciplines, tous niveaux",
+        "heading_line1": "La performance se joue d'abord",
+        "heading_highlight": "dans la tête.",
+        "subheading": "Stress, doute, motivation en dents de scie… Des guides fondés sur la neurobiologie et la psychologie du sport, pour faire du mental un avantage — du jeune sportif à l'athlète confirmé, quelle que soit la discipline.",
+        "cta_primary_label": "Découvrir le guide n°1 des ventes",
+        "cta_primary_url": "/products/parent-dathlete-la-methode-complete",
+        "cta_secondary_label": "Voir tous les guides",
+        "cta_secondary_url": "#ss-guides"
+      }
+    },
+    "ss_problem": {
+      "type": "ss-problem",
+      "settings": {
+        "eyebrow": "Ça vous parle ?",
+        "heading": "Le talent est là. Mais quelque chose bloque.",
+        "pain_1": "Brillant à l'entraînement… crispé le jour de la compétition.",
+        "pain_2": "Une erreur, et il décroche pendant de longues minutes.",
+        "pain_3": "La motivation monte et descend sans qu'on comprenne pourquoi.",
+        "pain_4": "Après la compétition, la discussion tourne vite au reproche.",
+        "bridge_before": "Ce n'est pas un manque de talent.",
+        "bridge_highlight": "C'est un mental qui n'a jamais été entraîné."
+      }
+    },
+    "ss_benefits": {
+      "type": "ss-benefits",
+      "settings": {
+        "eyebrow": "La méthode",
+        "heading": "Quatre piliers pour un mental solide",
+        "t1": "Gérer la pression",
+        "d1": "Des routines concrètes pour transformer le trac et le stress en énergie utile, pas en frein.",
+        "t2": "Renforcer la confiance",
+        "d2": "Rebondir après l'erreur, garder l'estime de soi, oser prendre l'initiative.",
+        "t3": "Entretenir la motivation",
+        "d3": "Comprendre ce qui donne — et ce qui coupe — l'envie, pour une régularité qui tient toute la saison.",
+        "t4": "Aligner l'entourage",
+        "d4": "Ce que parents et coachs peuvent dire (et éviter) pour faire grandir sans mettre la pression."
+      }
+    },
+    "ss_charts": {
+      "type": "ss-charts",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "La méthode en un coup d'œil",
+        "heading": "Ce que le mental change, visuellement",
+        "subheading": "Cinq piliers, quatre dimensions, un avant/après concret — voilà le terrain de jeu des guides PILOTA90."
+      }
+    },
+    "ss_why": {
+      "type": "ss-why",
+      "settings": {
+        "eyebrow": "Pourquoi PILOTA90",
+        "heading": "Une méthode, pas des recettes",
+        "lead": "PILOTA90 ne recycle pas des conseils vus partout. Chaque guide s'appuie sur le fonctionnement réel du sportif — et sur dix ans de terrain, au service de toutes les disciplines.",
+        "t1": "Licence en Neurobiologie et Psychologie du Sport",
+        "d1": "Des contenus fondés sur la science du cerveau et de la motivation, adaptés à chaque athlète.",
+        "t2": "Diplôme Professionnel d'Entraîneur obtenu en Espagne",
+        "d2": "Une formation de haut niveau en méthodologie, appliquée à la préparation mentale.",
+        "t3": "Plus de dix ans sur le terrain",
+        "d3": "Une école de football et des centaines de jeunes accompagnés — une approche transférable à tous les sports."
+      }
+    },
+    "ss_guides": {
+      "type": "ss-guides",
+      "settings": {
+        "collection": "ebooks-guides-pdf",
+        "featured_products": [
+          "parent-dathlete-la-methode-complete",
+          "pilota90-stress-anxiete-de-competition",
+          "pilota90-les-bases-du-jeu-intelligent-ebook-pdf",
+          "pilota90-confiance-en-soi-resilience-de-lathlete-ebook-pdf",
+          "pilota90-lenvironnement-familial-du-jeune-athlete-ebook-pdf",
+          "attention-concentration-guide-pdf"
+        ],
+        "limit": 6,
+        "show_all_button": true,
+        "button_label": "Voir les [N] guides",
+        "eyebrow": "La bibliothèque",
+        "heading": "Des guides ciblés, un seul objectif : la performance",
+        "subheading": "Chaque guide traite un levier précis — mental, jeu, entourage, nutrition. Commencez par celui qui vous parle le plus."
+      }
+    },
+    "ss_pack": {
+      "type": "ss-pack",
+      "settings": {
+        "pack_handle": "pack-mental-complet-les-5-leviers-pour-que-votre-enfant-donne-son-vrai-niveau-le-jour-j",
+        "badge": "−30 %",
+        "eyebrow": "L'offre complète",
+        "heading": "Le Pack Mental Complet",
+        "description": "Les 5 leviers mentaux qui décident du jour J, réunis en un seul pack : stress, confiance, concentration, motivation — et le rôle de l'entourage. 4 guides agissent sur le sportif, le 5ᵉ sur vous qui l'accompagnez. Tous sports, tous niveaux.",
+        "g1": "Stress & Anxiété de Compétition",
+        "g2": "Confiance en Soi",
+        "g3": "Concentration",
+        "g4": "Motivation",
+        "g5": "Parent d'Athlète",
+        "compare_note": "au lieu de 98,60 € à l'unité (−30 %)",
+        "button_label": "Obtenir le Pack Mental Complet",
+        "reassurance": "Paiement sécurisé · Téléchargement immédiat · Satisfait ou remboursé 14 jours"
+      }
+    },
+    "ss_author": {
+      "type": "ss-author",
+      "settings": {
+        "eyebrow": "L'auteur",
+        "heading": "Qui est derrière PILOTA90 ?",
+        "bio": "Un parcours de terrain avant tout : responsable d'une école de football pendant plus de dix ans, formé en neurobiologie et psychologie appliquées au sport, et diplômé d'entraîneur professionnel en Espagne. L'objectif de PILOTA90 est simple — rendre accessibles aux sportifs de toutes disciplines, aux parents et aux coachs les méthodes concrètes de préparation mentale que le haut niveau garde souvent pour lui. Marque indépendante, sans affiliation à un club ou une institution.",
+        "chip1": "10 ans de terrain",
+        "chip2": "Neurobiologie & psychologie du sport",
+        "chip3": "Diplôme d'entraîneur pro (Espagne)",
+        "pay_label": "Paiement 100 % sécurisé"
+      }
+    },
+    "ss_faqh": {
+      "type": "ss-faq-home",
+      "settings": {
+        "eyebrow": "Questions fréquentes",
+        "heading": "Vous vous demandez peut-être…",
+        "q1": "Qu'est-ce que PILOTA90 ?",
+        "r1": "Une collection de guides numériques dédiés à la préparation mentale du sportif : gérer la pression, gagner en confiance, rester motivé, mieux se concentrer.",
+        "q2": "Est-ce réservé au football ?",
+        "r2": "Non. La méthode est née du football, mais elle s'applique à tous les sports et à tous les niveaux — du jeune sportif à l'athlète confirmé.",
+        "q3": "Pour qui c'est fait ?",
+        "r3": "Pour les sportifs, les parents et les coachs qui veulent progresser dans la tête autant que dans le corps.",
+        "q4": "Comment je reçois mes guides ?",
+        "r4": "En PDF, immédiatement après l'achat : le lien s'affiche et vous est envoyé par e-mail. Aucune livraison physique.",
+        "q5": "À partir de quel âge / niveau ?",
+        "r5": "Adaptable dès le plus jeune âge avec l'aide d'un parent, et en autonomie pour les ados et adultes, quel que soit le niveau.",
+        "q6": "Le paiement est-il sécurisé ?",
+        "r6": "Oui, via l'infrastructure sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises.",
+        "q7": "Et si ça ne me convient pas ?",
+        "r7": "Garantie 14 jours, satisfait ou remboursé : un e-mail à contact@pilota90.com avec votre numéro de commande, et nous vous remboursons intégralement, sans question."
+      }
+    },
+    "ss_final": {
+      "type": "ss-final",
+      "settings": {
+        "heading_before": "La prochaine compétition se prépare",
+        "heading_highlight": "maintenant.",
+        "subtext": "Donnez à votre sportif — jeune ou confirmé — l'avantage que les autres n'ont pas : un mental entraîné, compétition après compétition.",
+        "button_label": "Découvrir le Pack Mental Complet",
+        "reassurance": "Accès immédiat · Paiement sécurisé · Satisfait ou remboursé 14 jours"
+      }
+    },
+    "1785603247d3af1aaf": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_RFjfgC": {
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "maxwidth": 1080
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_RFjfgC"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "ss_hero_pro",
+    "ss_hero",
+    "ss_problem",
+    "ss_benefits",
+    "ss_charts",
+    "ss_why",
+    "ss_guides",
+    "1785603247d3af1aaf",
+    "ss_pack",
+    "ss_author",
+    "ss_faqh",
+    "ss_final"
+  ]
+}

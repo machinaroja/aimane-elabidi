@@ -1,0 +1,54 @@
+/* PILOTA90 — Animations fiches produit (aucune lib externe) */
+:root{ --pa-gold:#F4B740; --pa-green:#2FA36B; --pa-red:#D9524A; --pa-night:#0A1310; }
+
+/* 1 & 7 — Fade-up au scroll + cascade (stagger) */
+.ps-reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); transition-delay:calc(var(--i,0) * .09s); will-change:opacity,transform; }
+.ps-reveal.is-visible{ opacity:1; transform:none; }
+
+/* 3 — Séparateurs vague animés */
+.ps-wave{ position:relative; width:100%; height:34px; overflow:hidden; line-height:0; pointer-events:none; background:var(--pa-night); }
+.ps-wave svg{ position:absolute; left:0; bottom:0; width:200%; height:100%; }
+.ps-wave path{ fill:none; stroke:var(--pa-gold); stroke-opacity:.15; stroke-width:2; }
+.ps-wave--anim svg{ animation:ps-wave-drift 6s ease-in-out infinite; }
+@keyframes ps-wave-drift{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(-25%); } }
+
+/* 4 — Tilt 3D cartes */
+.ps-tilt{ transform-style:preserve-3d; will-change:transform; }
+
+/* 5 — Barres de progression (comparatif) */
+.ps-bar{ position:relative; height:8px; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; }
+.ps-bar__fill{ position:absolute; top:0; left:0; bottom:0; width:0; border-radius:999px; transition:width 1s cubic-bezier(.22,.61,.36,1); transition-delay:.15s; }
+.ps-bar__fill--bad{ background:linear-gradient(90deg,#B8433C,#D9524A); }
+.ps-bar__fill--good{ background:linear-gradient(90deg,#2FA36B,#49C98A); }
+.ps-reveal.is-visible .ps-bar__fill{ width:var(--w,100%); }
+
+/* 6 — CTA premium : shimmer + pulse + particules */
+.ps-cta{ position:relative; overflow:hidden; isolation:isolate; animation:ps-pulse 2.6s ease-in-out infinite; }
+.ps-cta::after{ content:''; position:absolute; top:0; left:-60%; width:42%; height:100%; background:linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent); transform:skewX(-18deg); animation:ps-shimmer 3.4s ease-in-out infinite; z-index:1; }
+.ps-cta:hover{ animation-play-state:paused; }
+@keyframes ps-shimmer{ 0%{ left:-60%; } 55%,100%{ left:120%; } }
+@keyframes ps-pulse{ 0%,100%{ transform:translateY(0) scale(1); } 50%{ transform:translateY(-1px) scale(1.03); } }
+.ps-particle{ position:fixed; z-index:9999; width:9px; height:9px; border-radius:50%; background:var(--pa-gold); pointer-events:none; will-change:transform,opacity; animation:ps-burst .6s ease-out forwards; }
+@keyframes ps-burst{ 0%{ opacity:.9; transform:translate(-50%,-50%) scale(.4); } 100%{ opacity:0; transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4); } }
+
+@media (prefers-reduced-motion: reduce){
+  .ps-reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  .ps-wave--anim svg{ animation:none; }
+  .ps-cta{ animation:none; }
+  .ps-cta::after{ display:none; }
+  .ps-bar__fill{ transition:none; }
+}
+
+/* Accent "courbe" doré sous les titres de section (fiches produit) */
+.ssp-ben .head h2::after,
+.ssp-cmp .head h2::after,
+.ssp-faq .head h2::after,
+.ssp-rev .head h2::after,
+.ssp-cta .in h2::after,
+.ssp-det .in > h2::after{
+  content:"";
+  display:block;
+  width:72px; height:11px;
+  margin:15px auto 0;
+  background:no-repeat center/contain url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 11'><path d='M2 7 C 14 -1 22 11 34 6 S 58 -1 70 6' fill='none' stroke='%23F4B740' stroke-width='2' stroke-linecap='round'/></svg>");
+}

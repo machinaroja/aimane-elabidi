@@ -1,0 +1,129 @@
+{%- comment %} PILOTA90 — Accueil : HERO PRO (v3, 07.10.2026). Preuve sociale + carte produit n°1 + choix par profil. Nouvelle section : l'ancienne « ss-hero » reste dans le thème (désactivée). {% endcomment -%}
+{%- liquid
+  assign p = section.settings.product
+  if p == blank
+    assign p = all_products['parent-dathlete-la-methode-complete']
+  endif
+  assign rating = shop.metafields.judgeme.all_reviews_rating | times: 1.0 | round: 1
+  assign rating_count = shop.metafields.judgeme.all_reviews_count | times: 1
+  assign rating_txt = rating | append: '' | replace: '.', ','
+-%}
+<style>
+  .p90h{ --ink:#10284A; --ink2:#3C4E68; --gold:#F4B740; --gold2:#E39A2E; --line:#E3E7EF; --card:#FFFFFF; --bg:#F4F5F9;
+    background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; padding:36px 16px 40px; }
+  .p90h *,.p90h *::before,.p90h *::after{ box-sizing:border-box; }
+  .p90h .in{ max-width:560px; margin:0 auto; }
+  .p90h a{ color:inherit; text-decoration:none; }
+  .p90h .proof{ display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--ink2); margin:0 0 18px; }
+  .p90h .stars{ display:inline-flex; gap:1px; color:var(--gold2); }
+  .p90h .proof b{ color:var(--ink); font-weight:600; }
+  .p90h .proof i{ width:3px; height:3px; border-radius:50%; background:#A9B3C4; }
+  .p90h h1{ font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.01em;
+    font-size:clamp(36px,10.5vw,60px); line-height:1.02; margin:0; text-wrap:balance; color:var(--ink); }
+  .p90h h1 span{ position:relative; z-index:0; white-space:nowrap; }
+  .p90h h1 span::before{ content:""; position:absolute; z-index:-1; left:-.06em; right:-.06em; top:58%; bottom:6%;
+    background:linear-gradient(90deg,var(--gold),var(--gold2)); border-radius:4px; transform:scaleX(0); transform-origin:left;
+    animation:p90mark .7s cubic-bezier(.65,0,.35,1) .35s forwards; }
+  .p90h .sub{ font-size:16px; line-height:1.55; color:var(--ink2); margin:16px 0 26px; max-width:46ch; }
+  .p90h .feat{ display:grid; grid-template-columns:84px 1fr; gap:14px; align-items:center; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:0 18px 40px -28px rgba(16,40,74,.45);
+    transition:border-color .2s, transform .2s; }
+  .p90h .feat:active{ transform:scale(.99); }
+  .p90h .feat img{ width:84px; height:112px; object-fit:cover; border-radius:8px; background:#eef0f5; display:block; }
+  .p90h .tag{ display:inline-block; font-size:11.5px; font-weight:600; color:#7A4B00; background:#FFF1D2; border-radius:6px; padding:3px 8px; }
+  .p90h .ftitle{ font-family:'Oswald',sans-serif; font-weight:600; font-size:19px; line-height:1.15; margin:7px 0 4px; }
+  .p90h .fmeta{ font-size:13px; color:var(--ink2); }
+  .p90h .fmeta strong{ color:var(--ink); font-weight:700; }
+  .p90h .go{ grid-column:1 / -1; display:flex; align-items:center; justify-content:center; gap:10px; height:54px;
+    background:var(--ink); color:#fff; border-radius:12px; font-family:'Oswald',sans-serif; font-weight:600; font-size:17px; letter-spacing:.03em; }
+  .p90h .go svg{ transition:transform .2s; }
+  @media(hover:hover){ .p90h .feat:hover{ border-color:#C9D1DE; } .p90h .feat:hover .go svg{ transform:translateX(3px); } }
+  .p90h .who{ margin-top:22px; }
+  .p90h .who p{ font-size:13.5px; color:var(--ink2); margin:0 0 10px; }
+  .p90h .chips{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .p90h .chip{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:12px 6px; background:var(--card);
+    border:1.5px solid var(--line); border-radius:12px; font-weight:600; font-size:15px; transition:border-color .2s, background .2s; }
+  .p90h .chip small{ font-weight:400; font-size:12px; color:var(--ink2); }
+  .p90h .chip:active,.p90h .chip:focus-visible{ border-color:var(--gold2); background:#FFFAEE; }
+  @media(hover:hover){ .p90h .chip:hover{ border-color:var(--gold2); } }
+  .p90h .all{ display:inline-block; margin-top:14px; font-size:14px; font-weight:500; border-bottom:1.5px solid var(--gold); padding-bottom:1px; }
+  .p90h .trust{ list-style:none; display:flex; justify-content:space-between; gap:8px; margin:28px 0 0; padding:16px 0 0; border-top:1px solid var(--line); }
+  .p90h .trust li{ display:flex; align-items:center; gap:6px; font-size:12.5px; line-height:1.25; color:var(--ink2); }
+  .p90h .trust svg{ flex:none; color:var(--gold2); }
+  .p90h a:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  @keyframes p90mark{ to{ transform:scaleX(1); } }
+  @media(min-width:900px){
+    .p90h{ padding:72px 24px 64px; }
+    .p90h .in{ max-width:1080px; display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center; }
+    .p90h .right{ padding-top:8px; }
+  }
+  @media(prefers-reduced-motion:reduce){ .p90h h1 span::before{ animation:none; transform:none; } .p90h *{ transition:none!important; } }
+</style>
+
+<section class="p90h">
+  <div class="in">
+    <div class="left">
+      <a class="proof" href="{{ section.settings.reviews_url | default: '#ss-guides' }}">
+        {%- comment %} Note affichée seulement si Judge.me en fournit une (jamais de note par défaut). {% endcomment -%}
+        {%- if rating > 0 and rating_count > 0 -%}
+        <span class="stars" aria-hidden="true">{%- for i in (1..5) -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg>{%- endfor -%}</span>
+        <b>{{ rating_txt }}/5</b> <i></i>
+        {%- endif %} {{ section.settings.sold_label }}
+      </a>
+      <h1>{{ section.settings.heading_line1 }} <span>{{ section.settings.heading_highlight }}</span></h1>
+      <p class="sub">{{ section.settings.subheading }}</p>
+    </div>
+
+    <div class="right">
+      {%- if p != blank -%}
+      <a class="feat" href="{{ p.url }}">
+        <img src="{{ p.featured_image | image_url: width: 240 }}" alt="{{ p.title | escape }}" width="84" height="112" loading="eager">
+        <div>
+          <span class="tag">{{ section.settings.feat_tag }}</span>
+          <div class="ftitle">{{ section.settings.feat_title | default: p.title }}</div>
+          <div class="fmeta">{{ section.settings.feat_meta }} · <strong>{{ p.price | money }}</strong></div>
+        </div>
+        <span class="go">{{ section.settings.cta_label }}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      {%- endif -%}
+
+      <div class="who">
+        <p>{{ section.settings.who_label }}</p>
+        <div class="chips">
+          <a class="chip" href="/collections/pour-les-parents">Parent<small>{{ collections['pour-les-parents'].products_count }} guides</small></a>
+          <a class="chip" href="/collections/pour-les-joueurs">Sportif<small>{{ collections['pour-les-joueurs'].products_count }} guides</small></a>
+          <a class="chip" href="/collections/pour-les-educateurs-entraineurs">Coach<small>{{ collections['pour-les-educateurs-entraineurs'].products_count }} guides</small></a>
+        </div>
+        <a class="all" href="{{ section.settings.all_url | default: '#ss-guides' }}">{{ section.settings.all_label }}</a>
+      </div>
+
+      <ul class="trust">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>PDF immédiat</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Paiement sécurisé</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>Remboursé 14 j</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Accueil — Hero pro",
+  "settings": [
+    { "type": "text", "id": "sold_label", "label": "Preuve de ventes", "default": "+300 guides vendus" },
+    { "type": "text", "id": "reviews_url", "label": "Lien des avis (ancre ou URL)", "default": "#shopify-section-1785603247d3af1aaf" },
+    { "type": "text", "id": "heading_line1", "label": "Titre", "default": "La performance se joue d'abord" },
+    { "type": "text", "id": "heading_highlight", "label": "Titre — partie surlignée", "default": "dans la tête." },
+    { "type": "textarea", "id": "subheading", "label": "Sous-titre", "default": "Stress, doute, motivation en dents de scie… Des guides fondés sur la neurobiologie et la psychologie du sport, pour faire du mental un avantage." },
+    { "type": "product", "id": "product", "label": "Produit mis en avant" },
+    { "type": "text", "id": "feat_tag", "label": "Étiquette produit", "default": "N°1 des ventes" },
+    { "type": "text", "id": "feat_title", "label": "Titre court du produit", "default": "Parent d'Athlète — la méthode complète" },
+    { "type": "text", "id": "feat_meta", "label": "Détails produit", "default": "93 pages · 5-25 ans" },
+    { "type": "text", "id": "cta_label", "label": "Bouton principal", "default": "Découvrir le guide" },
+    { "type": "text", "id": "who_label", "label": "Texte au-dessus des profils", "default": "Ou trouvez le guide fait pour vous :" },
+    { "type": "text", "id": "all_label", "label": "Lien catalogue — texte", "default": "Voir tous les guides" },
+    { "type": "text", "id": "all_url", "label": "Lien catalogue — lien", "default": "#ss-guides" }
+  ],
+  "presets": [{ "name": "Accueil — Hero pro" }]
+}
+{% endschema %}

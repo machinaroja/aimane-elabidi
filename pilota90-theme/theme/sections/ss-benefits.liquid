@@ -1,0 +1,58 @@
+{%- comment %} PILOTA90 — Accueil : BÉNÉFICES / 4 PILIERS {% endcomment -%}
+<style>
+  .ss-benefits{ --night:#0A1310; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:64px 20px; }
+  .ss-benefits *,.ss-benefits *::before,.ss-benefits *::after{ box-sizing:border-box; }
+  .ss-benefits .head{ max-width:660px; margin:0 auto 40px; text-align:center; }
+  .ss-benefits .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ss-benefits h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,6vw,40px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ss-benefits .grid{ display:grid; grid-template-columns:1fr; gap:14px; max-width:1000px; margin:0 auto; }
+  .ss-benefits .card{ background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:16px; padding:26px; }
+  .ss-benefits .ic{ width:44px; height:44px; border-radius:12px; background:rgba(244,183,64,.12); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .ss-benefits h3{ font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.02em; font-size:18px; margin:0 0 8px; }
+  .ss-benefits p{ color:var(--muted); font-size:14.5px; line-height:1.6; margin:0; }
+  @media(min-width:560px){ .ss-benefits .grid{ grid-template-columns:1fr 1fr; } }
+  @media(min-width:920px){ .ss-benefits .grid{ grid-template-columns:repeat(4,1fr); } }
+</style>
+<div class="ss-benefits">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M3 12h4l2 5 3-10 2 5h4"/></svg></div>
+      <h3>{{ section.settings.t1 }}</h3><p>{{ section.settings.d1 }}</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg></div>
+      <h3>{{ section.settings.t2 }}</h3><p>{{ section.settings.d2 }}</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+      <h3>{{ section.settings.t3 }}</h3><p>{{ section.settings.d3 }}</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M15 11a3 3 0 1 0-1.5-5.6M3 20a6 6 0 0 1 12 0M15.5 14a6 6 0 0 1 5.5 6"/></svg></div>
+      <h3>{{ section.settings.t4 }}</h3><p>{{ section.settings.d4 }}</p>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Accueil — 4 Piliers",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "La méthode" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Quatre piliers pour un mental solide" },
+    { "type": "text", "id": "t1", "label": "Pilier 1 — titre", "default": "Gérer la pression" },
+    { "type": "textarea", "id": "d1", "label": "Pilier 1 — texte", "default": "Des routines concrètes pour transformer le trac et le stress en énergie utile, pas en frein." },
+    { "type": "text", "id": "t2", "label": "Pilier 2 — titre", "default": "Renforcer la confiance" },
+    { "type": "textarea", "id": "d2", "label": "Pilier 2 — texte", "default": "Rebondir après l'erreur, garder l'estime de soi, oser prendre l'initiative." },
+    { "type": "text", "id": "t3", "label": "Pilier 3 — titre", "default": "Entretenir la motivation" },
+    { "type": "textarea", "id": "d3", "label": "Pilier 3 — texte", "default": "Comprendre ce qui donne — et ce qui coupe — l'envie, pour une régularité qui tient toute la saison." },
+    { "type": "text", "id": "t4", "label": "Pilier 4 — titre", "default": "Aligner l'entourage" },
+    { "type": "textarea", "id": "d4", "label": "Pilier 4 — texte", "default": "Ce que parents et coachs peuvent dire (et éviter) pour faire grandir sans mettre la pression." }
+  ],
+  "presets": [{ "name": "Accueil — 4 Piliers" }]
+}
+{% endschema %}

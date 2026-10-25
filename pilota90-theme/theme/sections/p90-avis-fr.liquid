@@ -1,0 +1,73 @@
+{%- comment -%} PILOTA90 (09.10) — avis Judge.me en français, badge « Aucun avis » masqué, mention « Frais d'expédition » retirée des fiches, prix affichés au format français « 99,00 € » {%- endcomment -%}
+<style>
+  .jdgm-prev-badge[data-number-of-reviews="0"],
+  .jdgm-widget.jdgm-preview-badge .jdgm-prev-badge[data-number-of-reviews="0"] { display: none !important; }
+</style>
+<script>
+(function(){
+  var rules = [
+    [/^\s*Let customers speak for us\s*$/i, 'Ce qu’en disent nos clients'],
+    [/^\s*from (\d+) reviews?\s*$/i, 'sur $1 avis'],
+    [/^\s*Verified\s*$/i, 'Vérifié']
+  ];
+  var priceRe = /€\s?(\d{1,3}(?:[\s  .]\d{3})*,\d{2})(\s*EUR)?/g;
+  var skip = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, NOSCRIPT: 1 };
+  function fixPrices(root){
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n){ return (n.parentNode && skip[n.parentNode.nodeName]) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
+    }), n;
+    while ((n = w.nextNode())) {
+      var v = n.nodeValue;
+      if (v.indexOf('€') === -1) continue;
+      priceRe.lastIndex = 0;
+      if (priceRe.test(v)) { priceRe.lastIndex = 0; n.nodeValue = v.replace(priceRe, '$1 €'); }
+    }
+  }
+  function fix(root){
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n;
+    while ((n = w.nextNode())) {
+      for (var i = 0; i < rules.length; i++) {
+        if (rules[i][0].test(n.nodeValue)) { n.nodeValue = n.nodeValue.replace(rules[i][0], rules[i][1]); }
+      }
+    }
+  }
+  function hideNoReviews(){
+    var b = document.querySelectorAll('.jdgm-prev-badge');
+    for (var i = 0; i < b.length; i++) {
+      var t = (b[i].textContent || '').replace(/\s+/g, ' ').trim();
+      if (b[i].getAttribute('data-number-of-reviews') === '0' || /^Aucun avis$/i.test(t)) { b[i].style.display = 'none'; }
+    }
+  }
+  function removeShipping(){
+    var links = document.querySelectorAll('main a[href*="/policies/shipping-policy"]');
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (!/Frais d/i.test(a.textContent || '')) continue;
+      var p = a.parentNode;
+      p.removeChild(a);
+      var w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null), n;
+      while ((n = w.nextNode())) { n.nodeValue = n.nodeValue.replace(/\s*calculés à l[’']étape de paiement\.?/i, ''); }
+    }
+  }
+  var pending = false, busy = false;
+  function run(){
+    pending = false; busy = true;
+    var els = document.querySelectorAll('[class*="jdgm"]');
+    for (var i = 0; i < els.length; i++) { fix(els[i]); }
+    hideNoReviews();
+    removeShipping();
+    if (document.body) { fixPrices(document.body); }
+    busy = false;
+  }
+  function schedule(){ if (!pending && !busy) { pending = true; requestAnimationFrame(run); } }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', schedule); } else { schedule(); }
+  var mo = new MutationObserver(schedule);
+  mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+})();
+</script>
+{% schema %}
+{
+  "name": "P90 avis en français",
+  "settings": []
+}
+{% endschema %}

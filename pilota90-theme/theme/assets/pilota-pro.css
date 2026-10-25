@@ -1,0 +1,131 @@
+/* ============================================================
+   PILOTA90 — Design pro (25.10.2026)
+   Dernière couche, chargée après pilota-brand.css.
+   Objectif : une seule grammaire visuelle sur tout le site.
+   - mêmes boutons (forme, hauteur, typo) partout ;
+   - mêmes cartes (rayon, bordure, ombre) ;
+   - rythme vertical régulier entre les sections ;
+   - aucune animation en boucle : le mouvement ne sert qu'à répondre au visiteur.
+   ============================================================ */
+
+:root {
+  --p90-navy: #10284A;
+  --p90-navy-deep: #0B1E38;
+  --p90-ink: #152D52;
+  --p90-muted: #3E4E63;
+  --p90-gold: #F4B740;
+  --p90-gold-ink: #C9962B;
+  --p90-red: #C13333;
+  --p90-line: rgba(16, 40, 74, .10);
+  --p90-radius-btn: 10px;
+  --p90-radius-card: 16px;
+  --p90-shadow: 0 1px 2px rgba(11, 30, 56, .06), 0 14px 32px -20px rgba(11, 30, 56, .35);
+  --p90-section-pad: clamp(48px, 5.5vw, 80px);
+}
+
+/* ---------- Rythme : même respiration pour chaque section ---------- */
+.ss-author, .ss-benefits, .ss-faq, .ss-guides, .ss-pack, .ss-problem, .ss-why,
+.ssp-ben, .ssp-cmp, .ssp-det, .ssp-faq, .ssp-rev {
+  padding-top: var(--p90-section-pad) !important;
+  padding-bottom: var(--p90-section-pad) !important;
+}
+.ss-final, .ssp-cta {
+  padding-top: calc(var(--p90-section-pad) + 16px) !important;
+  padding-bottom: calc(var(--p90-section-pad) + 16px) !important;
+}
+
+/* ---------- Sur-titres : une seule voix ---------- */
+[class*="ss-"] .eyebrow, [class*="ssp-"] .eyebrow {
+  font-family: 'Oswald', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: .18em !important;
+}
+
+/* ---------- Titres de section : même échelle partout ---------- */
+[class*="ss-"] h2, [class*="ssp-"] h2 {
+  font-family: 'Oswald', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: clamp(26px, 4.4vw, 40px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: .005em !important;
+  text-wrap: balance;
+}
+.ss-final h2, .ssp-cta h2 { font-size: clamp(30px, 5.4vw, 48px) !important; }
+
+/* ---------- Boutons : une seule forme ---------- */
+[class*="ss-"] .btn, [class*="ssp-"] .btn, .p90h .go, .p90-pd__b {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 30px !important;
+  border-radius: var(--p90-radius-btn) !important;
+  font-family: 'Oswald', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase;
+  box-shadow: none !important;
+  animation: none !important;
+  transition: background-color .18s ease, transform .18s ease !important;
+}
+[class*="ss-"] .btn:hover, [class*="ssp-"] .btn:hover { background: #E5A92F !important; transform: translateY(-1px); }
+.p90h .go { width: 100%; }
+.p90h .go:hover { background: var(--p90-navy-deep); }
+.p90-pd__b { width: 100%; }
+
+/* Bouton d'achat de la fiche produit : même forme que le reste du site */
+.product-form__submit, .shopify-payment-button__button, .cart__checkout-button {
+  min-height: 52px !important;
+  border-radius: var(--p90-radius-btn) !important;
+}
+
+/* ---------- Cartes : un seul rayon, une seule ombre ---------- */
+.ss-guides .card, .p90h .feat, .p90h .chip, .p90-av .c, .p90-social,
+.p90-pay, .p90-urg, .p90-bonus, .ss-pack .panel {
+  border-radius: var(--p90-radius-card) !important;
+}
+.ss-guides .card, .p90h .feat, .ss-pack .panel {
+  box-shadow: var(--p90-shadow) !important;
+}
+.ss-guides .card { transition: border-color .2s ease, transform .2s ease !important; }
+@media (hover: hover) {
+  .ss-guides .card:hover { transform: translateY(-3px); }
+}
+.p90-av .c:hover { transform: none !important; box-shadow: none !important; }
+
+/* Encadré pack de la fiche produit : sobre, sans halo */
+.p90-pd { border-width: 1px !important; border-radius: var(--p90-radius-card) !important; box-shadow: var(--p90-shadow) !important; }
+
+/* Badges d'offre : même famille que les sur-titres */
+.p90-off { border-radius: 6px !important; font-size: 11.5px !important; padding: 7px 11px !important; }
+
+/* ---------- Aucune animation en boucle ---------- */
+.ps-cta, .ps-cta::after, .ps-wave--anim svg,
+.ssp-sig .ssp-sig__pulse, .ssp-radar .vdot, .ssp-radar .hring,
+.p90-pd, .p90-pd__save {
+  animation: none !important;
+}
+.ps-cta::after { display: none !important; }
+.ssp-sig .in.is-visible .ssp-sig__pulse { opacity: .5; }
+
+/* Pas de basculement 3D des cartes au survol */
+.ps-tilt { transform: none !important; }
+
+/* ---------- Pied de page plus aéré ---------- */
+.footer { padding-top: 48px; }
+.footer .footer-block__heading { font-family: 'Oswald', sans-serif; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
+
+/* ---------- Accessibilité ---------- */
+[class*="ss-"] a:focus-visible, [class*="ssp-"] a:focus-visible, .p90h a:focus-visible {
+  outline: 2px solid var(--p90-navy) !important;
+  outline-offset: 3px;
+}
+.ss-final a:focus-visible, .ssp-cta a:focus-visible { outline-color: var(--p90-gold) !important; }
+
+/* ---------- Détails ---------- */
+.ss-final { border-top: 0 !important; }
+.p90h .trust { flex-wrap: wrap; justify-content: flex-start !important; gap: 10px 22px !important; }
+.p90h .trust li { white-space: nowrap; }

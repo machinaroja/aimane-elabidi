@@ -1,0 +1,106 @@
+{%- comment %} PILOTA90 — Produit : SIGNATURE "AVANT → APRÈS" (courbe animée dynamique, 1 par guide) {% endcomment -%}
+{%- assign h = product.handle -%}
+{%- assign multi = false -%}
+{%- if h contains 'pack' -%}
+  {%- assign sig_eyebrow = 'MENTAL GLOBAL' -%}{%- assign sig_avant = 'morcelé' -%}{%- assign sig_apres = 'complet' -%}
+  {%- assign sig_points = '0,150 130,135 260,140 390,118 520,102 650,86 780,70 910,58 1000,52' -%}
+{%- elsif h contains 'stress' or h contains 'anxi' -%}
+  {%- assign sig_eyebrow = 'RYTHME SOUS PRESSION' -%}{%- assign sig_avant = 'emballé' -%}{%- assign sig_apres = 'posé' -%}
+  {%- assign sig_points = '0,120 140,120 200,58 240,178 300,92 350,120 560,120 640,84 700,150 760,110 820,120 1000,118' -%}
+{%- elsif h contains 'motivation' -%}
+  {%- assign sig_eyebrow = 'COURBE DE MOTIVATION' -%}{%- assign sig_avant = 'en dents de scie' -%}{%- assign sig_apres = 'régulière' -%}
+  {%- assign sig_points = '0,150 80,88 160,162 240,95 320,158 400,105 500,120 620,100 740,86 860,76 1000,68' -%}
+{%- elsif h contains 'communiqu' -%}
+  {%- assign sig_eyebrow = 'CLARTÉ DU MESSAGE' -%}{%- assign sig_avant = 'brouillé' -%}{%- assign sig_apres = 'limpide' -%}
+  {%- assign sig_points = '0,110 50,58 100,165 150,78 210,145 270,92 330,128 400,104 520,100 640,110 760,96 880,106 1000,100' -%}
+{%- elsif h contains 'confiance' -%}
+  {%- assign sig_eyebrow = 'NIVEAU DE CONFIANCE' -%}{%- assign sig_avant = 'fragile' -%}{%- assign sig_apres = 'solide' -%}
+  {%- assign sig_points = '0,152 120,146 220,152 320,132 430,120 540,98 650,82 770,64 880,54 1000,50' -%}
+{%- elsif h contains 'equipe' or h contains 'force' -%}
+  {%- assign multi = true -%}
+  {%- assign sig_eyebrow = 'MENTAL COLLECTIF' -%}{%- assign sig_avant = 'dispersé' -%}{%- assign sig_apres = 'soudé' -%}
+  {%- assign sig_l1 = '0,66 250,84 500,100 750,112 1000,120' -%}
+  {%- assign sig_l2 = '0,120 250,118 500,116 750,118 1000,120' -%}
+  {%- assign sig_l3 = '0,174 250,150 500,132 750,124 1000,120' -%}
+{%- elsif h contains 'intelligen' -%}
+  {%- assign sig_eyebrow = 'PRISE DE DÉCISION' -%}{%- assign sig_avant = 'hésitante' -%}{%- assign sig_apres = 'juste' -%}
+  {%- assign sig_points = '0,122 90,95 170,142 250,105 340,132 440,108 560,94 690,82 820,72 1000,64' -%}
+{%- elsif h contains 'attention' or h contains 'concentration' -%}
+  {%- assign sig_eyebrow = 'NIVEAU DE FOCUS' -%}{%- assign sig_avant = 'dispersé' -%}{%- assign sig_apres = 'net' -%}
+  {%- assign sig_points = '0,120 40,66 80,168 120,78 160,152 200,92 250,138 300,114 500,118 700,118 1000,118' -%}
+{%- elsif h contains 'familial' -%}
+  {%- assign sig_eyebrow = 'ENVIRONNEMENT FAMILIAL' -%}{%- assign sig_avant = 'sous pression' -%}{%- assign sig_apres = 'épanoui' -%}
+  {%- assign sig_points = '0,120 120,146 220,156 330,132 450,110 570,92 690,74 810,62 930,52 1000,48' -%}
+{%- elsif h contains 'famille' -%}
+  {%- assign sig_eyebrow = 'ÉQUILIBRE FAMILLE-SPORT' -%}{%- assign sig_avant = 'tendu' -%}{%- assign sig_apres = 'aligné' -%}
+  {%- assign sig_points = '0,140 130,150 250,135 370,120 500,105 630,92 760,80 890,70 1000,64' -%}
+{%- elsif h contains 'correction' -%}
+  {%- assign sig_eyebrow = 'PÉDAGOGIE POSITIVE' -%}{%- assign sig_avant = 'reproche' -%}{%- assign sig_apres = 'progression' -%}
+  {%- assign sig_points = '0,158 120,148 240,152 360,130 480,112 600,96 720,80 840,66 1000,56' -%}
+{%- elsif h contains 'nutrition' -%}
+  {%- assign sig_eyebrow = 'ÉNERGIE DISPONIBLE' -%}{%- assign sig_avant = 'aléatoire' -%}{%- assign sig_apres = 'stable' -%}
+  {%- assign sig_points = '0,130 70,80 140,164 210,92 280,150 350,104 430,124 540,110 660,104 780,100 900,98 1000,98' -%}
+{%- elsif h contains 'parent' -%}
+  {%- assign sig_eyebrow = 'RÔLE DU PARENT' -%}{%- assign sig_avant = 'intuitif' -%}{%- assign sig_apres = 'méthodique' -%}
+  {%- assign sig_points = '0,148 140,138 280,142 420,120 560,102 700,86 840,70 1000,58' -%}
+{%- else -%}
+  {%- assign sig_eyebrow = 'AVANT / APRÈS' -%}{%- assign sig_avant = 'sans méthode' -%}{%- assign sig_apres = 'avec PILOTA90' -%}
+  {%- assign sig_points = '0,140 150,130 300,135 450,115 600,98 750,82 900,66 1000,60' -%}
+{%- endif -%}
+<style>
+  .ssp-sig{ --night:#0A1310; --night2:#0E1A15; --gold:#F4B740; --goldsoft:#FBD778; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:44px 20px; }
+  .ssp-sig *,.ssp-sig *::before,.ssp-sig *::after{ box-sizing:border-box; }
+  .ssp-sig .in{ max-width:920px; margin:0 auto; }
+  .ssp-sig__card{ position:relative; overflow:hidden; background:linear-gradient(160deg,#0E1A15,#0A1310); border:1px solid rgba(244,183,64,.16); border-radius:22px; padding:26px 24px 22px; box-shadow:0 30px 60px -34px rgba(0,0,0,.9); }
+  .ssp-sig__card::before{ content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(60% 90% at 15% 0%, rgba(244,183,64,.10), rgba(10,19,16,0) 60%); }
+  .ssp-sig__eyebrow{ position:relative; font-family:'Oswald',sans-serif; letter-spacing:.28em; text-transform:uppercase; font-size:12px; font-weight:500; color:var(--muted); margin:0 0 12px; }
+  .ssp-sig__svg{ position:relative; display:block; width:100%; height:auto; }
+  .ssp-sig__line{ fill:none; stroke:var(--gold); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;
+    filter:drop-shadow(0 0 5px rgba(244,183,64,.28)); stroke-dasharray:2600; stroke-dashoffset:2600; }
+  .ssp-sig .in.is-visible .ssp-sig__line{ animation:ps-sig-draw 2.4s cubic-bezier(.22,.61,.36,1) forwards; animation-delay:calc(.15s + var(--i,0) * .25s); }
+  @keyframes ps-sig-draw{ to{ stroke-dashoffset:0; } }
+  /* Impulsion lumineuse qui circule en continu (effet moniteur) */
+  .ssp-sig__pulse{ fill:none; stroke:var(--goldsoft); stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;
+    filter:drop-shadow(0 0 7px rgba(251,215,120,.95)); stroke-dasharray:46 3000; stroke-dashoffset:1500; opacity:0; }
+  .ssp-sig .in.is-visible .ssp-sig__pulse{ opacity:1; animation:ps-sig-pulse 2.8s linear infinite; animation-delay:calc(2.5s + var(--i,0) * .5s); }
+  @keyframes ps-sig-pulse{ from{ stroke-dashoffset:1500; } to{ stroke-dashoffset:-70; } }
+  .ssp-sig__meta{ position:relative; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:16px; font-size:14px; color:var(--muted); }
+  .ssp-sig__meta strong{ color:var(--chalk); font-weight:600; }
+  .ssp-sig__meta .after{ text-align:right; }
+  @media(min-width:700px){ .ssp-sig__card{ padding:32px 34px 28px; } .ssp-sig__eyebrow{ font-size:13px; } .ssp-sig__meta{ font-size:15px; } }
+  @media(prefers-reduced-motion:reduce){ .ssp-sig__line{ animation:none !important; stroke-dashoffset:0 !important; } .ssp-sig__pulse{ display:none !important; } }
+</style>
+<div class="ssp-sig">
+  <div class="in">
+    <div class="ssp-sig__card">
+      <p class="ssp-sig__eyebrow">{{ sig_eyebrow }}</p>
+      <svg class="ssp-sig__svg" viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{{ sig_avant }} vers {{ sig_apres }}">
+        {%- if multi -%}
+          <polyline class="ssp-sig__line" style="--i:0" points="{{ sig_l1 }}"/>
+          <polyline class="ssp-sig__line" style="--i:1" points="{{ sig_l2 }}"/>
+          <polyline class="ssp-sig__line" style="--i:2" points="{{ sig_l3 }}"/>
+          <polyline class="ssp-sig__pulse" style="--i:0" points="{{ sig_l1 }}"/>
+          <polyline class="ssp-sig__pulse" style="--i:1" points="{{ sig_l2 }}"/>
+          <polyline class="ssp-sig__pulse" style="--i:2" points="{{ sig_l3 }}"/>
+        {%- else -%}
+          <polyline class="ssp-sig__line" points="{{ sig_points }}"/>
+          <polyline class="ssp-sig__pulse" points="{{ sig_points }}"/>
+        {%- endif -%}
+      </svg>
+      <div class="ssp-sig__meta">
+        <span class="before">Avant : <strong>{{ sig_avant }}</strong></span>
+        <span class="after">Après : <strong>{{ sig_apres }}</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Signature",
+  "settings": [
+    { "type": "paragraph", "content": "Courbe « avant → après » dynamique selon le guide (impulsion continue façon moniteur)." }
+  ],
+  "presets": [{ "name": "Produit — Signature" }]
+}
+{% endschema %}

@@ -1,0 +1,281 @@
+{%- comment -%}
+  PILOTA90 — Barre sticky "Ajouter au panier"
+  Rendu depuis layout/theme.liquid uniquement sur les templates produit.
+  Niveau 1 : observe la buy-box (.product-form__buttons) et déclenche le vrai bouton ATC → drawer natif.
+  Niveau 2 (filet de sécurité) : seuil de scroll + ajout AJAX /cart/add.js + redirection panier.
+  Étoiles : affichées uniquement si le produit a de vrais avis (metafields Judge.me).
+{%- endcomment -%}
+
+{%- liquid
+  assign p90_variant = product.selected_or_first_available_variant
+  assign p90_image = product.featured_image
+  assign p90_discount_pct = 0
+  if p90_variant.compare_at_price > p90_variant.price
+    assign p90_discount_pct = p90_variant.compare_at_price | minus: p90_variant.price | times: 100.0 | divided_by: p90_variant.compare_at_price | round
+  endif
+  assign p90_reviews_count = product.metafields.reviews.rating_count.value | plus: 0
+  assign p90_rating_val = 0
+  if p90_reviews_count > 0
+    assign p90_rating_val = product.metafields.reviews.rating.value.rating
+  endif
+-%}
+
+{% style %}
+  .p90-sticky-atc {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 20;
+    background: rgb(var(--color-background));
+    border-top: 1px solid rgba(var(--color-foreground), 0.08);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.8rem 1.5rem calc(0.8rem + env(safe-area-inset-bottom, 0px));
+    transform: translateY(110%);
+    transition: transform 0.25s ease;
+    will-change: transform;
+  }
+  .p90-sticky-atc.is-visible { transform: translateY(0); }
+  body.p90-sticky-active { padding-bottom: 8.4rem; }
+
+  .p90-sticky-atc__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+  .p90-sticky-atc__img {
+    width: 5.2rem;
+    height: 5.2rem;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .p90-sticky-atc__info { min-width: 0; flex: 1; }
+  .p90-sticky-atc__title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgba(var(--color-foreground), 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .p90-sticky-atc__price {
+    margin: 0.2rem 0 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .p90-sticky-atc__price s { opacity: 0.55; }
+  .p90-sticky-atc__price strong { font-size: 1.5rem; }
+  .p90-sticky-atc__badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+    background: rgba(var(--color-button), 0.12);
+    color: rgb(var(--color-button));
+  }
+  .p90-sticky-atc__stars {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #E8A33D;
+    white-space: nowrap;
+  }
+  .p90-sticky-atc__hint {
+    display: none;
+    font-size: 1.15rem;
+    color: rgba(var(--color-foreground), 0.65);
+  }
+  .p90-sticky-atc__btn {
+    flex-shrink: 0;
+    min-height: 4.8rem;
+    padding: 0 2rem;
+    border: none;
+    border-radius: var(--buttons-radius, 4px);
+    background: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.06rem;
+    cursor: pointer;
+  }
+  .p90-sticky-atc__btn:disabled { opacity: 0.6; cursor: default; }
+
+  @media screen and (min-width: 750px) {
+    .p90-sticky-atc__hint { display: inline; }
+    .p90-sticky-atc__btn { padding: 0 3.2rem; }
+  }
+{% endstyle %}
+
+<div class="p90-sticky-atc" id="P90StickyAtc" aria-hidden="true">
+  <div class="p90-sticky-atc__inner">
+    {%- if p90_image -%}
+      <img
+        src="{{ p90_image | image_url: width: 104, height: 104, crop: 'center' }}"
+        alt=""
+        width="52"
+        height="52"
+        loading="lazy"
+        class="p90-sticky-atc__img"
+      >
+    {%- endif -%}
+    <div class="p90-sticky-atc__info">
+      <p class="p90-sticky-atc__title">{{ product.title | escape }}</p>
+      <p class="p90-sticky-atc__price">
+        {%- if p90_discount_pct > 0 -%}
+          <s>{{ p90_variant.compare_at_price | money }}</s>
+        {%- endif -%}
+        <strong>{{ p90_variant.price | money }}</strong>
+        {%- if p90_discount_pct > 0 -%}
+          <span class="p90-sticky-atc__badge">-{{ p90_discount_pct }}%</span>
+        {%- endif -%}
+        {%- if p90_reviews_count > 0 -%}
+          <span class="p90-sticky-atc__stars" aria-label="Note {{ p90_rating_val | round: 1 }} sur 5, {{ p90_reviews_count }} avis">★ {{ p90_rating_val | round: 1 }} ({{ p90_reviews_count }})</span>
+        {%- endif -%}
+        <span class="p90-sticky-atc__hint">📥 Accès immédiat</span>
+      </p>
+    </div>
+    <button
+      type="button"
+      class="p90-sticky-atc__btn"
+      id="P90StickyBtn"
+      {% unless p90_variant.available %}disabled{% endunless %}
+    >
+      {%- if p90_variant.available -%}Ajouter au panier{%- else -%}Épuisé{%- endif -%}
+    </button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    'use strict';
+    var bar = document.getElementById('P90StickyAtc');
+    var btn = document.getElementById('P90StickyBtn');
+    if (!bar || !btn) return;
+
+    var variantId = {{ p90_variant.id | json }};
+    var cartAddUrl = {{ routes.cart_add_url | append: '.js' | json }};
+    var cartUrl = {{ routes.cart_url | json }};
+    var buyBox = null;
+    var tries = 0;
+
+    function setVisible(state) {
+      if (state) {
+        var pv = document.getElementById('preview-bar-iframe');
+        bar.style.bottom = pv ? (pv.offsetHeight || 72) + 'px' : '0px';
+      }
+      bar.classList.toggle('is-visible', state);
+      bar.setAttribute('aria-hidden', state ? 'false' : 'true');
+      document.body.classList.toggle('p90-sticky-active', state);
+    }
+
+    function findBuyBox() {
+      var el = document.querySelector('.product-form__buttons');
+      if (el) return el;
+      var forms = document.querySelectorAll('form[action*="/cart/add"]');
+      for (var i = 0; i < forms.length; i++) {
+        var f = forms[i];
+        if ((f.id || '').indexOf('installment') !== -1) continue;
+        var input = f.querySelector('[name="id"]');
+        if (input && String(input.value) === String(variantId)) return f;
+      }
+      return null;
+    }
+
+    function watchWithObserver(target) {
+      var io = new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        setVisible(!e.isIntersecting && e.boundingClientRect.top < 0);
+      }, { threshold: 0 });
+      io.observe(target);
+    }
+
+    function watchWithScroll() {
+      var onScroll = function () { setVisible(window.scrollY > 500); };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    function init() {
+      buyBox = findBuyBox();
+      if (!buyBox && tries < 10) {
+        tries++;
+        setTimeout(init, 300);
+        return;
+      }
+      if (buyBox && 'IntersectionObserver' in window) {
+        watchWithObserver(buyBox);
+      } else {
+        watchWithScroll();
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+
+    function findRealButton() {
+      var scope = buyBox || document;
+      return (
+        scope.querySelector('.product-form__submit') ||
+        scope.querySelector('button[name="add"]') ||
+        scope.querySelector('[type="submit"]')
+      );
+    }
+
+    var busy = false;
+    btn.addEventListener('click', function () {
+      if (busy || btn.disabled) return;
+      busy = true;
+      var label = btn.textContent;
+      btn.textContent = 'Ajout en cours…';
+
+      var finished = false;
+      function done(ok) {
+        if (finished) return;
+        finished = true;
+        btn.textContent = ok ? '✓ Ajouté !' : label;
+        setTimeout(function () {
+          btn.textContent = label;
+          busy = false;
+        }, 2000);
+      }
+
+      var realBtn = findRealButton();
+      if (realBtn && !realBtn.disabled) {
+        try {
+          var evtName = (typeof PUB_SUB_EVENTS !== 'undefined' && PUB_SUB_EVENTS.cartUpdate) || 'cart-update';
+          if (typeof subscribe === 'function') {
+            var unsubscribe = subscribe(evtName, function () {
+              done(true);
+              if (typeof unsubscribe === 'function') unsubscribe();
+            });
+          }
+        } catch (err) { /* silencieux */ }
+        setTimeout(function () { done(true); }, 1800);
+        realBtn.click();
+        return;
+      }
+
+      fetch(cartAddUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('add failed');
+          window.location.href = cartUrl;
+        })
+        .catch(function () {
+          done(false);
+        });
+    });
+  })();
+</script>

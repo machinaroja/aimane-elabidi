@@ -1,0 +1,35 @@
+{%- comment %} PILOTA90 — Carte guide de la grille d'accueil. Usage : {% render 'p90-guide-card', product: product %} {% endcomment -%}
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price and product.compare_at_price > product.price
+    assign on_sale = true
+    assign pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+  assign is_best = false
+  if product.tags contains 'meilleure-vente'
+    assign is_best = true
+  endif
+-%}
+<a href="{{ product.url }}" class="card">
+  <div class="cover">
+    {%- if on_sale or is_best -%}
+    <div class="badges">
+      {%- if is_best -%}<span class="badge badge--best">Meilleure vente</span>{%- endif -%}
+      {%- if on_sale -%}<span class="badge badge--promo">Promo −{{ pct }} %</span>{%- endif -%}
+    </div>
+    {%- endif -%}
+    {%- if product.featured_image -%}
+      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="400" height="600">
+    {%- endif -%}
+  </div>
+  <div class="body">
+    <div class="title">{{ product.title | remove: 'PILOTA90 – ' | remove: 'PILOTA90 - ' | remove: 'PILOTA90 ' }}</div>
+    <div class="foot">
+      <span class="prices">
+        {%- if on_sale -%}<span class="compare">{{ product.compare_at_price | money }}</span>{%- endif -%}
+        <span class="price{% if on_sale %} price--sale{% endif %}">{{ product.price | money }}</span>
+      </span>
+      <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,47 @@
+{%- comment %} PILOTA90 — Produit : LE DÉTAIL (rend product.description proprement) {% endcomment -%}
+<style>
+  .ssp-det{ --night:#0E1A15; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#B9C6BE;
+    box-sizing:border-box; position:relative; overflow:hidden; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ssp-det *,.ssp-det *::before,.ssp-det *::after{ box-sizing:border-box; }
+  .ssp-det::before{ content:''; position:absolute; top:-8%; left:50%; transform:translateX(-50%); width:560px; max-width:130%; height:230px; pointer-events:none;
+    background:radial-gradient(circle at 50% 0%, rgba(244,183,64,.10), rgba(14,26,21,0) 70%); }
+  .ssp-det .in{ position:relative; max-width:760px; margin:0 auto; }
+  .ssp-det .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; text-align:center; }
+  .ssp-det .in > h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,36px); line-height:1.12; margin:12px 0 30px; letter-spacing:-.01em; text-align:center; }
+  .ssp-det .content{ color:var(--muted); font-size:15.5px; line-height:1.72; }
+  .ssp-det .content > *:first-child{ margin-top:0; }
+  .ssp-det .content > p:first-of-type{ font-size:18px; line-height:1.6; color:var(--chalk); }
+  .ssp-det .content h1,.ssp-det .content h2,.ssp-det .content h3,.ssp-det .content h4{ font-family:'Oswald',sans-serif; color:var(--chalk); font-weight:600; letter-spacing:.02em; margin:32px 0 12px; line-height:1.25; }
+  .ssp-det .content h1{ font-size:23px; } .ssp-det .content h2{ font-size:21px; } .ssp-det .content h3{ font-size:18px; } .ssp-det .content h4{ font-size:16px; }
+  .ssp-det .content h2::after{ content:''; display:block; width:40px; height:3px; border-radius:3px; margin-top:9px; background:linear-gradient(90deg,var(--gold),rgba(244,183,64,0)); }
+  .ssp-det .content p{ margin:0 0 14px; }
+  .ssp-det .content strong{ color:var(--chalk); font-weight:600; }
+  .ssp-det .content em{ font-style:normal; color:var(--gold); }
+  .ssp-det .content a{ color:var(--gold); }
+  .ssp-det .content ul,.ssp-det .content ol{ margin:0 0 18px; padding-left:0; list-style:none; }
+  .ssp-det .content ul li{ position:relative; padding-left:28px; margin:0 0 11px; }
+  .ssp-det .content ul li::before{ content:''; position:absolute; left:5px; top:8px; width:8px; height:8px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px rgba(244,183,64,.12); }
+  .ssp-det .content ol{ counter-reset:d; }
+  .ssp-det .content ol li{ position:relative; padding-left:38px; margin:0 0 12px; counter-increment:d; }
+  .ssp-det .content ol li::before{ content:counter(d); position:absolute; left:0; top:-2px; width:26px; height:26px; border:1px solid rgba(244,183,64,.4); border-radius:50%; color:var(--gold); font-family:'Oswald',sans-serif; font-size:13px; display:flex; align-items:center; justify-content:center; }
+  .ssp-det .content blockquote{ margin:26px 0; padding:6px 0 6px 22px; border-left:3px solid var(--gold); font-family:'Fraunces',serif; font-style:italic; font-size:clamp(18px,4.5vw,22px); line-height:1.5; color:var(--chalk); }
+  .ssp-det .content img{ max-width:100%; height:auto; border-radius:14px; margin:14px 0; }
+  .ssp-det .content hr{ border:none; border-top:1px solid rgba(241,238,230,.1); margin:26px 0; }
+</style>
+<div class="ssp-det">
+  <div class="in">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+    <div class="content rte">{{ product.description }}</div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Le détail",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Au programme" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ce que contient ce guide" }
+  ],
+  "presets": [{ "name": "Produit — Le détail" }]
+}
+{% endschema %}

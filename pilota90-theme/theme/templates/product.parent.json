@@ -1,0 +1,285 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "p90_shop_stars": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-proof-offers', part: 'stars' %}"
+          }
+        },
+        "title": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div class=\"product__title\"><h1>{{ product.title | escape }}</h1></div>"
+          }
+        },
+        "p90_offers": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-proof-offers', part: 'offers' %}"
+          }
+        },
+        "p90_sous_titre": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-conversion', part: 'sous_titre' %}"
+          }
+        },
+        "reviews_badge": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-badge-avis' %}"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "custom_liquid_cm9jxw": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-note-numerique' %}"
+          }
+        },
+        "p90_sous_prix": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-conversion', part: 'sous_prix' %}"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "disabled": true,
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "p90_urgence": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-conversion', part: 'urgence' %}"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "p90_pack_dyn": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-pack-dyn' %}"
+          }
+        },
+        "p90_paiement": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-conversion', part: 'paiement' %}"
+          }
+        },
+        "p90_avantages": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-avantages' %}"
+          }
+        },
+        "p90_coach_social": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'p90-coach-social' %}"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "p90_shop_stars",
+        "title",
+        "p90_offers",
+        "p90_sous_titre",
+        "reviews_badge",
+        "price",
+        "custom_liquid_cm9jxw",
+        "p90_sous_prix",
+        "variant_picker",
+        "p90_urgence",
+        "buy_buttons",
+        "p90_pack_dyn",
+        "p90_paiement",
+        "p90_avantages",
+        "p90_coach_social"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 20
+      }
+    },
+    "ssp_detail": {
+      "type": "ss-prod-detail",
+      "settings": {
+        "eyebrow": "Au programme",
+        "heading": "Ce que vous allez recevoir"
+      }
+    },
+    "ssp_benefits": {
+      "type": "ss-prod-benefits",
+      "settings": {
+        "eyebrow": "Pourquoi cette méthode",
+        "heading": "Concrète, complète, faite pour les parents",
+        "t1": "Concret, pas théorique",
+        "d1": "Des phrases prêtes à dire, des repères âge par âge et 6 fiches à imprimer — pas un cours de psychologie.",
+        "t2": "Fondé sur la méthode",
+        "d2": "Neurobiologie et psychologie du sport, traduites pour les parents — quel que soit le sport de votre enfant.",
+        "t3": "Accès immédiat",
+        "d3": "PDF de 93 pages reçu tout de suite après l'achat, lisible sur téléphone, tablette ou papier.",
+        "t4": "Utile de 5 à 25 ans",
+        "d4": "À rouvrir à chaque étape : premier club, sélection, blessure, double carrière sport-études."
+      }
+    },
+    "ssp_reviews": {
+      "type": "ss-prod-reviews",
+      "settings": {
+        "eyebrow": "Avis clients",
+        "heading": "Ils l'ont lu, ils en parlent"
+      }
+    },
+    "17856033931d0231b7": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_aAaxFb": {
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "maxwidth": 1080
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_aAaxFb"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "ssp_signal": {
+      "type": "ss-prod-signal",
+      "settings": {}
+    },
+    "ssp_radar": {
+      "type": "ss-prod-radar",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Le pilier travaillé",
+        "heading": "Ce que ce guide entraîne"
+      }
+    },
+    "ssp_compare": {
+      "type": "ss-prod-compare",
+      "settings": {
+        "eyebrow": "La différence",
+        "heading": "Ce qui change, concrètement",
+        "r1": "Le trajet retour après un match raté",
+        "r2": "Ce que vous dites avant la compétition",
+        "r3": "Quand il veut arrêter",
+        "r4": "Quand le coach ne le fait pas jouer",
+        "r5": "Sport et études : tenir les deux"
+      }
+    },
+    "ssp_faq": {
+      "type": "ss-prod-faq",
+      "settings": {
+        "eyebrow": "Questions fréquentes",
+        "heading": "Tout ce qu'il faut savoir",
+        "q1": "C'est quoi exactement ?",
+        "r1": "Une méthode complète de 93 pages au format PDF, pour les parents de jeunes sportifs : les mots justes à dire (et à éviter), les repères âge par âge, le plan sport + études et 6 fiches pratiques à imprimer.",
+        "q2": "Comment je le reçois ?",
+        "r2": "Immédiatement après le paiement : le lien de téléchargement s'affiche et vous est aussi envoyé par e-mail. Pas d'attente, pas de livraison physique.",
+        "q3": "Sur quels appareils je peux le lire ?",
+        "r3": "Sur tout : téléphone, tablette, ordinateur. Le PDF s'ouvre partout et vous pouvez imprimer les fiches pratiques.",
+        "q4": "À partir de quel âge c'est utile ?",
+        "r4": "De 5 à 25 ans : du premier club jusqu'au haut niveau et à la double carrière. Chaque étape a ses repères — vous lisez celle qui vous concerne aujourd'hui, et vous y revenez plus tard.",
+        "q5": "Le paiement est-il sécurisé ?",
+        "r5": "Oui. Le paiement passe par l'infrastructure sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises.",
+        "q6": "Et si ça ne me convient pas ?",
+        "r6": "Garantie 14 jours, satisfait ou remboursé : un simple e-mail à contact@pilota90.com et nous vous remboursons intégralement. Sans question, sans justificatif."
+      }
+    },
+    "ssp_cta": {
+      "type": "ss-prod-cta",
+      "settings": {
+        "heading_before": "Prêt à tenir",
+        "heading_highlight": "votre rôle ?",
+        "subtext": "Reçu tout de suite, lu ce soir. Applicable dès le prochain trajet retour.",
+        "button_label": "Obtenir mon accès immédiat"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "<strong>Découvrez aussi</strong>",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-2",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": true,
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    },
+    "178560338585ededf9": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "ssp_detail",
+    "ssp_benefits",
+    "ssp_reviews",
+    "17856033931d0231b7",
+    "ssp_signal",
+    "ssp_radar",
+    "ssp_compare",
+    "ssp_faq",
+    "ssp_cta",
+    "related-products",
+    "178560338585ededf9"
+  ]
+}
