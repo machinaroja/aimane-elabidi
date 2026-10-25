@@ -1,0 +1,17 @@
+{%- comment -%}
+  Renvoie le nom d'emblème correspondant à un type de produit (rayon).
+  Paramètre : type (texte, ex. « Développement personnel »)
+{%- endcomment -%}
+{%- liquid
+  assign key = type | handleize
+  case key
+    when 'developpement-personnel'
+      echo 'steps'
+    when 'argent'
+      echo 'coin'
+    when 'pouvoir-et-influence', 'pouvoir', 'influence'
+      echo 'column'
+    else
+      echo 'rings'
+  endcase
+-%}

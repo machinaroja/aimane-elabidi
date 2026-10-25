@@ -1,0 +1,87 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  if section.settings.logo != blank
+    assign logo_height = section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round
+  endif
+-%}
+<header class="site-header on-dark">
+  <div class="wrap site-header__bar">
+    <a href="{{ routes.root_url }}" class="site-header__home" aria-label="{{ shop.name }}, {{ 'general.home' | t | downcase }}">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 480 | image_tag:
+          class: 'logo-image',
+          width: section.settings.logo_width,
+          height: logo_height,
+          widths: '160, 240, 320, 480',
+          alt: shop.name,
+          loading: 'eager'
+        }}
+      {%- else -%}
+        {%- comment -%} Logo officiel BIBLIODOR (vectorisé, version pour fond sombre : nom en crème, « OR » en or). {%- endcomment -%}
+        <img class="logo-image" src="{{ 'logo-bibliodor-v2-480.png' | asset_url }}" width="{{ section.settings.logo_width }}" height="{{ section.settings.logo_width | times: 73 | divided_by: 480 }}" alt="{{ shop.name }}">
+      {%- endif -%}
+    </a>
+
+    {%- if menu.links.size > 0 -%}
+      <nav aria-label="{{ 'general.main_nav' | t }}" class="site-nav">
+        <ul>
+          {%- for link in menu.links -%}
+            <li>
+              <a href="{{ link.url }}"{% if link.current or link.child_active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="tools">
+      <a href="{{ routes.search_url }}" class="tool">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <span class="tool__label">{{ 'general.search' | t }}</span>
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="tool">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+          <span class="tool__label">{{ 'general.account' | t }}</span>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="tool" data-drawer-open>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M5 7h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 7Z"/><path d="M9 9.5V6a3 3 0 0 1 6 0v3.5"/></svg>
+        <span class="tool__label tool__label--wide">{{ 'general.cart' | t }}</span>
+        <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+      {%- if menu.links.size > 0 -%}
+        <details class="menu">
+          <summary>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <span class="visually-hidden">{{ 'general.menu' | t }}</span>
+          </summary>
+          <nav aria-label="{{ 'general.mobile_nav' | t }}">
+            <ul>
+              {%- for link in menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "class": "header-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Facultatif : le logo officiel BIBLIODOR est inclus dans le thème. Utilisez une version claire, prévue pour fond sombre."
+    },
+    { "type": "range", "id": "logo_width", "label": "Largeur du logo", "min": 120, "max": 260, "step": 4, "unit": "px", "default": 184 },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

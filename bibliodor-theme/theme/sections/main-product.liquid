@@ -1,0 +1,280 @@
+{%- liquid
+  assign subtitle = product.metafields.custom.sous_titre.value
+  assign takeaways = product.metafields.custom.points_cles.value
+  assign contents = product.metafields.custom.sommaire.value
+  assign pages = product.metafields.custom.pages.value
+  assign formats = product.metafields.custom.formats.value
+  capture rayon_handle
+    render 'rayon', product: product, output: 'handle'
+  endcapture
+  assign rayon_handle = rayon_handle | strip
+  assign rayon = nil
+  if rayon_handle != blank
+    assign rayon = collections[rayon_handle]
+    if rayon.handle == blank
+      assign rayon = nil
+    endif
+  endif
+  capture rayon_label
+    render 'rayon', product: product, output: 'title'
+  endcapture
+  assign rayon_label = rayon_label | strip
+  assign num = ''
+  for t in product.tags
+    if t.size == 3 and t contains 'n0'
+      assign num = t
+    endif
+  endfor
+  assign is_pack = false
+  if product.type == 'Pack'
+    assign is_pack = true
+  endif
+  assign pack = all_products['pack-4-ebooks-bibliotheque-essentielle']
+  comment
+    Aperçu des pages : uniquement pour les titres dont les images apercu-nXX-1..3.jpg existent dans les assets du thème.
+  endcomment
+  assign apercu_nums = 'n01,n02,n03,n04,n05,n06' | split: ','
+  assign show_apercu = false
+  if num != blank and apercu_nums contains num
+    assign show_apercu = true
+  endif
+  comment
+    Trilogie IA : prix des 3 guides avec l'offre « 2 achetés, le 3e offert », pour la barre d'achat fixe.
+  endcomment
+  assign trilogy_total = 0
+  assign trilogy_full = 0
+  assign trilogy_count = 0
+  assign trilogy_min = 0
+  if product.tags contains 'trilogie-ia'
+    assign trilogy_handles = 'l-intelligence-artificielle-de-a-a-z,gagner-de-l-argent-avec-l-ia,les-200-prompts-essentiels' | split: ','
+    for h in trilogy_handles
+      if h == product.handle
+        assign tp = product
+      else
+        assign tp = all_products[h]
+      endif
+      if tp and tp.available
+        assign tprice = tp.selected_or_first_available_variant.price
+        assign trilogy_full = trilogy_full | plus: tprice
+        assign trilogy_count = trilogy_count | plus: 1
+        if trilogy_min == 0 or tprice < trilogy_min
+          assign trilogy_min = tprice
+        endif
+      endif
+    endfor
+    if trilogy_count == 3
+      assign trilogy_total = trilogy_full | minus: trilogy_min
+    endif
+  endif
+-%}
+<nav class="wrap breadcrumb" aria-label="{{ 'general.breadcrumb' | t }}">
+  <ol>
+    <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+    {%- if rayon -%}<li><a href="{{ rayon.url }}">{{ rayon.title }}</a></li>{%- endif -%}
+    <li><span aria-current="page">{{ product.title }}</span></li>
+  </ol>
+</nav>
+
+<section class="section wrap book-feature book-feature--sticky product-hero" aria-labelledby="product-title">
+  <div class="book-feature__cover">
+    {% render 'book-cover', product: product, loading: 'eager', sizes: '(min-width: 52rem) 30rem, 90vw' %}
+  </div>
+  <div>
+    {%- if rayon -%}<p class="kicker">{{ rayon.title }}</p>{%- elsif is_pack -%}<p class="kicker">Offre pack</p>{%- elsif rayon_label != blank -%}<p class="kicker">{{ rayon_label }}</p>{%- endif -%}
+    <h1 id="product-title">{{ product.title }}</h1>
+    {%- if subtitle != blank -%}<p class="subtitle">{{ subtitle }}</p>{%- endif -%}
+
+    {%- if pages or formats -%}
+      <p class="facts facts--top">
+        {%- if pages %}<span>{{ pages }} pages,</span>{% endif -%}
+        {%- if formats %} <span>{{ formats }},</span>{% endif %} <span>téléchargement immédiat</span>
+      </p>
+    {%- endif -%}
+
+    {%- if takeaways != blank -%}
+      <h2 class="book-feature__label">{{ 'products.takeaways' | t }}</h2>
+      <ul class="takeaways">
+        {%- for item in takeaways -%}<li>{{ item }}</li>{%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="buybox">
+    <div class="buy" id="acheter">
+      {% render 'price', product: product %}
+      {% render 'add-to-cart', product: product, form_id: 'product-form' %}
+    </div>
+
+    <ul class="reassurance" aria-label="Nos engagements">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>Paiement sécurisé</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>Téléchargement immédiat</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>Lisible sur tous tes écrans</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5 9 17l11-11"/></svg>Fichier remplacé s'il pose problème</li>
+    </ul>
+    </div>
+    <p class="facts">{{ 'products.delivery_value' | t }}. {{ 'cart.taxes' | t }}</p>
+  </div>
+</section>
+
+{%- if show_apercu -%}
+  <section class="section section--paper apercu" aria-labelledby="apercu-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">Feuillette avant d'acheter</p>
+        <h2 id="apercu-title">Un aperçu des pages</h2>
+        <p>Le sommaire, un extrait de chapitre et le carnet pratique, tels qu'ils apparaissent dans ton PDF.</p>
+      </header>
+      <ul class="apercu__pages">
+        {%- for i in (1..3) -%}
+          {%- capture f -%}apercu-{{ num }}-{{ i }}.jpg{%- endcapture -%}
+          <li>
+            <a href="{{ f | asset_url }}" target="_blank" rel="noopener">
+              <img src="{{ f | asset_url }}" alt="Aperçu de la page {{ i }} de « {{ product.title | escape }} »" width="642" height="910" loading="lazy">
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+<div class="wrap product-details">
+  <div>
+    {%- if product.description != blank -%}
+      <h2>{{ 'products.about' | t }}</h2>
+      <div class="rte">{{ product.description }}</div>
+    {%- endif -%}
+    {%- if contents != blank -%}
+      <h2 class="contents-title">{% if is_pack %}Les livres du pack{% else %}{{ 'products.contents' | t }}{% endif %}</h2>
+      <ol class="contents">
+        {%- for chapter in contents -%}<li>{{ chapter }}</li>{%- endfor -%}
+      </ol>
+    {%- endif -%}
+  </div>
+  <aside aria-labelledby="specs">
+    <h2 id="specs">{{ 'products.details' | t }}</h2>
+    <dl class="spec">
+      {%- if rayon -%}<dt>{{ 'products.category' | t }}</dt><dd><a href="{{ rayon.url }}">{{ rayon.title }}</a></dd>{%- endif -%}
+      {%- if pages -%}<dt>{{ 'products.pages' | t }}</dt><dd>{{ pages }}</dd>{%- endif -%}
+      {%- if formats -%}<dt>{{ 'products.formats' | t }}</dt><dd>{{ formats }}</dd>{%- endif -%}
+      <dt>Langue</dt><dd>Français</dd>
+      <dt>{{ 'products.delivery' | t }}</dt><dd>{{ 'products.delivery_value' | t }}</dd>
+    </dl>
+
+    {%- if is_pack == false and pack and pack.available -%}
+      <div class="pack-upsell">
+        <p class="kicker">Encore mieux</p>
+        <p class="pack-upsell__title">{{ pack.title }}</p>
+        <p>4 ebooks pour {{ pack.price | money }} au lieu de {{ pack.compare_at_price | money }}.</p>
+        <a class="btn btn-ghost" href="{{ pack.url }}">Voir le pack</a>
+      </div>
+    {%- endif -%}
+
+    <div class="faq faq--product">
+      <h2>Questions fréquentes</h2>
+      <details>
+        <summary>Comment je reçois {% if is_pack %}mes ebooks{% else %}mon ebook{% endif %} ?</summary>
+        <div><p>Juste après le paiement : le lien de téléchargement s'affiche sur la page de confirmation et t'est envoyé par e-mail.</p></div>
+      </details>
+      <details>
+        <summary>Sur quoi je peux le lire ?</summary>
+        <div><p>C'est un PDF : il s'ouvre sur téléphone, tablette, liseuse et ordinateur. Tu peux aussi l'imprimer pour remplir les exercices.</p></div>
+      </details>
+      <details>
+        <summary>Comment marche l'offre « 2 achetés, le 3ᵉ offert » ?</summary>
+        <div><p>Ajoute 3 ebooks différents au panier : le moins cher est offert automatiquement, sans code. L'offre ne s'applique pas aux packs, déjà à prix réduit.</p></div>
+      </details>
+      <details>
+        <summary>Et si mon fichier pose problème ?</summary>
+        <div><p>Écris-nous avec ton numéro de commande : on te renvoie le fichier ou on te rembourse. Détails dans notre <a href="/pages/remboursement">politique de remboursement</a>.</p></div>
+      </details>
+    </div>
+  </aside>
+</div>
+
+{%- if rayon and rayon.products_count > 1 -%}
+  <section class="section wrap" aria-labelledby="related">
+    <header class="section-head section-head--row">
+      <h2 id="related">{{ 'products.related' | t }}</h2>
+      <a class="text-link" href="{{ rayon.url }}">{{ rayon.title }}</a>
+    </header>
+    <ul class="book-grid">
+      {%- assign shown = 0 -%}
+      {%- for p in rayon.products -%}
+        {%- if p.id != product.id and shown < 4 -%}
+          {% render 'book-card', product: p %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}
+
+{%- comment -%} Barre d'achat fixe : reste à l'écran quand on descend (mobile et ordinateur) {%- endcomment -%}
+{%- if product.selected_or_first_available_variant.available -%}
+  <div class="sticky-buy" data-sticky-buy hidden>
+    <div class="sticky-buy__inner">
+      {%- if product.featured_image -%}
+        <img class="sticky-buy__thumb" src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="56" height="56" loading="lazy">
+      {%- endif -%}
+      <div class="sticky-buy__info">
+        <span class="sticky-buy__title">{{ product.title }}</span>
+        <span class="sticky-buy__meta">
+          {% render 'price', product: product, class: 'sticky-buy__price' %}
+          <span class="sticky-buy__offer">{% if is_pack %}29,70 € d’économie{% elsif trilogy_total > 0 %}🎁 Trilogie IA : 3ᵉ offert{% else %}🎁 2 achetés, le 3ᵉ offert{% endif %}</span>
+        </span>
+      </div>
+      {% render 'add-to-cart', product: product, form_id: 'sticky-form' %}
+      {%- if trilogy_total > 0 -%}
+        <button type="button" class="btn sticky-buy__trilogy" data-trilogy-all>Les 3 · <b>{{ trilogy_total | money }}</b></button>
+      {%- endif -%}
+    </div>
+  </div>
+  <script>
+    (() => {
+      const bar = document.querySelector('[data-sticky-buy]');
+      const target = document.getElementById('acheter');
+      if (!bar || !target) return;
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const show = target.getBoundingClientRect().bottom < 0;
+        if (bar.hidden === !show) return;
+        bar.hidden = !show;
+        document.body.classList.toggle('has-sticky-buy', show);
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    })();
+  </script>
+{%- endif -%}
+
+{%- comment -%} Données structurées : uniquement des informations réelles du produit. {%- endcomment -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    "inLanguage": "fr",
+    "bookFormat": "https://schema.org/EBook",
+    {%- if product.featured_image %}"image": {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},{% endif %}
+    {%- if pages %}"numberOfPages": {{ pages | json }},{% endif %}
+    "publisher": { "@type": "Organization", "name": {{ shop.name | json }} },
+    "description": {{ product.description | strip_html | strip_newlines | truncate: 300 | json }},
+    "offers": {
+      "@type": "Offer",
+      "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+      "url": {{ request.origin | append: product.url | json }}
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Fiche ebook"
+}
+{% endschema %}

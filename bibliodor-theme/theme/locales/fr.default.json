@@ -1,0 +1,119 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "skip_to_content": "Aller au contenu",
+    "home": "Accueil",
+    "menu": "Ouvrir le menu",
+    "search": "Rechercher un ebook",
+    "cart": "Panier",
+    "account": "Mon compte",
+    "back_home": "Retour à l’accueil",
+    "breadcrumb": "Fil d’Ariane",
+    "pagination": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "main_nav": "Navigation principale",
+    "mobile_nav": "Menu mobile"
+  },
+  "products": {
+    "cover_of": "Couverture de « {{ title }} »",
+    "add_to_cart": "Ajouter au panier",
+    "view_cart": "Voir le panier",
+    "added": "Ajouté au panier.",
+    "add_error": "L’ajout au panier a échoué. Réessaie dans un instant.",
+    "unavailable": "Indisponible",
+    "sale_price": "Prix réduit",
+    "regular_price": "Prix habituel",
+    "takeaways": "Ce que tu en retireras",
+    "contents": "Sommaire",
+    "about": "Présentation",
+    "details": "Caractéristiques",
+    "pages": "Pages",
+    "pages_count": "{{ count }} pages",
+    "formats": "Formats",
+    "category": "Rayon",
+    "delivery": "Livraison",
+    "delivery_value": "Téléchargement après confirmation du paiement",
+    "related": "Dans le même rayon"
+  },
+  "collections": {
+    "count": {
+      "one": "{{ count }} titre",
+      "other": "{{ count }} titres"
+    },
+    "soon": "Bientôt",
+    "sort": "Trier",
+    "apply": "Appliquer",
+    "all": "Tous",
+    "empty": "Aucun ebook ne correspond pour l’instant.",
+    "empty_cta": "Voir tout le catalogue"
+  },
+  "search": {
+    "title": "Rechercher",
+    "label": "Titre, thème ou mot-clé",
+    "submit": "Rechercher",
+    "results": {
+      "one": "{{ count }} résultat pour « {{ terms }} »",
+      "other": "{{ count }} résultats pour « {{ terms }} »"
+    },
+    "none": "Aucun résultat pour « {{ terms }} ». Essaie un mot plus court ou parcours les rayons."
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Ton panier est vide.",
+    "empty_cta": "Parcourir le catalogue",
+    "remove": "Retirer",
+    "remove_label": "Retirer « {{ title }} » du panier",
+    "subtotal": "Total",
+    "checkout": "Passer au paiement",
+    "secure_note": "Le paiement se fait sur la page sécurisée de Shopify. Tes ebooks sont téléchargeables dès la confirmation du paiement, et un lien t’est envoyé par e-mail.",
+    "taxes": "TVA non applicable, art. 293 B du CGI.",
+    "items": "Articles du panier",
+    "summary": "Récapitulatif",
+    "update_error": "La mise à jour du panier a échoué. Recharge la page et réessaie."
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "Adresse e-mail",
+    "email_hint": "Nous te répondons à cette adresse.",
+    "subject": "Sujet",
+    "order": "Numéro de commande (facultatif)",
+    "message": "Ton message",
+    "submit": "Envoyer le message",
+    "success": "Message envoyé. Nous te répondons dès que possible.",
+    "error_title": "Le message n’a pas été envoyé. Corrige les champs suivants :",
+    "required": "obligatoire"
+  },
+  "customer": {
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "orders": "Mes commandes",
+    "library": "Ma bibliothèque",
+    "no_orders": "Tu n’as pas encore passé de commande.",
+    "order": "Commande",
+    "date": "Date",
+    "payment": "Paiement",
+    "total": "Total",
+    "view": "Voir la commande {{ name }}",
+    "back": "Retour au compte",
+    "downloads_note": "Tes ebooks se téléchargent depuis la page de confirmation de commande et depuis l’e-mail reçu après l’achat."
+  },
+  "404": {
+    "title": "Page introuvable",
+    "text": "Cette page n’existe pas ou a été déplacée. Le catalogue, lui, est toujours là."
+  },
+  "password": {
+    "title": "Ouverture prochaine",
+    "enter": "Accès réservé",
+    "password": "Mot de passe",
+    "submit": "Entrer"
+  }
+}

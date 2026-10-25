@@ -1,0 +1,51 @@
+<section class="trust" aria-label="{{ section.settings.label | escape }}">
+  <ul class="wrap trust__list">
+    {%- for block in section.blocks -%}
+      <li class="trust__item" {{ block.shopify_attributes }}>
+        {%- case block.settings.icon -%}
+          {%- when 'download' -%}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+          {%- when 'lock' -%}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+          {%- when 'device' -%}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg>
+          {%- when 'gift' -%}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M4 13h16M12 9v11M12 9c-1.5-3.5-5-3.5-5-1.5S10 9 12 9Zm0 0c1.5-3.5 5-3.5 5-1.5S14 9 12 9Z"/></svg>
+          {%- else -%}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12.5 9 17l11-11"/></svg>
+        {%- endcase -%}
+        <strong>{{ block.settings.title }}</strong>
+        <span>{{ block.settings.text }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Bande de garanties",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Nom pour les lecteurs d’écran", "default": "Nos engagements" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Garantie",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "download", "label": "Téléchargement" },
+            { "value": "lock", "label": "Cadenas" },
+            { "value": "device", "label": "Écran" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "check", "label": "Coche" }
+          ],
+          "default": "check"
+        },
+        { "type": "text", "id": "title", "label": "Titre" },
+        { "type": "text", "id": "text", "label": "Texte" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Bande de garanties" }]
+}
+{% endschema %}

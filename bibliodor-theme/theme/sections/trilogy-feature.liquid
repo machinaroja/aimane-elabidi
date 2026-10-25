@@ -1,0 +1,85 @@
+{%- comment -%}
+  Mise en avant d'une série de livres vendue ensemble grâce à la remise automatique
+  « 2 ebooks achetés, le 3e offert » (aucune remise propre à cette section).
+  Seuls les titres disponibles sont proposés ; le prix « offert » ne s'affiche qu'avec 3 titres.
+{%- endcomment -%}
+{%- liquid
+  assign total = 0
+  assign lowest = 0
+  assign count = 0
+  for p in section.settings.products
+    if p.available
+      assign price = p.selected_or_first_available_variant.price
+      assign total = total | plus: price
+      assign count = count | plus: 1
+      if lowest == 0 or price < lowest
+        assign lowest = price
+      endif
+    endif
+  endfor
+  assign final = total
+  if count >= 3
+    assign final = total | minus: lowest
+  endif
+-%}
+{%- if count > 0 -%}
+  <section class="section section--dark trilogy-feature" aria-labelledby="trilogy-{{ section.id }}">
+    <div class="wrap trilogy-feature__grid">
+      <div>
+        {%- if section.settings.kicker != blank -%}<p class="kicker">{{ section.settings.kicker }}</p>{%- endif -%}
+        <h2 id="trilogy-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="trilogy-feature__lead">{{ section.settings.text }}</p>{%- endif -%}
+
+        {%- if count >= 3 -%}
+          <p class="trilogy-feature__price">
+            <strong>{{ final | money }}</strong>
+            <s>{{ total | money }}</s>
+            <span>les {{ count }} guides, le moins cher offert</span>
+          </p>
+        {%- endif -%}
+
+        <form action="{{ routes.cart_add_url }}" method="post" data-multi-add>
+          {%- assign i = 0 -%}
+          {%- for p in section.settings.products -%}
+            {%- if p.available -%}
+              <input type="hidden" name="items[{{ i }}][id]" value="{{ p.selected_or_first_available_variant.id }}">
+              <input type="hidden" name="items[{{ i }}][quantity]" value="1">
+              {%- assign i = i | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <button type="submit" class="btn btn-gold">{{ section.settings.button_label }}</button>
+          <p class="form-error" data-form-error role="alert" hidden></p>
+        </form>
+      </div>
+
+      <ul class="trilogy-feature__books">
+        {%- for p in section.settings.products -%}
+          {%- if p.available -%}
+            <li>
+              <a href="{{ p.url }}">
+                <span class="trilogy-feature__plate">
+                  {% render 'book-cover', product: p, loading: 'lazy', sizes: '(min-width: 60rem) 16vw, 30vw' %}
+                </span>
+                <span class="trilogy-feature__name">{{ p.title }}</span>
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Série en avant",
+  "settings": [
+    { "type": "product_list", "id": "products", "label": "Livres de la série", "limit": 3 },
+    { "type": "text", "id": "kicker", "label": "Accroche", "default": "La trilogie IA" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Comprendre l’IA, s’en servir, en vivre." },
+    { "type": "textarea", "id": "text", "label": "Texte" },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Ajouter les 3 guides au panier" }
+  ],
+  "presets": [{ "name": "Série en avant" }]
+}
+{% endschema %}

@@ -1,0 +1,261 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero-shelf",
+      "settings": {
+        "heading": "Des livres pour comprendre comment on pense, on gagne et on décide.",
+        "text": "BIBLIODOR édite des ebooks en français sur la psychologie, le développement personnel, l’argent et l’influence. Des livres complets, clairs et concrets, avec des exercices et un carnet pratique, à lire à ton rythme sur tous tes écrans.",
+        "collection": "nouveautes",
+        "primary_label": "Parcourir le catalogue",
+        "primary_link": "/collections/all",
+        "secondary_label": "Voir le pack de 4 ebooks",
+        "secondary_link": "/products/pack-4-ebooks-bibliotheque-essentielle",
+        "shelf_caption": "Les dernières parutions de la bibliothèque",
+        "shelf_link_label": "Toutes les nouveautés"
+      }
+    },
+    "rayons": {
+      "type": "rayons",
+      "blocks": {
+        "psy": {
+          "type": "rayon",
+          "settings": {
+            "collection": "psychologie",
+            "emblem": "rings",
+            "summary": "Comprendre ce qui se passe dans la tête, la tienne et celle des autres."
+          }
+        },
+        "dev": {
+          "type": "rayon",
+          "settings": {
+            "collection": "developpement-personnel",
+            "emblem": "steps",
+            "summary": "Des méthodes concrètes pour changer une habitude, une routine, une trajectoire."
+          }
+        },
+        "argent": {
+          "type": "rayon",
+          "settings": {
+            "collection": "argent",
+            "emblem": "coin",
+            "summary": "Ta relation à l’argent, le budget, l’épargne : les bonnes habitudes expliquées sans jargon."
+          }
+        },
+        "pouvoir": {
+          "type": "rayon",
+          "settings": {
+            "collection": "pouvoir-et-influence",
+            "emblem": "column",
+            "summary": "Comprendre les rapports de force pour ne plus les subir, et convaincre honnêtement."
+          }
+        }
+      },
+      "block_order": [
+        "psy",
+        "dev",
+        "argent",
+        "pouvoir"
+      ],
+      "settings": {
+        "heading": "Les rayons",
+        "text": "Quatre domaines, choisis parce qu’ils changent concrètement la vie de ceux qui s’y intéressent."
+      }
+    },
+    "featured": {
+      "type": "featured-book",
+      "settings": {
+        "kicker": "À lire en ce moment",
+        "link_label": "Lire la présentation",
+        "product": "sortir-de-sa-prison-interieure"
+      }
+    },
+    "latest": {
+      "type": "latest-books",
+      "settings": {
+        "heading": "Nouveautés",
+        "collection": "nouveautes",
+        "limit": 8,
+        "link_label": "Tout le catalogue",
+        "anchor": "nouveautes"
+      }
+    },
+    "pack": {
+      "type": "featured-book",
+      "settings": {
+        "kicker": "L’offre du moment : 4 ebooks pour 49,90 €",
+        "link_label": "Voir le pack",
+        "product": "pack-4-ebooks-bibliotheque-essentielle"
+      }
+    },
+    "how": {
+      "type": "how-it-works",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Choisis",
+            "text": "Chaque fiche présente le sommaire, ce que tu vas apprendre, le nombre de pages et un aperçu des pages. Tu sais ce que tu achètes."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Paie en ligne",
+            "text": "Le paiement est traité par Shopify. BIBLIODOR ne voit ni ne stocke tes coordonnées bancaires."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Télécharge",
+            "text": "Dès le paiement confirmé, tes ebooks sont téléchargeables depuis la page de confirmation et le lien reçu par e-mail."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "heading": "De la page du livre à ta liseuse"
+      }
+    },
+    "house": {
+      "type": "house",
+      "settings": {}
+    },
+    "trust": {
+      "type": "trust-strip",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "download",
+            "title": "Téléchargement immédiat",
+            "text": "Ton PDF dès la confirmation du paiement, et par e-mail."
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "gift",
+            "title": "2 achetés, le 3ᵉ offert",
+            "text": "La remise s’applique toute seule au panier, sans code."
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "device",
+            "title": "Lisible partout",
+            "text": "Téléphone, tablette, liseuse, ordinateur ou papier."
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "lock",
+            "title": "Paiement sécurisé",
+            "text": "Traité par Shopify. Fichier remplacé s’il pose problème."
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "label": "Nos engagements"
+      }
+    },
+    "trilogy": {
+      "type": "trilogy-feature",
+      "settings": {
+        "products": [
+          "l-intelligence-artificielle-de-a-a-z",
+          "gagner-de-l-argent-avec-l-ia",
+          "les-200-prompts-essentiels"
+        ],
+        "kicker": "La trilogie IA",
+        "heading": "Comprendre l’IA, t’en servir, en vivre.",
+        "text": "Trois guides pensés pour se lire dans l’ordre : les bases de l’intelligence artificielle, des façons concrètes d’en tirer un revenu, et 200 prompts prêts à l’emploi. Pris ensemble, le moins cher des trois t’est offert.",
+        "button_label": "Ajouter les 3 guides au panier"
+      }
+    },
+    "faq": {
+      "type": "faq-home",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Comment je reçois mes ebooks ?",
+            "answer": "<p>Juste après le paiement : le lien de téléchargement s’affiche sur la page de confirmation et t’est envoyé par e-mail.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Sur quoi je peux les lire ?",
+            "answer": "<p>Ce sont des PDF : ils s’ouvrent sur téléphone, tablette, liseuse et ordinateur. Tu peux aussi les imprimer pour remplir les exercices.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Comment marche l’offre « 2 achetés, le 3ᵉ offert » ?",
+            "answer": "<p>Ajoute 3 ebooks différents au panier : le moins cher est offert automatiquement, sans code. L’offre ne s’applique pas aux packs, déjà à prix réduit.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Le paiement est-il sécurisé ?",
+            "answer": "<p>Oui. Le paiement est traité par Shopify ; BIBLIODOR ne voit ni ne stocke tes coordonnées bancaires.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Et si mon fichier pose problème ?",
+            "answer": "<p>Écris-nous avec ton numéro de commande : on te renvoie le fichier ou on te rembourse. Détails dans notre <a href=\"/pages/remboursement\">politique de remboursement</a>.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "heading": "Avant d’acheter",
+        "text": "<p>Une autre question ? <a href=\"/pages/contact\">Écris-nous</a>, on répond à chaque message.</p>"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "trust",
+    "latest",
+    "rayons",
+    "trilogy",
+    "featured",
+    "pack",
+    "how",
+    "faq",
+    "house"
+  ]
+}

@@ -1,0 +1,84 @@
+<section class="newsletter on-dark" aria-labelledby="newsletter-title">
+  <div class="wrap newsletter__inner">
+    <div>
+      <p class="kicker newsletter__kicker">La lettre Bibliodor</p>
+      <h2 id="newsletter-title">Reçois chaque nouveau livre en avant-première</h2>
+      <p class="newsletter__text">Un e-mail quand un titre arrive dans la bibliothèque, et les offres réservées aux abonnés. Pas plus, et désinscription en un clic.</p>
+    </div>
+    {%- form 'customer', id: 'newsletter-form', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__ok" role="status">Merci ! Tu es bien inscrit à la lettre Bibliodor.</p>
+      {%- else -%}
+        <label class="visually-hidden" for="newsletter-email">Adresse e-mail</label>
+        <input class="input" id="newsletter-email" type="email" name="contact[email]" autocomplete="email" placeholder="Ton adresse e-mail" required>
+        <button class="btn btn-gold" type="submit">Je m’inscris</button>
+        {%- if form.errors -%}<p class="form-error" role="alert">Vérifie ton adresse e-mail et réessaie.</p>{%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <img class="site-footer__logo" src="{{ 'logo-bibliodor-signature-v2-640.png' | asset_url }}" width="240" height="57" alt="{{ shop.name }}, les idées qui valent de l’or" loading="lazy">
+      {%- if section.settings.tagline != blank -%}<p>{{ section.settings.tagline }}</p>{%- endif -%}
+    </div>
+    {%- for block in section.blocks -%}
+      {%- assign menu = linklists[block.settings.menu] -%}
+      {%- if menu.links.size > 0 -%}
+        <nav aria-labelledby="footer-{{ block.id }}" {{ block.shopify_attributes }}>
+          <h2 id="footer-{{ block.id }}">{{ block.settings.heading | default: menu.title }}</h2>
+          <ul>
+            {%- for link in menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    {%- endfor -%}
+    <nav aria-labelledby="footer-legal">
+      <h2 id="footer-legal">Informations légales</h2>
+      <ul>
+        <li><a href="/pages/mentions-legales">Mentions légales</a></li>
+        <li><a href="/pages/cgv">Conditions générales de vente</a></li>
+        <li><a href="/pages/remboursement">Politique de remboursement</a></li>
+        <li><a href="/policies/privacy-policy">Politique de confidentialité</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap site-footer__base">
+    <p>© {{ 'now' | date: '%Y' }} {{ shop.name }} · TVA non applicable, art. 293 B du CGI</p>
+    {%- if shop.enabled_payment_types.size > 0 -%}
+      <ul class="payment-icons" aria-label="Moyens de paiement acceptés">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <p>Paiement sécurisé, téléchargement immédiat</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "class": "footer-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Phrase de présentation", "default": "Maison d’édition numérique. Des ebooks en français, écrits pour être utiles." }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Colonne de liens",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

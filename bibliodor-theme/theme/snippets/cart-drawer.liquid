@@ -1,0 +1,40 @@
+{%- comment -%}
+  Panier latéral. Rendu côté serveur au chargement, puis mis à jour par bibliodor.js
+  après chaque ajout ou retrait. Sans JavaScript, l'icône du panier mène à la page panier.
+  L'offre « 2 ebooks achetés, le 3e offert » reste une remise automatique Shopify :
+  ce panneau ne fait qu'afficher la progression.
+{%- endcomment -%}
+<div class="drawer" data-drawer hidden>
+  <div class="drawer__scrim" data-drawer-close></div>
+  <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1">
+    <header class="drawer__head">
+      <h2 id="drawer-title">Ton panier <span data-drawer-count></span></h2>
+      <button type="button" class="drawer__close" data-drawer-close aria-label="Fermer le panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+
+    <div class="drawer__offer" data-drawer-offer role="status" hidden>
+      <p data-drawer-offer-text></p>
+      <div class="progress" aria-hidden="true"><span data-drawer-offer-bar></span></div>
+    </div>
+
+    <div class="drawer__body">
+      <ul class="drawer__items" data-drawer-items></ul>
+      <div class="drawer__empty" data-drawer-empty hidden>
+        <p>{{ 'cart.empty' | t }}</p>
+        <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.empty_cta' | t }}</a>
+      </div>
+    </div>
+
+    <footer class="drawer__foot" data-drawer-foot hidden>
+      <p class="drawer__saving" data-drawer-saving hidden></p>
+      <p class="drawer__total"><span>Total</span><span class="price" data-drawer-total></span></p>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn btn-primary">{{ 'cart.checkout' | t }}</button>
+      </form>
+      <p class="drawer__links"><a class="text-link" href="{{ routes.cart_url }}">Voir le détail du panier</a></p>
+      <small>{{ 'cart.taxes' | t }} Téléchargement dès la confirmation du paiement.</small>
+    </footer>
+  </aside>
+</div>

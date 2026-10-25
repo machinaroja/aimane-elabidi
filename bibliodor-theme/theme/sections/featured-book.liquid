@@ -1,0 +1,51 @@
+{%- assign product = section.settings.product -%}
+{%- if product != blank -%}
+  {%- assign subtitle = product.metafields.custom.sous_titre.value -%}
+  {%- assign takeaways = product.metafields.custom.points_cles.value -%}
+  {%- assign pages = product.metafields.custom.pages.value -%}
+  {%- assign formats = product.metafields.custom.formats.value -%}
+  <section class="section section--paper" aria-labelledby="featured-{{ section.id }}">
+    <div class="wrap book-feature">
+      <a href="{{ product.url }}" class="book-feature__cover book-feature__cover--plate" tabindex="-1" aria-hidden="true">
+        {% render 'book-cover', product: product, loading: 'lazy', sizes: '(min-width: 52rem) 22rem, 72vw' %}
+      </a>
+      <div>
+        {%- if section.settings.kicker != blank -%}<p class="kicker">{{ section.settings.kicker }}</p>{%- endif -%}
+        <h2 id="featured-{{ section.id }}"><a href="{{ product.url }}">{{ product.title }}</a></h2>
+        {%- if subtitle != blank -%}<p class="subtitle">{{ subtitle }}</p>{%- endif -%}
+        {%- if takeaways != blank -%}
+          <h3 class="book-feature__label">{{ 'products.takeaways' | t }}</h3>
+          <ul class="takeaways">
+            {%- for item in takeaways -%}<li>{{ item }}</li>{%- endfor -%}
+          </ul>
+        {%- else -%}
+          <p class="facts">{{ product.description | strip_html | truncatewords: 40 }}</p>
+        {%- endif -%}
+        {%- if pages or formats -%}
+          <p class="facts">
+            {%- if pages %}{{ 'products.pages_count' | t: count: pages }}{% endif -%}
+            {%- if pages and formats %}, {% endif -%}
+            {%- if formats %}{{ formats }}{% endif -%}
+          </p>
+        {%- endif -%}
+        <div class="buy">
+          {% render 'price', product: product %}
+          {% render 'add-to-cart', product: product, form_id: 'featured-form' %}
+          <a class="text-link" href="{{ product.url }}">{{ section.settings.link_label }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Livre à la une",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Livre" },
+    { "type": "text", "id": "kicker", "label": "Accroche", "default": "À lire en ce moment" },
+    { "type": "text", "id": "link_label", "label": "Lien vers la fiche", "default": "Lire la présentation" }
+  ],
+  "presets": [{ "name": "Livre à la une" }]
+}
+{% endschema %}
