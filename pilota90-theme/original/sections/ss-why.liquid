@@ -1,0 +1,54 @@
+{%- comment %} PILOTA90 — Accueil : POURQUOI / CRÉDIBILITÉ {% endcomment -%}
+<style>
+  .ss-why{ --night:#0E1A15; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:64px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ss-why *,.ss-why *::before,.ss-why *::after{ box-sizing:border-box; }
+  .ss-why .head{ max-width:680px; margin:0 auto 40px; text-align:center; }
+  .ss-why .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ss-why h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,6vw,40px); line-height:1.12; margin:12px 0 14px; letter-spacing:-.01em; }
+  .ss-why .lead{ color:var(--muted); font-size:16px; line-height:1.6; margin:0; }
+  .ss-why .grid{ display:grid; grid-template-columns:1fr; gap:14px; max-width:960px; margin:0 auto; }
+  .ss-why .card{ background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:16px; padding:26px; }
+  .ss-why .ic{ width:44px; height:44px; border-radius:12px; background:rgba(244,183,64,.12); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .ss-why h3{ font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.02em; font-size:17px; margin:0 0 8px; }
+  .ss-why p{ color:var(--muted); font-size:14.5px; line-height:1.6; margin:0; }
+  @media(min-width:820px){ .ss-why .grid{ grid-template-columns:repeat(3,1fr); } }
+</style>
+<div class="ss-why">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+    <p class="lead">{{ section.settings.lead }}</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M12 2a5 5 0 0 0-5 5c0 1.5.5 2.3 1.2 3.2.6.8 1.3 1.6 1.3 3.3v1h5v-1c0-1.7.7-2.5 1.3-3.3C17.5 9.3 18 8.5 18 7a5 5 0 0 0-5-5z"/><path d="M9 19h6M10 22h4"/></svg></div>
+      <h3>{{ section.settings.t1 }}</h3><p>{{ section.settings.d1 }}</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M12 2l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V5z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3>{{ section.settings.t2 }}</h3><p>{{ section.settings.d2 }}</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18M3 12h18"/></svg></div>
+      <h3>{{ section.settings.t3 }}</h3><p>{{ section.settings.d3 }}</p>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Accueil — Pourquoi",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Pourquoi PILOTA90" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Une méthode, pas des recettes" },
+    { "type": "textarea", "id": "lead", "label": "Accroche", "default": "PILOTA90 ne recycle pas des conseils vus partout. Une méthode née de dix ans de terrain, fondée sur la science — et conçue pour toutes les disciplines." },
+    { "type": "text", "id": "t1", "label": "Point 1 — titre", "default": "Neurobiologie & psychologie du sport" },
+    { "type": "textarea", "id": "d1", "label": "Point 1 — texte", "default": "Des contenus fondés sur la science du cerveau et de la motivation, traduits en outils simples pour chaque athlète." },
+    { "type": "text", "id": "t2", "label": "Point 2 — titre", "default": "Diplôme Professionnel d'Entraîneur (Espagne)" },
+    { "type": "textarea", "id": "d2", "label": "Point 2 — texte", "default": "Une formation de haut niveau en méthodologie, mise au service de la préparation mentale." },
+    { "type": "text", "id": "t3", "label": "Point 3 — titre", "default": "Du terrain à tous les sports" },
+    { "type": "textarea", "id": "d3", "label": "Point 3 — texte", "default": "Dix ans d'encadrement de jeunes athlètes — une approche pensée pour toutes les disciplines, du jeune sportif à l'athlète confirmé." }
+  ],
+  "presets": [{ "name": "Accueil — Pourquoi" }]
+}
+{% endschema %}

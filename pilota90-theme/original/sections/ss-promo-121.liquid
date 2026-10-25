@@ -1,0 +1,78 @@
+{%- comment %} PILOTA90 — Bandeau promo permanent (sticky, animé) : jusqu'à 2 messages en rotation. Textes modifiables dans l'éditeur de thème. {% endcomment -%}
+<style>
+  #shopify-section-{{ section.id }}{ position:sticky; top:0; z-index:4; }
+  .ss-promo121{ position:relative; overflow:hidden; box-sizing:border-box; background:linear-gradient(90deg,#F4B740,#E39A2E,#F4B740); background-size:200% 100%; animation:p121grad 6s ease infinite; color:#0A1310; font-family:'Oswald',sans-serif; text-align:center; padding:8px 14px; font-size:13.5px; font-weight:600; letter-spacing:.03em; box-shadow:0 2px 10px rgba(10,19,16,.18); }
+  .ss-promo121::after{ content:''; position:absolute; top:0; bottom:0; left:-30%; width:24%; background:linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 100%); transform:skewX(-18deg); animation:p121shine 4.5s ease-in-out infinite; pointer-events:none; }
+  .ss-promo121 .msgs{ display:grid; position:relative; }
+  .ss-promo121 .msg{ grid-area:1 / 1; color:#0A1310; text-decoration:none; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px 10px; transition:opacity .45s ease; }
+  .ss-promo121 .msg[aria-hidden="true"]{ opacity:0; visibility:hidden; pointer-events:none; }
+  .ss-promo121 .tag{ background:#0A1310; color:#F4B740; border-radius:999px; padding:3px 11px; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; white-space:nowrap; }
+  .ss-promo121 .big{ font-weight:700; letter-spacing:.06em; display:inline-block; animation:p121pulse 2.4s ease-in-out infinite; }
+  .shopify-section-header-sticky{ top: var(--p121-offset, 40px) !important; }
+  @keyframes p121shine{ 0%{ left:-30%; } 55%{ left:130%; } 100%{ left:130%; } }
+  @keyframes p121grad{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+  @keyframes p121pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.07); } }
+  @media(min-width:640px){ .ss-promo121{ font-size:14.5px; padding:9px 16px; } }
+  @media(prefers-reduced-motion:reduce){ .ss-promo121, .ss-promo121::after, .ss-promo121 .big{ animation:none !important; } .ss-promo121 .msg{ transition:none !important; } }
+</style>
+{%- liquid
+  assign link1 = section.settings.link | default: '/collections/ebooks-guides-pdf'
+  assign link2 = section.settings.link2 | default: '/collections/packs'
+  assign has2 = false
+  if section.settings.highlight2 != blank or section.settings.text2 != blank
+    assign has2 = true
+  endif
+-%}
+<div class="ss-promo121" id="SsPromo121" data-rotate="{{ section.settings.rotate | default: 6 }}">
+  <div class="msgs">
+    <a class="msg" href="{{ link1 }}">
+      {%- if section.settings.badge != blank -%}<span class="tag">{{ section.settings.badge }}</span>{%- endif -%}
+      <span class="big">{{ section.settings.highlight }}</span>
+      <span>{{ section.settings.text }}</span>
+    </a>
+    {%- if has2 -%}
+    <a class="msg" href="{{ link2 }}" aria-hidden="true">
+      {%- if section.settings.badge2 != blank -%}<span class="tag">{{ section.settings.badge2 }}</span>{%- endif -%}
+      <span class="big">{{ section.settings.highlight2 }}</span>
+      <span>{{ section.settings.text2 }}</span>
+    </a>
+    {%- endif -%}
+  </div>
+</div>
+<script>
+  (function(){
+    var root = document.getElementById('SsPromo121');
+    if(!root){ return; }
+    var setOffset = function(){ document.documentElement.style.setProperty('--p121-offset', root.offsetHeight + 'px'); };
+    window.addEventListener('resize', setOffset);
+    if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', setOffset); } else { setOffset(); }
+    var msgs = root.querySelectorAll('.msg');
+    if(msgs.length < 2){ return; }
+    var every = (parseInt(root.getAttribute('data-rotate'), 10) || 6) * 1000;
+    var i = 0;
+    setInterval(function(){
+      msgs[i].setAttribute('aria-hidden', 'true');
+      i = (i + 1) % msgs.length;
+      msgs[i].removeAttribute('aria-hidden');
+    }, every);
+  })();
+</script>
+{% schema %}
+{
+  "name": "Bandeau promo permanent",
+  "settings": [
+    { "type": "header", "content": "Message 1" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "🏷️ Promotion" },
+    { "type": "text", "id": "highlight", "label": "Accroche", "default": "🎁 1 + 1 = 3" },
+    { "type": "text", "id": "text", "label": "Texte", "default": "2 guides achetés, le 3ᵉ offert (le moins cher) · hors packs" },
+    { "type": "url", "id": "link", "label": "Lien" },
+    { "type": "header", "content": "Message 2 (optionnel, en rotation)" },
+    { "type": "text", "id": "badge2", "label": "Badge", "default": "🔥 Meilleur prix" },
+    { "type": "text", "id": "highlight2", "label": "Accroche", "default": "Pack Mental Complet" },
+    { "type": "text", "id": "text2", "label": "Texte", "default": "5 guides à 119 € au lieu de 158,60 € à l'unité (−25 %)" },
+    { "type": "url", "id": "link2", "label": "Lien" },
+    { "type": "range", "id": "rotate", "label": "Rotation (secondes)", "min": 3, "max": 12, "step": 1, "default": 6 }
+  ],
+  "presets": [{ "name": "Bandeau promo permanent" }]
+}
+{% endschema %}

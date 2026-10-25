@@ -1,0 +1,59 @@
+{%- comment %} PILOTA90 — Accueil : FAQ {% endcomment -%}
+<style>
+  .ss-faq{ --night:#0A1310; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:64px 20px; }
+  .ss-faq *,.ss-faq *::before,.ss-faq *::after{ box-sizing:border-box; }
+  .ss-faq .head{ max-width:640px; margin:0 auto 36px; text-align:center; }
+  .ss-faq .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ss-faq h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,6vw,40px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ss-faq .list{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:10px; }
+  .ss-faq details{ background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:14px; overflow:hidden; }
+  .ss-faq summary{ list-style:none; cursor:pointer; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-family:'Oswald',sans-serif; font-weight:500; letter-spacing:.01em; font-size:15.5px; color:var(--chalk); }
+  .ss-faq summary::-webkit-details-marker{ display:none; }
+  .ss-faq summary .sign{ flex:none; width:22px; height:22px; position:relative; }
+  .ss-faq summary .sign::before,.ss-faq summary .sign::after{ content:''; position:absolute; background:var(--gold); border-radius:2px; transition:transform .25s; }
+  .ss-faq summary .sign::before{ top:10px; left:3px; width:16px; height:2px; }
+  .ss-faq summary .sign::after{ top:3px; left:10px; width:2px; height:16px; }
+  .ss-faq details[open] summary .sign::after{ transform:rotate(90deg); opacity:0; }
+  .ss-faq .ans{ padding:0 22px 20px; color:var(--muted); font-size:14.5px; line-height:1.65; }
+  @media(prefers-reduced-motion:reduce){ .ss-faq summary .sign::before,.ss-faq summary .sign::after{ transition:none; } }
+</style>
+<div class="ss-faq">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="list">
+    <details><summary>{{ section.settings.q1 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r1 }}</div></details>
+    <details><summary>{{ section.settings.q2 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r2 }}</div></details>
+    <details><summary>{{ section.settings.q3 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r3 }}</div></details>
+    <details><summary>{{ section.settings.q4 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r4 }}</div></details>
+    <details><summary>{{ section.settings.q5 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r5 }}</div></details>
+    <details><summary>{{ section.settings.q6 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r6 }}</div></details>
+    <details><summary>{{ section.settings.q7 }}<span class="sign"></span></summary><div class="ans">{{ section.settings.r7 }}</div></details>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Accueil — FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Questions fréquentes" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Vous vous demandez peut-être…" },
+    { "type": "text", "id": "q1", "label": "Q1", "default": "Qu'est-ce que PILOTA90 ?" },
+    { "type": "textarea", "id": "r1", "label": "R1", "default": "Une collection de guides numériques dédiés à la préparation mentale du sportif : gérer la pression, gagner en confiance, rester motivé, mieux se concentrer et progresser." },
+    { "type": "text", "id": "q2", "label": "Q2", "default": "Est-ce réservé au football ?" },
+    { "type": "textarea", "id": "r2", "label": "R2", "default": "Non. La méthode est née du football, mais elle s'applique à tous les sports et à tous les niveaux — du jeune sportif à l'athlète confirmé." },
+    { "type": "text", "id": "q3", "label": "Q3", "default": "Pour qui c'est fait ?" },
+    { "type": "textarea", "id": "r3", "label": "R3", "default": "Pour les sportifs, les parents et les coachs qui veulent progresser dans la tête autant que dans le corps." },
+    { "type": "text", "id": "q4", "label": "Q4", "default": "Comment je reçois mes guides ?" },
+    { "type": "textarea", "id": "r4", "label": "R4", "default": "En PDF, immédiatement après l'achat : le lien de téléchargement s'affiche et vous est aussi envoyé par e-mail. Aucune livraison physique." },
+    { "type": "text", "id": "q5", "label": "Q5", "default": "À partir de quel âge / niveau ?" },
+    { "type": "textarea", "id": "r5", "label": "R5", "default": "Adaptable dès le plus jeune âge avec l'aide d'un parent, et en autonomie pour les adolescents et adultes, quel que soit le niveau." },
+    { "type": "text", "id": "q6", "label": "Q6", "default": "Le paiement est-il sécurisé ?" },
+    { "type": "textarea", "id": "r6", "label": "R6", "default": "Oui, via l'infrastructure de paiement sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises." },
+    { "type": "text", "id": "q7", "label": "Q7", "default": "Et si ça ne me convient pas ?" },
+    { "type": "textarea", "id": "r7", "label": "R7", "default": "Écrivez-nous et nous trouvons une solution. Notre objectif est que chaque guide vous serve vraiment." }
+  ],
+  "presets": [{ "name": "Accueil — FAQ" }]
+}
+{% endschema %}

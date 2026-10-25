@@ -1,0 +1,45 @@
+{%- comment %} PILOTA90 — Accueil : LE PROBLÈME (reconnaissance) {% endcomment -%}
+<style>
+  .ss-problem{ --night:#0E1A15; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:64px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ss-problem *,.ss-problem *::before,.ss-problem *::after{ box-sizing:border-box; }
+  .ss-problem .head{ max-width:640px; margin:0 auto 36px; text-align:center; }
+  .ss-problem .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ss-problem h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,6vw,40px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ss-problem .grid{ display:grid; grid-template-columns:1fr; gap:12px; max-width:900px; margin:0 auto; }
+  .ss-problem .item{ display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:14px; padding:20px 22px; }
+  .ss-problem .item svg{ flex:none; margin-top:2px; }
+  .ss-problem .item p{ margin:0; font-size:15px; line-height:1.55; color:var(--chalk); }
+  .ss-problem .bridge{ max-width:720px; margin:32px auto 0; text-align:center; font-family:'Fraunces',serif; font-size:clamp(19px,4.5vw,26px); line-height:1.35; }
+  .ss-problem .bridge .em{ color:var(--gold); font-style:italic; }
+  @media(min-width:720px){ .ss-problem .grid{ grid-template-columns:1fr 1fr; gap:14px; } }
+</style>
+<div class="ss-problem">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="grid">
+    <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8.5 15.5a4 4 0 0 1 7 0"/></svg><p>{{ section.settings.pain_1 }}</p></div>
+    <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M4 12a8 8 0 1 1 2.3 5.6"/><path d="M4 17v-5h5"/></svg><p>{{ section.settings.pain_2 }}</p></div>
+    <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M3 15l4-6 4 4 4-8 6 10"/></svg><p>{{ section.settings.pain_3 }}</p></div>
+    <div class="item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a8.5 8.5 0 1 1 16.1-4z"/></svg><p>{{ section.settings.pain_4 }}</p></div>
+  </div>
+  <p class="bridge">{{ section.settings.bridge_before }} <span class="em">{{ section.settings.bridge_highlight }}</span></p>
+</div>
+{% schema %}
+{
+  "name": "Accueil — Reconnaissance",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Ça vous parle ?" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Le talent est là. Mais quelque chose bloque." },
+    { "type": "textarea", "id": "pain_1", "label": "Situation 1", "default": "Brillant à l'entraînement… crispé le jour de la compétition." },
+    { "type": "textarea", "id": "pain_2", "label": "Situation 2", "default": "Une erreur, et il décroche pendant de longues minutes." },
+    { "type": "textarea", "id": "pain_3", "label": "Situation 3", "default": "La motivation monte et descend sans qu'on comprenne pourquoi." },
+    { "type": "textarea", "id": "pain_4", "label": "Situation 4", "default": "Après la compétition, la discussion tourne vite au reproche." },
+    { "type": "text", "id": "bridge_before", "label": "Phrase pont", "default": "Ce n'est pas un manque de talent." },
+    { "type": "text", "id": "bridge_highlight", "label": "Phrase pont (or)", "default": "C'est un mental qui n'a jamais été entraîné." }
+  ],
+  "presets": [{ "name": "Accueil — Reconnaissance" }]
+}
+{% endschema %}

@@ -1,0 +1,52 @@
+{%- comment %} PILOTA90 — Produit : FAQ (générique) {% endcomment -%}
+<style>
+  .ssp-faq{ --night:#0A1310; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ssp-faq *,.ssp-faq *::before,.ssp-faq *::after{ box-sizing:border-box; }
+  .ssp-faq .head{ max-width:640px; margin:0 auto 28px; text-align:center; }
+  .ssp-faq .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ssp-faq h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,36px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ssp-faq .list{ max-width:720px; margin:0 auto; }
+  .ssp-faq details{ border-bottom:1px solid rgba(241,238,230,.1); }
+  .ssp-faq summary{ list-style:none; cursor:pointer; padding:18px 40px 18px 0; position:relative; font-family:'Oswald',sans-serif; font-weight:500; font-size:16px; letter-spacing:.01em; }
+  .ssp-faq summary::-webkit-details-marker{ display:none; }
+  .ssp-faq summary::after{ content:'+'; position:absolute; right:6px; top:50%; transform:translateY(-50%); color:var(--gold); font-size:22px; transition:transform .2s; }
+  .ssp-faq details[open] summary::after{ content:'\2013'; }
+  .ssp-faq .a{ color:var(--muted); font-size:14.5px; line-height:1.65; padding:0 40px 20px 0; margin:0; }
+</style>
+<div class="ssp-faq">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="list">
+    <details open><summary>{{ section.settings.q1 }}</summary><p class="a">{{ section.settings.r1 }}</p></details>
+    <details><summary>{{ section.settings.q2 }}</summary><p class="a">{{ section.settings.r2 }}</p></details>
+    <details><summary>{{ section.settings.q3 }}</summary><p class="a">{{ section.settings.r3 }}</p></details>
+    <details><summary>{{ section.settings.q4 }}</summary><p class="a">{{ section.settings.r4 }}</p></details>
+    <details><summary>{{ section.settings.q5 }}</summary><p class="a">{{ section.settings.r5 }}</p></details>
+    <details><summary>{{ section.settings.q6 }}</summary><p class="a">{{ section.settings.r6 }}</p></details>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — FAQ",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Questions fréquentes" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Tout ce qu'il faut savoir" },
+    { "type": "text", "id": "q1", "label": "Q1", "default": "C'est quoi exactement ?" },
+    { "type": "textarea", "id": "r1", "label": "R1", "default": "Un guide numérique au format PDF, concret et court, dédié à la préparation mentale du jeune footballeur. Actionnable, pas théorique." },
+    { "type": "text", "id": "q2", "label": "Q2", "default": "Comment je le reçois ?" },
+    { "type": "textarea", "id": "r2", "label": "R2", "default": "Immédiatement après le paiement : le lien de téléchargement s'affiche et vous est aussi envoyé par e-mail. Pas d'attente, pas de livraison physique." },
+    { "type": "text", "id": "q3", "label": "Q3", "default": "Sur quels appareils je peux le lire ?" },
+    { "type": "textarea", "id": "r3", "label": "R3", "default": "Sur tout : téléphone, tablette, ordinateur. Le PDF s'ouvre partout et vous pouvez l'imprimer si vous préférez le papier." },
+    { "type": "text", "id": "q4", "label": "Q4", "default": "À partir de quel âge c'est utile ?" },
+    { "type": "textarea", "id": "r4", "label": "R4", "default": "Pensé pour les jeunes joueurs : avec l'aide d'un parent ou d'un éducateur pour les plus jeunes, en autonomie pour les ados." },
+    { "type": "text", "id": "q5", "label": "Q5", "default": "Le paiement est-il sécurisé ?" },
+    { "type": "textarea", "id": "r5", "label": "R5", "default": "Oui. Le paiement passe par l'infrastructure sécurisée de Shopify. Vos coordonnées bancaires ne nous sont jamais transmises." },
+    { "type": "text", "id": "q6", "label": "Q6", "default": "Et si ça ne me convient pas ?" },
+    { "type": "textarea", "id": "r6", "label": "R6", "default": "Écrivez-nous et nous trouvons une solution. L'objectif est que le guide vous serve vraiment." }
+  ],
+  "presets": [{ "name": "Produit — FAQ" }]
+}
+{% endschema %}

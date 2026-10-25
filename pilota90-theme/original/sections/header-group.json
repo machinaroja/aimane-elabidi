@@ -1,0 +1,94 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "ss_promo_121": {
+      "type": "ss-promo-121",
+      "settings": {
+        "badge": "🏷️ Promotion",
+        "highlight": "🎁 1 + 1 = 3",
+        "text": "2 guides achetés, le 3ᵉ offert (le moins cher) · hors packs",
+        "link": "/collections/ebooks-guides-pdf",
+        "badge2": "🔥 Meilleur prix",
+        "highlight2": "Pack Mental Complet",
+        "text2": "5 guides à 69 € au lieu de 98,60 € à l'unité (−30 %)",
+        "link2": "/products/pack-mental-complet-les-5-leviers-pour-que-votre-enfant-donne-son-vrai-niveau-le-jour-j",
+        "rotate": 6
+      }
+    },
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_yVrjJU": {
+          "type": "announcement",
+          "settings": {
+            "text": "⭐ Pack Mental Complet : 5 guides à 69 € au lieu de 98,60 € (−30 %)",
+            "link": "/products/pack-mental-complet-les-5-leviers-pour-que-votre-enfant-donne-son-vrai-niveau-le-jour-j"
+          }
+        }
+      },
+      "block_order": [
+        "announcement_yVrjJU"
+      ],
+      "disabled": true,
+      "settings": {
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-3",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "top-center",
+        "mobile_logo_position": "center",
+        "menu": "main-menu-2509",
+        "menu_type_desktop": "mega",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": false,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-3",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "pack_5_guides_FdNcKF": {
+      "type": "pack-5-guides",
+      "disabled": true,
+      "name": "Section premium",
+      "settings": {}
+    },
+    "p90_avis_fr": {
+      "type": "p90-avis-fr",
+      "settings": {}
+    },
+    "p90_continuer": {
+      "type": "p90-continuer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "ss_promo_121",
+    "announcement-bar",
+    "header",
+    "pack_5_guides_FdNcKF",
+    "p90_avis_fr",
+    "p90_continuer"
+  ]
+}

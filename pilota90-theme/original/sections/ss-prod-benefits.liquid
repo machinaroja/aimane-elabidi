@@ -1,0 +1,46 @@
+{%- comment %} PILOTA90 — Produit : BÉNÉFICES (générique) {% endcomment -%}
+<style>
+  .ssp-ben{ --night:#0A1310; --surface:#13241D; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:56px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ssp-ben *,.ssp-ben *::before,.ssp-ben *::after{ box-sizing:border-box; }
+  .ssp-ben .head{ max-width:640px; margin:0 auto 34px; text-align:center; }
+  .ssp-ben .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ssp-ben h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,36px); line-height:1.12; margin:12px 0 0; letter-spacing:-.01em; }
+  .ssp-ben .grid{ display:grid; grid-template-columns:1fr; gap:14px; max-width:1000px; margin:0 auto; }
+  .ssp-ben .card{ background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:16px; padding:24px; }
+  .ssp-ben .ic{ width:42px; height:42px; border-radius:12px; background:rgba(244,183,64,.12); display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+  .ssp-ben h3{ font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:.02em; font-size:17px; margin:0 0 8px; }
+  .ssp-ben p{ color:var(--muted); font-size:14.5px; line-height:1.6; margin:0; }
+  @media(min-width:560px){ .ssp-ben .grid{ grid-template-columns:1fr 1fr; } }
+  @media(min-width:920px){ .ssp-ben .grid{ grid-template-columns:repeat(4,1fr); } }
+</style>
+<div class="ssp-ben">
+  <div class="head">
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div><h3>{{ section.settings.t1 }}</h3><p>{{ section.settings.d1 }}</p></div>
+    <div class="card"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></div><h3>{{ section.settings.t2 }}</h3><p>{{ section.settings.d2 }}</p></div>
+    <div class="card"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><h3>{{ section.settings.t3 }}</h3><p>{{ section.settings.d3 }}</p></div>
+    <div class="card"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.7"><path d="M3 12h4l2 5 3-10 2 5h4"/></svg></div><h3>{{ section.settings.t4 }}</h3><p>{{ section.settings.d4 }}</p></div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Produit — Bénéfices",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Pourquoi ce guide" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Concret, rapide, fait pour le terrain" },
+    { "type": "text", "id": "t1", "label": "Bénéfice 1 — titre", "default": "Court et actionnable" },
+    { "type": "textarea", "id": "d1", "label": "Bénéfice 1 — texte", "default": "Pas un pavé théorique : l'essentiel, à appliquer dès le prochain entraînement." },
+    { "type": "text", "id": "t2", "label": "Bénéfice 2 — titre", "default": "Fondé sur la méthode" },
+    { "type": "textarea", "id": "d2", "label": "Bénéfice 2 — texte", "default": "Neurobiologie et psychologie du sport, adaptées au football des jeunes." },
+    { "type": "text", "id": "t3", "label": "Bénéfice 3 — titre", "default": "Accès immédiat" },
+    { "type": "textarea", "id": "d3", "label": "Bénéfice 3 — texte", "default": "Fichier PDF reçu tout de suite après l'achat, lisible sur téléphone, tablette ou papier." },
+    { "type": "text", "id": "t4", "label": "Bénéfice 4 — titre", "default": "Utile toute la saison" },
+    { "type": "textarea", "id": "d4", "label": "Bénéfice 4 — texte", "default": "À relire et réutiliser aussi souvent que nécessaire, match après match." }
+  ],
+  "presets": [{ "name": "Produit — Bénéfices" }]
+}
+{% endschema %}

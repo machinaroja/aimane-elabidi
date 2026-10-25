@@ -1,0 +1,64 @@
+{%- comment %} PILOTA90 — Accueil : L'AUTEUR / CRÉDIBILITÉ + PAIEMENT {% endcomment -%}
+<style>
+  .ss-author{ --night:#0A1310; --surface:#13241D; --surface2:#182E24; --gold:#F4B740; --chalk:#F1EEE6; --muted:#8FA396;
+    box-sizing:border-box; background:var(--night); color:var(--chalk); font-family:'Inter',sans-serif; padding:64px 20px; border-top:1px solid rgba(255,255,255,.05); }
+  .ss-author *,.ss-author *::before,.ss-author *::after{ box-sizing:border-box; }
+  .ss-author .panel{ max-width:960px; margin:0 auto; background:var(--surface); border:1px solid rgba(241,238,230,.08); border-radius:22px; padding:32px 26px; display:grid; grid-template-columns:1fr; gap:24px; align-items:center; }
+  .ss-author .media{ display:flex; justify-content:center; }
+  .ss-author .medallion{ width:132px; height:132px; border-radius:50%; background:var(--surface2); border:2px solid rgba(244,183,64,.5); display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 20px 44px -20px rgba(0,0,0,.8); }
+  .ss-author .medallion .mono{ font-family:'Fraunces',serif; font-weight:600; font-size:30px; color:var(--gold); line-height:1; }
+  .ss-author .medallion .sub{ font-family:'Oswald',sans-serif; font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
+  .ss-author .media img{ width:150px; height:150px; object-fit:cover; border-radius:50%; border:2px solid rgba(244,183,64,.5); }
+  .ss-author .eyebrow{ font-family:'Oswald',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:11px; font-weight:500; color:var(--gold); margin:0; }
+  .ss-author h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(24px,5.5vw,34px); line-height:1.12; margin:10px 0 12px; letter-spacing:-.01em; }
+  .ss-author .bio{ color:var(--muted); font-size:15px; line-height:1.65; margin:0 0 18px; }
+  .ss-author .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .ss-author .chip{ display:inline-flex; align-items:center; gap:7px; background:rgba(244,183,64,.1); border:1px solid rgba(244,183,64,.28); color:var(--chalk); font-size:12.5px; padding:7px 12px; border-radius:999px; }
+  .ss-author .chip svg{ flex:none; }
+  .ss-author .pay{ max-width:960px; margin:22px auto 0; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 14px; }
+  .ss-author .pay .lock{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted); }
+  .ss-author .pay .cards{ display:flex; flex-wrap:wrap; gap:6px; }
+  .ss-author .pay .card{ font-family:'Oswald',sans-serif; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid rgba(241,238,230,.16); border-radius:6px; padding:5px 9px; }
+  @media(min-width:760px){ .ss-author .panel{ grid-template-columns:170px 1fr; gap:34px; padding:40px 40px; } }
+</style>
+<div class="ss-author">
+  <div class="panel">
+    <div class="media">
+      {%- if section.settings.portrait != blank -%}
+        <img src="{{ section.settings.portrait | image_url: width: 300 }}" alt="{{ section.settings.heading | escape }}" loading="lazy" width="150" height="150">
+      {%- else -%}
+        <div class="medallion"><span class="mono">P90</span><span class="sub">Coach diplômé</span></div>
+      {%- endif -%}
+    </div>
+    <div class="body">
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2>{{ section.settings.heading }}</h2>
+      <p class="bio">{{ section.settings.bio }}</p>
+      <div class="chips">
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.8"><path d="M12 2l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-1.5z"/></svg>{{ section.settings.chip1 }}</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.8"><path d="M12 2a5 5 0 0 0-5 5c0 1.5.5 2.3 1.2 3.2.6.8 1.3 1.6 1.3 3.3v1h5v-1c0-1.7.7-2.5 1.3-3.3C17.5 9.3 18 8.5 18 7a5 5 0 0 0-5-5z"/><path d="M9 19h6"/></svg>{{ section.settings.chip2 }}</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F4B740" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>{{ section.settings.chip3 }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="pay">
+    <span class="lock"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8FA396" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>{{ section.settings.pay_label }}</span>
+    <span class="cards"><span class="card">CB</span><span class="card">Visa</span><span class="card">Mastercard</span><span class="card">Apple&nbsp;Pay</span><span class="card">PayPal</span></span>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Accueil — Auteur",
+  "settings": [
+    { "type": "image_picker", "id": "portrait", "label": "Portrait (optionnel)" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "L'auteur" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Qui est derrière PILOTA90 ?" },
+    { "type": "textarea", "id": "bio", "label": "Biographie", "default": "Un parcours de terrain avant tout : responsable d'une école de football pendant plus de dix ans, formé en neurobiologie et psychologie appliquées au sport, et diplômé d'entraîneur professionnel en Espagne. L'objectif de PILOTA90 est simple — rendre accessibles aux sportifs, aux parents et aux coachs les méthodes concrètes de préparation mentale que le haut niveau garde souvent pour lui. Marque indépendante, sans affiliation à un club ou une institution." },
+    { "type": "text", "id": "chip1", "label": "Crédit 1", "default": "10 ans de terrain" },
+    { "type": "text", "id": "chip2", "label": "Crédit 2", "default": "Neurobiologie & psychologie du sport" },
+    { "type": "text", "id": "chip3", "label": "Crédit 3", "default": "Diplôme d'entraîneur pro (Espagne)" },
+    { "type": "text", "id": "pay_label", "label": "Texte paiement", "default": "Paiement 100 % sécurisé" }
+  ],
+  "presets": [{ "name": "Accueil — Auteur" }]
+}
+{% endschema %}
