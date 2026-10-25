@@ -1,0 +1,54 @@
+{%- comment -%}
+  Couverture d'un livre.
+  - Par défaut : la photo du produit (visuel du livre).
+  - Sans photo, ou avec l'étiquette couverture:maison : couverture « maison » BIBLIODOR dessinée en HTML/CSS
+    (ton : étiquettes ton:foret, ton:creme ou ton:or ; emblème selon le rayon).
+  Paramètres : product, loading ('eager' | 'lazy'), sizes
+{%- endcomment -%}
+{%- liquid
+  assign use_image = false
+  if product.featured_image
+    assign use_image = true
+  endif
+  if product.tags contains 'couverture:maison'
+    assign use_image = false
+  endif
+-%}
+{%- if use_image -%}
+  <div class="cover cover--image">
+    {{ product.featured_image | image_url: width: 1200 | image_tag:
+      loading: loading,
+      sizes: sizes,
+      widths: '240, 360, 480, 720, 960, 1200',
+      alt: product.featured_image.alt | default: product.title
+    }}
+  </div>
+{%- else -%}
+  {%- liquid
+    assign tone = 'forest'
+    if product.tags contains 'ton:creme'
+      assign tone = 'cream'
+    elsif product.tags contains 'ton:or'
+      assign tone = 'gold'
+    endif
+    capture rayon_handle
+      render 'rayon', product: product, output: 'handle'
+    endcapture
+    capture rayon_title
+      render 'rayon', product: product, output: 'title'
+    endcapture
+    assign rayon_title = rayon_title | strip
+    capture emblem
+      render 'emblem-for-type', type: rayon_handle
+    endcapture
+    assign emblem = emblem | strip
+  -%}
+  <div class="cover tone-{{ tone }}" role="img" aria-label="{{ 'products.cover_of' | t: title: product.title | escape }}">
+    <div class="cover__frame">
+      <p class="cover__house">{{ shop.name }}</p>
+      {% render 'emblem', name: emblem, class: 'cover__emblem' %}
+      <p class="cover__title">{{ product.title }}</p>
+      {%- if rayon_title != blank -%}<p class="cover__shelf">{{ rayon_title }}</p>{%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

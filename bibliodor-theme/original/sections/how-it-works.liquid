@@ -1,0 +1,45 @@
+<section class="section section--dark how" aria-labelledby="how-{{ section.id }}">
+  <div class="wrap how__grid">
+    <h2 id="how-{{ section.id }}">{{ section.settings.heading }}</h2>
+    <ol class="steps">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </li>
+      {%- endfor -%}
+    </ol>
+    {%- if section.settings.help != blank -%}<div class="how__help">{{ section.settings.help }}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Étapes d’achat",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "De la page du livre à ta liseuse" },
+    { "type": "richtext", "id": "help", "label": "Aide", "default": "<p>Une question avant d’acheter ? <a href=\"/pages/faq\">Consultez les réponses aux questions fréquentes</a> ou <a href=\"/pages/contact\">écrivez-nous</a>.</p>" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre" },
+        { "type": "textarea", "id": "text", "label": "Texte" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Étapes d’achat",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Choisis", "text": "Chaque fiche présente le sommaire, ce que tu vas apprendre et le nombre de pages. Tu sais ce que tu achètes." } },
+        { "type": "step", "settings": { "title": "Paie en ligne", "text": "Le paiement est traité par Shopify. BIBLIODOR ne voit ni ne stocke tes coordonnées bancaires." } },
+        { "type": "step", "settings": { "title": "Télécharge", "text": "Dès le paiement confirmé, tes ebooks sont téléchargeables depuis la page de confirmation et le lien reçu par e-mail." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,27 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Pied de page",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "rayons": { "type": "menu", "settings": { "heading": "Rayons", "menu": "rayons" } },
+        "maison": { "type": "menu", "settings": { "heading": "La maison", "menu": "footer" } }
+      },
+      "block_order": ["rayons", "maison"],
+      "settings": {
+        "tagline": "Maison d’édition numérique. Des ebooks en français, écrits pour être utiles."
+      }
+    }
+  },
+  "order": ["footer"]
+}

@@ -1,0 +1,145 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero-shelf",
+      "settings": {
+        "heading": "Des livres pour comprendre comment on pense, on gagne et on décide.",
+        "text": "BIBLIODOR édite des ebooks en français sur la psychologie, le développement personnel, l’argent et l’influence. Des livres complets, clairs et concrets, avec des exercices et un carnet pratique, à lire à ton rythme sur tous tes écrans.",
+        "collection": "nouveautes",
+        "primary_label": "Parcourir le catalogue",
+        "primary_link": "/collections/all",
+        "secondary_label": "Voir l’offre pack",
+        "secondary_link": "/products/pack-4-ebooks-bibliotheque-essentielle"
+      }
+    },
+    "rayons": {
+      "type": "rayons",
+      "blocks": {
+        "psy": {
+          "type": "rayon",
+          "settings": {
+            "collection": "psychologie",
+            "emblem": "rings",
+            "summary": "Comprendre ce qui se passe dans la tête, la tienne et celle des autres."
+          }
+        },
+        "dev": {
+          "type": "rayon",
+          "settings": {
+            "collection": "developpement-personnel",
+            "emblem": "steps",
+            "summary": "Des méthodes concrètes pour changer une habitude, une routine, une trajectoire."
+          }
+        },
+        "argent": {
+          "type": "rayon",
+          "settings": {
+            "collection": "argent",
+            "emblem": "coin",
+            "summary": "Ta relation à l’argent, le budget, l’épargne : les bonnes habitudes expliquées sans jargon."
+          }
+        },
+        "pouvoir": {
+          "type": "rayon",
+          "settings": {
+            "collection": "pouvoir-et-influence",
+            "emblem": "column",
+            "summary": "Comprendre les rapports de force pour ne plus les subir, et convaincre honnêtement."
+          }
+        }
+      },
+      "block_order": [
+        "psy",
+        "dev",
+        "argent",
+        "pouvoir"
+      ],
+      "settings": {
+        "heading": "Les rayons",
+        "text": "Quatre domaines, choisis parce qu’ils changent concrètement la vie de ceux qui s’y intéressent."
+      }
+    },
+    "featured": {
+      "type": "featured-book",
+      "settings": {
+        "kicker": "À lire en ce moment",
+        "link_label": "Lire la présentation",
+        "product": "sortir-de-sa-prison-interieure"
+      }
+    },
+    "latest": {
+      "type": "latest-books",
+      "settings": {
+        "heading": "Nouveautés",
+        "collection": "nouveautes",
+        "limit": 4,
+        "link_label": "Tout le catalogue",
+        "anchor": "nouveautes"
+      }
+    },
+    "pack": {
+      "type": "featured-book",
+      "settings": {
+        "kicker": "L’offre du moment : 4 ebooks pour 49,90 €",
+        "link_label": "Voir le pack",
+        "product": "pack-4-ebooks-bibliotheque-essentielle"
+      }
+    },
+    "how": {
+      "type": "how-it-works",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Choisis",
+            "text": "Chaque fiche présente le sommaire, ce que tu vas apprendre, le nombre de pages et un aperçu des pages. Tu sais ce que tu achètes."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Paie en ligne",
+            "text": "Le paiement est traité par Shopify. BIBLIODOR ne voit ni ne stocke tes coordonnées bancaires."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Télécharge",
+            "text": "Dès le paiement confirmé, tes ebooks sont téléchargeables depuis la page de confirmation et le lien reçu par e-mail."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "heading": "De la page du livre à ta liseuse"
+      }
+    },
+    "house": {
+      "type": "house",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "rayons",
+    "featured",
+    "latest",
+    "pack",
+    "how",
+    "house"
+  ]
+}

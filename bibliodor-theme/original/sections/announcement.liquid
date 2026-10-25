@@ -1,0 +1,41 @@
+{%- liquid
+  assign items = section.settings.messages | newline_to_br | split: '<br />'
+-%}
+{%- if section.settings.messages != blank -%}
+  <div class="ticker" role="region" aria-label="Offres en cours">
+    {%- if section.settings.link != blank -%}<a class="ticker__link" href="{{ section.settings.link }}">{%- endif -%}
+    <div class="ticker__track">
+      {%- for copy in (1..2) -%}
+        <ul class="ticker__group"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+          {%- for item in items -%}
+            {%- assign msg = item | strip -%}
+            {%- if msg != blank -%}<li>{{ msg }}</li>{%- endif -%}
+          {%- endfor -%}
+          {%- for item in items -%}
+            {%- assign msg = item | strip -%}
+            {%- if msg != blank -%}<li aria-hidden="true">{{ msg }}</li>{%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.link != blank -%}</a>{%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau défilant",
+  "class": "announcement-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "messages",
+      "label": "Messages (un par ligne)",
+      "default": "2 ebooks achetés, le 3ᵉ offert\nPack de 4 ebooks à 49,90 € au lieu de 79,60 €\nTéléchargement immédiat après le paiement\nPaiement 100 % sécurisé",
+      "info": "Laisser vide pour masquer le bandeau. N’annoncez que des offres réelles et en cours."
+    },
+    { "type": "url", "id": "link", "label": "Lien (facultatif)" }
+  ],
+  "presets": [{ "name": "Bandeau défilant" }]
+}
+{% endschema %}

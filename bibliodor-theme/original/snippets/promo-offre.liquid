@@ -1,0 +1,40 @@
+{%- comment -%}
+  Encadré promotion, affiché sous les boutons de paiement de la fiche produit.
+  Offre 1 : remise automatique Shopify « 2 ebooks achetés, le 3e offert » (ebooks à l'unité).
+  Offre 2 : pack 4 ebooks (affiché seulement quand le produit pack est en ligne).
+  Offre 3 : trilogie IA (N°06, N°07, N°08), bloc d'ajout en un clic s'appuyant sur l'offre 1 (snippet trilogie-ia).
+  Paramètre : product
+{%- endcomment -%}
+{%- assign pack = all_products['pack-4-ebooks-bibliotheque-essentielle'] -%}
+{%- assign trilogy = '' -%}
+{%- if product.tags contains 'trilogie-ia' -%}
+  {%- capture trilogy -%}{% render 'trilogie-ia', product: product %}{%- endcapture -%}
+  {%- assign trilogy = trilogy | strip -%}
+{%- endif -%}
+<style>
+  .buy .add-to-cart-form { display: grid; gap: var(--space-2xs); min-width: min(100%, 20rem); }
+  .express-pay .shopify-payment-button__button { border-radius: var(--radius-control); min-height: 2.875rem; }
+  .express-pay .shopify-payment-button__more-options { color: var(--ink-muted); font-size: var(--step--1); }
+  .promo-box { flex-basis: 100%; margin-top: var(--space-2xs); padding: var(--space-s) var(--space-m); border: 1px solid var(--gold); border-left-width: 4px; border-radius: var(--radius-control); background: var(--paper); max-width: 34rem; display: grid; gap: var(--space-2xs); }
+  .promo-box__kicker { font-size: var(--step--1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-ink); }
+  .promo-box__title { font-weight: 700; }
+  .promo-box p { font-size: var(--step--1); color: var(--ink-muted); }
+  .promo-box a { font-weight: 600; color: var(--forest); text-decoration-color: var(--gold); }
+</style>
+{%- if trilogy != blank -%}
+  {{ trilogy }}
+{%- else -%}
+<div class="promo-box" role="note">
+  <p class="promo-box__kicker">Offre en cours</p>
+  {%- if product.handle == 'pack-4-ebooks-bibliotheque-essentielle' -%}
+    <p class="promo-box__title">4 ebooks pour 49,90 € au lieu de 79,60 €</p>
+    <p>Tu économises 29,70 € par rapport à l'achat des quatre titres à l'unité.</p>
+  {%- else -%}
+    <p class="promo-box__title">2 ebooks achetés, le 3ᵉ offert</p>
+    <p>Ajoute 3 ebooks au panier : le moins cher est offert automatiquement, sans code.</p>
+    {%- if pack and pack.available -%}
+      <p>Ou prends <a href="{{ pack.url }}">le pack de 4 ebooks à {{ pack.price | money }}</a> au lieu de {{ pack.compare_at_price | money }}.</p>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+{%- endif -%}

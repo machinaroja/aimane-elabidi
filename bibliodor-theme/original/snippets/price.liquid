@@ -1,0 +1,10 @@
+{%- comment -%} Prix d'un produit, avec prix barré si une promotion est en cours. Paramètres : product, class {%- endcomment -%}
+<p class="price {{ class }}">
+  {%- if product.compare_at_price > product.price -%}
+    <span class="visually-hidden">{{ 'products.sale_price' | t }}</span>
+    {{ product.price | money }}
+    <s class="price__compare"><span class="visually-hidden">{{ 'products.regular_price' | t }}</span>{{ product.compare_at_price | money }}</s>
+  {%- else -%}
+    {{ product.price | money }}
+  {%- endif -%}
+</p>

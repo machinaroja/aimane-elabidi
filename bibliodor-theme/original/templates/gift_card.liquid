@@ -1,0 +1,21 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carte cadeau | {{ shop.name }}</title>
+    <meta name="robots" content="noindex">
+    {{ 'bibliodor.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="wrap page">
+      <h1 class="page-title">Ta carte cadeau {{ shop.name }}</h1>
+      <p class="price" style="font-size: var(--step-3)">{{ gift_card.balance | money }}</p>
+      <p>Code : <strong>{{ gift_card.code | format_code }}</strong></p>
+      {%- if gift_card.expired -%}<p class="notice notice--error">Cette carte cadeau a expiré.</p>{%- endif -%}
+      <p><a class="btn btn-primary" href="{{ shop.url }}">Utiliser la carte sur la boutique</a></p>
+    </main>
+  </body>
+</html>

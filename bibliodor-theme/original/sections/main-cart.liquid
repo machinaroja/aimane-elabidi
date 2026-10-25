@@ -1,0 +1,90 @@
+{%- liquid
+  assign ebooks = 0
+  assign has_free = false
+  for item in cart.items
+    if item.product.type == 'Ebook'
+      assign ebooks = ebooks | plus: item.quantity
+    endif
+    if item.line_level_discount_allocations.size > 0
+      assign has_free = true
+    endif
+  endfor
+  assign reste = 3 | minus: ebooks
+-%}
+<div class="wrap">
+  <h1 class="page-title" style="padding-top: var(--space-xl)">{{ 'cart.title' | t }}</h1>
+
+  {%- if cart.item_count > 0 -%}
+    {%- if ebooks > 0 -%}
+      <div class="offer-progress{% if has_free %} is-done{% endif %}" role="status">
+        {%- if has_free -%}
+          <p><strong>Offre débloquée ✓</strong> Un ebook t’est offert : la remise est déjà appliquée ci-dessous.</p>
+        {%- elsif reste > 0 -%}
+          <p><strong>Plus que {{ reste }} ebook{% if reste > 1 %}s{% endif %}</strong> pour profiter de l’offre : 2 achetés, le 3ᵉ offert.</p>
+          <a class="text-link" href="{{ routes.all_products_collection_url }}">Choisir un autre ebook</a>
+        {%- endif -%}
+        <div class="offer-progress__bar" aria-hidden="true"><span style="width: {% if has_free or ebooks >= 3 %}100{% else %}{{ ebooks | times: 100 | divided_by: 3 }}{% endif %}%"></span></div>
+      </div>
+    {%- endif -%}
+
+    <div class="cart">
+      <section aria-labelledby="cart-items-title">
+        <h2 id="cart-items-title" class="visually-hidden">{{ 'cart.items' | t }}</h2>
+        <ul class="cart__items">
+          {%- for item in cart.items -%}
+            <li class="cart-line">
+              <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">{% render 'book-cover', product: item.product, loading: 'lazy', sizes: '5rem' %}</a>
+              <div>
+                <h2><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+                {%- capture rayon_title -%}{% render 'rayon', product: item.product, output: 'title' %}{%- endcapture -%}
+                {%- assign rayon_title = rayon_title | strip -%}
+                {%- if rayon_title != blank -%}<p class="book-meta">{{ rayon_title }}</p>{%- endif -%}
+                {%- if item.quantity > 1 -%}<p class="book-meta">× {{ item.quantity }}</p>{%- endif -%}
+                {%- for allocation in item.line_level_discount_allocations -%}
+                  <p class="book-meta cart-line__offer">{{ allocation.discount_application.title }} : −{{ allocation.amount | money }}</p>
+                {%- endfor -%}
+                <a class="cart-line__remove text-link" href="{{ item.url_to_remove }}">
+                  {{- 'cart.remove' | t -}}<span class="visually-hidden"> « {{ item.product.title }} »</span>
+                </a>
+              </div>
+              <p class="price">
+                {%- if item.original_line_price > item.final_line_price -%}
+                  {{ item.final_line_price | money }} <s class="price__compare">{{ item.original_line_price | money }}</s>
+                {%- else -%}
+                  {{ item.final_line_price | money }}
+                {%- endif -%}
+              </p>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </section>
+
+      <form action="{{ routes.cart_url }}" method="post" class="cart-summary" aria-labelledby="cart-summary-title">
+        <h2 id="cart-summary-title" class="visually-hidden">{{ 'cart.summary' | t }}</h2>
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <p class="book-meta">{{ discount.title }} : −{{ discount.total_allocated_amount | money }}</p>
+        {%- endfor -%}
+        {%- if cart.total_discount > 0 -%}
+          <p class="book-meta cart-line__offer">Tu économises {{ cart.total_discount | money }}</p>
+        {%- endif -%}
+        <p class="cart-summary__total"><span>Total</span><span class="price">{{ cart.total_price | money_with_currency }}</span></p>
+        <small>{{ 'cart.taxes' | t }}</small>
+        <button type="submit" name="checkout" class="btn btn-primary">{{ 'cart.checkout' | t }}</button>
+        {%- if additional_checkout_buttons -%}
+          <div class="express-pay">{{ content_for_additional_checkout_buttons }}</div>
+        {%- endif -%}
+        <small>{{ 'cart.secure_note' | t }}</small>
+      </form>
+    </div>
+  {%- else -%}
+    <div class="empty-state">
+      <p>{{ 'cart.empty' | t }}</p>
+      <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.empty_cta' | t }}</a>
+    </div>
+    <div class="section" style="padding-top:0"></div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Panier" }
+{% endschema %}

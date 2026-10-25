@@ -1,0 +1,142 @@
+{%- comment -%}
+  Offre « Trilogie IA » sous le bouton d'achat des fiches N°06, N°07 et N°08.
+  Elle s'appuie sur la remise automatique « 2 ebooks achetés, le 3e offert » (aucune autre remise).
+  Seuls les titres en ligne et disponibles sont proposés ; sans au moins un autre titre, rien ne s'affiche.
+  Paramètre : product
+{%- endcomment -%}
+{%- liquid
+  assign handles = 'l-intelligence-artificielle-de-a-a-z,gagner-de-l-argent-avec-l-ia,les-200-prompts-essentiels' | split: ','
+  assign others = 0
+  for h in handles
+    if h != product.handle
+      assign p = all_products[h]
+      if p and p.available
+        assign others = others | plus: 1
+      endif
+    endif
+  endfor
+-%}
+{%- if others > 0 -%}
+<style>
+  .trilogy { flex-basis: 100%; max-width: 34rem; margin-top: var(--space-2xs); border: 1px solid var(--gold); border-radius: var(--radius-control); background: var(--paper); overflow: hidden; }
+  .trilogy__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2xs); padding: var(--space-xs) var(--space-s); background: var(--forest); color: #F8F4EC; }
+  .trilogy__head p { margin: 0; font-weight: 700; }
+  .trilogy__badge { flex-shrink: 0; font-size: var(--step--1); font-weight: 700; padding: .2em .6em; border-radius: 999px; background: var(--gold); color: #1F3A32; animation: trilogy-pulse 2.4s ease-in-out infinite; }
+  .trilogy__list { list-style: none; margin: 0; padding: var(--space-2xs) var(--space-s); display: grid; gap: var(--space-2xs); }
+  .trilogy__item label { display: grid; grid-template-columns: auto 3rem 1fr auto; align-items: center; gap: var(--space-xs); padding: var(--space-2xs); border-radius: var(--radius-control); cursor: pointer; transition: background .2s; }
+  .trilogy__item label:hover { background: rgba(184,144,47,.08); }
+  .trilogy__item input { width: 1.25rem; height: 1.25rem; accent-color: var(--forest); }
+  .trilogy__item img { width: 3rem; height: auto; border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
+  .trilogy__name { font-size: var(--step--1); font-weight: 600; line-height: 1.3; }
+  .trilogy__name small { display: block; font-weight: 400; color: var(--ink-muted); }
+  .trilogy__price { font-size: var(--step--1); font-weight: 700; white-space: nowrap; }
+  .trilogy__item.is-in-cart label { opacity: .6; cursor: default; }
+  .trilogy__foot { padding: var(--space-xs) var(--space-s) var(--space-s); border-top: 1px dashed var(--gold); display: grid; gap: var(--space-2xs); }
+  .trilogy__msg { margin: 0; font-size: var(--step--1); color: var(--ink-muted); }
+  .trilogy__msg strong { color: var(--forest); }
+  .trilogy__msg s { opacity: .7; }
+  .trilogy__btn { position: relative; overflow: hidden; width: 100%; }
+  .trilogy__btn::after { content: ""; position: absolute; inset: 0; transform: translateX(-120%); background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); animation: trilogy-shine 3.2s ease-in-out infinite; }
+  @keyframes trilogy-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+  @keyframes trilogy-shine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+  @media (prefers-reduced-motion: reduce) { .trilogy__badge, .trilogy__btn::after { animation: none; } }
+</style>
+<form class="trilogy" action="{{ routes.cart_add_url }}" method="post" data-trilogy aria-labelledby="trilogy-title">
+  <div class="trilogy__head">
+    <p id="trilogy-title">Complète la trilogie IA</p>
+    <span class="trilogy__badge">🎁 3ᵉ offert</span>
+  </div>
+  <ul class="trilogy__list">
+    {%- assign i = 0 -%}
+    {%- for h in handles -%}
+      {%- if h == product.handle -%}{%- assign p = product -%}{%- else -%}{%- assign p = all_products[h] -%}{%- endif -%}
+      {%- if p and p.available -%}
+        {%- assign v = p.selected_or_first_available_variant -%}
+        <li class="trilogy__item" data-trilogy-item data-variant="{{ v.id }}" data-price="{{ v.price }}">
+          <label>
+            <input type="checkbox" name="items[{{ i }}][id]" value="{{ v.id }}" checked{% if p.id == product.id %} data-current{% endif %}>
+            {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 120 }}" alt="" width="48" height="68" loading="lazy">{%- else -%}<span></span>{%- endif -%}
+            <span class="trilogy__name">{{ p.title | split: ' — ' | last }}<small>{% if p.id == product.id %}Ce guide{% else %}{{ p.title | split: ' — ' | first }}{% endif %}<span data-in-cart hidden> · déjà dans ton panier</span></small></span>
+            <span class="trilogy__price">{{ v.price | money }}</span>
+          </label>
+          <input type="hidden" name="items[{{ i }}][quantity]" value="1">
+        </li>
+        {%- assign i = i | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+  <div class="trilogy__foot">
+    <p class="trilogy__msg" data-trilogy-msg aria-live="polite">Les 3 guides : le moins cher est offert automatiquement, sans code.</p>
+    <button type="submit" class="btn btn-primary trilogy__btn" data-trilogy-btn>Ajouter au panier</button>
+  </div>
+</form>
+<script>
+(() => {
+  const form = document.querySelector('[data-trilogy]');
+  if (!form || form.dataset.ready) return;
+  form.dataset.ready = '1';
+  const items = [...form.querySelectorAll('[data-trilogy-item]')];
+  const msg = form.querySelector('[data-trilogy-msg]');
+  const btn = form.querySelector('[data-trilogy-btn]');
+  const fmt = (c) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(c / 100);
+  let inCart = new Set();
+
+  const update = () => {
+    const chosen = items.filter((li) => li.querySelector('input[type=checkbox]').checked || inCart.has(li.dataset.variant));
+    const toAdd = chosen.filter((li) => !inCart.has(li.dataset.variant));
+    const prices = chosen.map((li) => +li.dataset.price);
+    const full = prices.reduce((a, b) => a + b, 0);
+    const free = prices.length >= 3 ? Math.min(...prices) : 0;
+    if (prices.length >= 3) {
+      msg.innerHTML = `<strong>Les 3 guides : ${fmt(full - free)}</strong> <s>${fmt(full)}</s> · le 3ᵉ est offert`;
+    } else if (prices.length === 2) {
+      msg.innerHTML = `Coche le 3ᵉ guide : <strong>il est offert</strong>.`;
+    } else {
+      msg.textContent = 'Ajoute 2 autres guides : le moins cher est offert automatiquement.';
+    }
+    btn.disabled = toAdd.length === 0;
+    btn.textContent = toAdd.length === 0 ? 'Déjà dans ton panier'
+      : prices.length >= 3 ? `Ajouter la trilogie · ${fmt(full - free)}`
+      : `Ajouter ${toAdd.length > 1 ? 'les ' + toAdd.length + ' guides' : 'au panier'}`;
+  };
+
+  items.forEach((li) => li.querySelector('input[type=checkbox]').addEventListener('change', update));
+
+  fetch('/cart.js').then((r) => r.json()).then((cart) => {
+    inCart = new Set(cart.items.map((it) => String(it.variant_id)));
+    items.forEach((li) => {
+      if (inCart.has(li.dataset.variant)) {
+        li.classList.add('is-in-cart');
+        const cb = li.querySelector('input[type=checkbox]');
+        cb.checked = true; cb.disabled = true;
+        li.querySelector('[data-in-cart]').hidden = false;
+      }
+    });
+    update();
+  }).catch(update);
+  update();
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const add = items.filter((li) => li.querySelector('input[type=checkbox]').checked && !inCart.has(li.dataset.variant))
+      .map((li) => ({ id: +li.dataset.variant, quantity: 1 }));
+    if (!add.length) return;
+    btn.disabled = true; btn.textContent = 'Ajout en cours…';
+    try {
+      const r = await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items: add }) });
+      if (!r.ok) throw new Error();
+      window.location.href = '{{ routes.cart_url }}';
+    } catch (err) {
+      form.submit();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-trilogy-all]')) return;
+    items.forEach((li) => { const cb = li.querySelector('input[type=checkbox]'); if (!cb.disabled) cb.checked = true; });
+    update();
+    form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+})();
+</script>
+{%- endif -%}

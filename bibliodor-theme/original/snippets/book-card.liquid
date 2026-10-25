@@ -1,0 +1,34 @@
+{%- comment -%}
+  Carte d'un livre dans une grille. Paramètres : product, heading_level (par défaut h3)
+{%- endcomment -%}
+{%- assign h = heading_level | default: 'h3' -%}
+{%- capture rayon_title -%}{% render 'rayon', product: product, output: 'title' %}{%- endcapture -%}
+{%- assign rayon_title = rayon_title | strip -%}
+{%- liquid
+  assign badge = ''
+  assign badge_class = ''
+  if product.type == 'Pack'
+    if product.compare_at_price > product.price
+      assign saving = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+      assign badge = 'Pack −' | append: saving | append: ' %'
+    else
+      assign badge = 'Pack'
+    endif
+    assign badge_class = ' is-pack'
+  else
+    for tg in product.tags
+      if tg.size == 3 and tg contains 'n0'
+        assign badge = tg | replace: 'n', 'N°'
+      endif
+    endfor
+  endif
+-%}
+<li class="book-item">
+  {%- if badge != blank -%}<span class="book-item__badge{{ badge_class }}">{{ badge }}</span>{%- endif -%}
+  {% render 'book-cover', product: product, loading: 'lazy', sizes: '(min-width: 52rem) 22vw, 45vw' %}
+  <{{ h }} class="book-item__title">
+    <a href="{{ product.url }}" class="stretch">{{ product.title }}</a>
+  </{{ h }}>
+  {%- if rayon_title != blank -%}<p class="book-meta">{{ rayon_title }}</p>{%- endif -%}
+  {% render 'price', product: product %}
+</li>

@@ -1,0 +1,33 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "En-tête",
+  "sections": {
+    "announcement": {
+      "type": "announcement",
+      "settings": {
+        "messages": "🎁 2 ebooks achetés, le 3ᵉ offert\nPack de 4 ebooks à 49,90 € au lieu de 79,60 €\n⚡ Téléchargement immédiat après le paiement\n🔒 Paiement 100 % sécurisé\n📖 Des livres de 50 à 60 pages avec exercices et carnet pratique",
+        "link": "/collections/all"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 184,
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}
