@@ -24,6 +24,7 @@ Suivi         : UTM utm_source=email, utm_medium=email, utm_campaign=reprise_nov
 | 5 | Mar. 10/11, 18 h 30 | Code PILOTA30 (−30 % jusqu'à 23 h 59) et aide au choix | -30 % jusqu'à ce soir minuit | Pack à 48,30 € + liens Stress et Parent |
 
 Les textes complets (objet, prévisualisation, corps, bouton, P.-S.) sont dans `emails.json`.
+Les textes prêts à coller dans Shopify Email sont dans `textes-shopify-email.txt`.
 Les versions HTML prêtes à importer sont dans `html/` (largeur 600 px, adaptées au mobile).
 Pour régénérer le HTML après une retouche du texte :
 
@@ -77,10 +78,10 @@ et aux angles des pubs Meta.
 
 ## À valider avant l'envoi
 
-1. **Garantie 14 jours sur le Pack.** Elle est écrite sur les fiches Parent d'Athlète et Stress, mais pas
-   sur la fiche du Pack. L'e-mail 4 l'annonce de façon générale : confirmer qu'elle s'applique aussi au Pack,
-   sinon retirer la question.
-2. **« Commandé plus de 50 fois »** (e-mail 3) : chiffre repris de la fiche du guide Stress, à confirmer.
+1. **Garantie 14 jours sur le Pack : confirmée par Aimane le 30/10.** Elle n'est pas encore écrite sur la
+   fiche du Pack Mental Complet (seulement sur Parent d'Athlète et Stress) : à y ajouter pour rester cohérent
+   avec l'e-mail 4.
+2. **« Commandé plus de 50 fois »** (e-mail 3) : confirmé par Aimane le 30/10.
 3. **Code PILOTA30 : fait (GO d'Aimane le 30/10).** Le code existant `PILOTA30` (−30 %, une utilisation
    par client, non cumulable avec les autres remises) devait expirer le 31/10 à 23 h 59. Sa date de fin
    a été repoussée au **mardi 10/11 à 23 h 59, heure de Paris** (2026-11-10T22:59Z), vérifiée sur la boutique.
