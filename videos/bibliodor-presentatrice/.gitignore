@@ -1,0 +1,5 @@
+node_modules/
+out/*
+!out/bibliodor-presentatrice.mp4
+public/vo_b.mp3
+gen/
