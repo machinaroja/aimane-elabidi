@@ -1,0 +1,4 @@
+node_modules/
+out/*
+!out/bibliodor-ia-a-z.mp4
+public/vo_b.mp3
