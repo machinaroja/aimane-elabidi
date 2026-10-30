@@ -21,7 +21,7 @@ Suivi         : UTM utm_source=email, utm_medium=email, utm_campaign=reprise_nov
 | 2 | Jeu. 5/11, 18 h 30 | Le problème : libéré au jardin, crispé le jour J, et les 5 leviers | Libéré au jardin, crispé le jour du match | Pack Mental Complet (69 €) |
 | 3 | Sam. 7/11, 8 h 00 | Le matin du match : 3 choses à faire, 3 à éviter | Ce matin, avant le match | Stress et anxiété (14,90 €) |
 | 4 | Lun. 9/11, 18 h 30 | Les objections : tous sports, âge, temps de lecture, garantie | Vos questions sur les guides PILOTA90 | Pack Mental Complet |
-| 5 | Mar. 10/11, 18 h 30 | Aider à choisir selon la situation, rappeler le 3ᵉ guide offert | Par quel guide commencer ? | Pack + liens Stress et Parent |
+| 5 | Mar. 10/11, 18 h 30 | Code PILOTA30 (−30 % jusqu'à 23 h 59) et aide au choix | -30 % jusqu'à ce soir minuit | Pack à 48,30 € + liens Stress et Parent |
 
 Les textes complets (objet, prévisualisation, corps, bouton, P.-S.) sont dans `emails.json`.
 Les versions HTML prêtes à importer sont dans `html/` (largeur 600 px, adaptées au mobile).
@@ -37,9 +37,9 @@ python3 build.py
   une explication du problème, une routine du matin du match.
 - Chaque e-mail a un seul bouton. L'e-mail 3 vend l'entrée de gamme (14,90 €) pour ceux qui ne sont
   pas prêts à prendre le pack.
-- L'urgence est réelle et sans faux compte à rebours : le prochain match du samedi.
-- Offres utilisées : uniquement ce qui existe déjà sur la boutique, à savoir les prix actuels,
-  l'économie du pack (98,60 € → 69 €) et la remise automatique « 2 guides achetés = le 3ᵉ offert ».
+- L'urgence est réelle : le prochain match du samedi, puis la fin du code PILOTA30 le mardi 10/11 à 23 h 59.
+- Offres utilisées : les prix actuels, l'économie du pack (98,60 € → 69 €), la remise automatique
+  « 2 guides achetés = le 3ᵉ offert » (e-mails 1 à 4) et le code PILOTA30 (e-mail 5 uniquement).
 
 ## Segments
 
@@ -81,7 +81,8 @@ et aux angles des pubs Meta.
    sur la fiche du Pack. L'e-mail 4 l'annonce de façon générale : confirmer qu'elle s'applique aussi au Pack,
    sinon retirer la question.
 2. **« Commandé plus de 50 fois »** (e-mail 3) : chiffre repris de la fiche du guide Stress, à confirmer.
-3. **Code promo (option).** La séquence n'utilise aucun code. Si tu veux un coup d'accélérateur sur
-   l'e-mail 5, le code existant `PILOTA30` (−30 %, une utilisation par client) peut y être ajouté. Il est
-   aujourd'hui sans date de fin : il faudrait lui en donner une (mardi 10/11 à minuit) pour que l'urgence
-   soit vraie. Rien n'a été modifié sur la boutique.
+3. **Code PILOTA30 : fait (GO d'Aimane le 30/10).** Le code existant `PILOTA30` (−30 %, une utilisation
+   par client, non cumulable avec les autres remises) devait expirer le 31/10 à 23 h 59. Sa date de fin
+   a été repoussée au **mardi 10/11 à 23 h 59, heure de Paris** (2026-11-10T22:59Z), vérifiée sur la boutique.
+   C'est la seule modification faite sur Shopify. Retour arrière : remettre la date de fin au 31/10 dans
+   Shopify > Réductions > PILOTA30. Le code est mis en avant uniquement dans l'e-mail 5.
