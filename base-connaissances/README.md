@@ -29,8 +29,8 @@ Les fichiers Word originaux sont conservés tels quels dans `sources-docx/`.
 
 ## Fiches de séances (Barça Academy Casablanca)
 
-Le dossier [`seances/`](seances/README.md) contient les fiches de séances réelles (semaines 9, 10 et 11 :
-SP1, SP2, SA1, SA2, SA3), avec image de chaque fiche, texte intégral et PDF original.
+Le dossier [`seances/`](seances/README.md) contient les fiches de séances réelles (semaines 9 à 13 :
+SP1, SP2, SA1, SA2, SA3 — 7 fiches), avec image de chaque fiche, texte intégral et PDF original.
 Elles servent de **modèle de format** pour concevoir de nouvelles séances.
 
 ## Glossaire
