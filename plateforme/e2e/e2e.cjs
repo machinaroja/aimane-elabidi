@@ -31,8 +31,8 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
   {
     const { page, errors } = await login(browser, 'coach-u14');
     ok('coach : pas d\'entrée « Administration »', (await page.locator('nav >> text=Administration').count()) === 0);
-    ok('coach : voit son équipe U14 1 sur l\'accueil', await page.locator('.card h3', { hasText: 'U14 1' }).count() === 1);
-    ok('coach : ne voit aucune autre équipe', await page.locator('.card h3').count() === 1);
+    ok('coach : voit son équipe U14 1 sur l\'accueil', await page.locator('.grid .card h3', { hasText: 'U14 1' }).count() === 1);
+    ok('coach : ne voit aucune autre équipe', await page.locator('.grid .card h3').count() === 1);
     await shot(page, '01-accueil-coach-u14');
 
     await page.click('nav >> text=Calendrier');
@@ -101,16 +101,14 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     await page.waitForSelector('.err');
     ok('coach U14 : la fiche d\'un match Seniors est introuvable', /introuvable/i.test(await page.locator('.err').innerText()));
 
-    // méthodologie : brouillons invisibles puis publication par la direction technique
-    await page.goto(`${BASE}/#/methodology`); await page.reload(); await page.waitForSelector('h1');
-    ok('méthodologie : brouillons non visibles du coach', await page.locator('text=Aucun contenu publié').count() === 1);
-    sql(`select set_config('request.jwt.claims', json_build_object('sub',(select id from auth.users where email='dt@demo.lieusaint.local'),'email','dt@demo.lieusaint.local')::text, false); set role authenticated; select public.publish_methodology_version(id) from methodology_versions where item_id in (select id from methodology_items where title like 'Philosophie%')`);
-    await page.reload(); await page.waitForSelector('section');
+    // méthodologie : les contenus publiés sont visibles, les brouillons non
+    await page.goto(`${BASE}/#/methodology`); await page.reload(); await page.waitForSelector('h1'); await ready(page);
+    ok('méthodologie : brouillons (orientations par âge) non visibles du coach', await page.locator('text=Orientations U14').count() === 0 && await page.locator('text=Brouillon').count() === 0);
     ok('méthodologie : contenu publié visible du coach', await page.locator('text=Position — Possession — Pression').count() > 0);
-    await page.click('button:has-text("Lire")');
-    await page.click('button:has-text("Copier dans mon espace")');
+    await page.locator('[data-testid=meth-item]', { hasText: 'Séance de référence' }).locator('button:has-text("Lire")').click();
+    await page.locator('[data-testid=meth-item]', { hasText: 'Séance de référence' }).locator('button:has-text("Copier dans mon espace")').click();
     await page.waitForSelector('text=Copiée dans votre espace');
-    ok('méthodologie : copie personnelle créée (original intact)', sql(`select count(*) from personal_sessions`) === '1');
+    ok('méthodologie : copie personnelle créée (original intact)', sql(`select count(*) from personal_sessions`) === '2');
     await shot(page, '07-methodologie');
     ok('coach : aucune erreur JavaScript', errors.length === 0, errors.join(' | '));
   }
@@ -149,9 +147,9 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     const ctx2 = await browser.newContext({ locale: 'fr-FR' }); const p2 = await ctx2.newPage();
     await p2.goto(link.replace(/^https?:\/\/[^/]+/, BASE));
     await p2.selectOption('#acc', 'nouveau@demo.lieusaint.local'); await p2.click('text=Entrer');
-    await p2.waitForSelector('.card h3');
-    ok('invité : après acceptation, voit uniquement U12 1', (await p2.locator('.card h3').allInnerTexts()).join() === 'U12 1');
-    await p2.goto(link.replace(/^https?:\/\/[^/]+/, BASE)); await p2.waitForSelector('.card h3');
+    await p2.waitForSelector('.grid .card h3');
+    ok('invité : après acceptation, voit uniquement U12 1', (await p2.locator('.grid .card h3').allInnerTexts()).join() === 'U12 1');
+    await p2.goto(link.replace(/^https?:\/\/[^/]+/, BASE)); await p2.waitForSelector('.grid .card h3');
     ok('invitation à usage unique (rejeu sans effet)', sql(`select count(*) from memberships where user_id=(select id from auth.users where email='nouveau@demo.lieusaint.local')`) === '1');
     await shot(p2, '09-invite-accepte');
   }
@@ -164,47 +162,47 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     await goMeth(dt.page); await goMeth(co.page);
     ok('coach : pas de bouton « Nouveau contenu »', await co.page.locator('text=+ Nouveau contenu').count() === 0);
     await dt.page.click('text=+ Nouveau contenu');
-    await dt.page.selectOption('#mk', 'principle'); await dt.page.fill('#mt', 'Pressing après perte');
-    await dt.page.fill('#sv-0', 'Presser dans les 5 secondes après la perte.'); await dt.page.fill('#sv-1', 'Fermer l\'axe\nPresser à deux\nRepli si dépassé');
+    await dt.page.selectOption('#mk', 'principle'); await dt.page.fill('#mt', 'Jeu sans ballon : démarquage');
+    await dt.page.fill('#sv-0', 'Se démarquer avant la réception.'); await dt.page.fill('#sv-1', 'Regarder avant de recevoir\nOffrir un angle de passe\nChanger de rythme');
     await dt.page.fill('#mn', 'Création'); await dt.page.click('button:has-text("Enregistrer le brouillon")');
     await dt.page.waitForSelector('text=Brouillon enregistré');
-    ok('DT : le contenu apparaît dans les brouillons', await dt.page.locator('h2:has-text("Brouillons")').count() === 1 && await card(dt.page, 'Pressing après perte').count() === 1);
+    ok('DT : le contenu apparaît dans les brouillons', await dt.page.locator('h2:has-text("Brouillons")').count() === 1 && await card(dt.page, 'Jeu sans ballon : démarquage').count() === 1);
     await shot(dt.page, '13-methodo-brouillon');
     await goMeth(co.page);
-    ok('coach : ne voit PAS le brouillon', await card(co.page, 'Pressing après perte').count() === 0);
+    ok('coach : ne voit PAS le brouillon', await card(co.page, 'Jeu sans ballon : démarquage').count() === 0);
 
     // publication
-    await card(dt.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await card(dt.page, 'Jeu sans ballon : démarquage').locator('button:has-text("Lire")').click();
     await dt.page.waitForSelector('button:has-text("Publier")');
     await dt.page.click('button:has-text("Publier") >> nth=0'); await dt.page.click('button:has-text("Oui, publier")');
     await dt.page.waitForSelector('text=publiée : visible de tous les éducateurs');
     await goMeth(co.page);
-    ok('coach : voit le contenu publié avec le badge « Nouveau »', await card(co.page, 'Pressing après perte').count() === 1 && await card(co.page, 'Pressing après perte').locator('.badge.off').count() === 1);
-    await card(co.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
-    await co.page.waitForSelector('text=Presser dans les 5 secondes');
-    ok('coach : lit les consignes en liste', await co.page.locator('li', { hasText: 'Fermer l\'axe' }).count() === 1);
+    ok('coach : voit le contenu publié avec le badge « Nouveau »', await card(co.page, 'Jeu sans ballon : démarquage').count() === 1 && await card(co.page, 'Jeu sans ballon : démarquage').locator('.badge.off').count() === 1);
+    await card(co.page, 'Jeu sans ballon : démarquage').locator('button:has-text("Lire")').click();
+    await co.page.waitForSelector('text=Se démarquer avant la réception');
+    ok('coach : lit les consignes en liste', await co.page.locator('li', { hasText: 'Offrir un angle de passe' }).count() === 1);
     await shot(co.page, '14-methodo-coach-lit');
 
     // nouvelle version : l'ancienne reste dans l'historique
     await goMeth(dt.page);
-    await card(dt.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await card(dt.page, 'Jeu sans ballon : démarquage').locator('button:has-text("Lire")').click();
     await dt.page.click('button:has-text("Nouvelle version")');
     await dt.page.waitForSelector('#sv-0');
-    ok('DT : la nouvelle version est préremplie avec la version publiée', (await dt.page.inputValue('#sv-0')).startsWith('Presser dans les 5 secondes'));
-    await dt.page.fill('#sv-0', 'Presser dans les 4 secondes après la perte.'); await dt.page.fill('#mn', 'Délai ramené à 4 s');
+    ok('DT : la nouvelle version est préremplie avec la version publiée', (await dt.page.inputValue('#sv-0')).startsWith('Se démarquer avant la réception'));
+    await dt.page.fill('#sv-0', 'Se démarquer avant la réception, dos au jeu interdit.'); await dt.page.fill('#mn', 'Précision : dos au jeu interdit');
     await dt.page.click('button:has-text("Publier pour tous les éducateurs")'); await dt.page.waitForSelector('text=Contenu publié');
     await dt.page.waitForSelector('[data-testid=meth-item] .badge:has-text("v2")', { timeout: 8000 }).catch(() => {});
-    ok('DT : la version courante est v2', await card(dt.page, 'Pressing après perte').locator('.badge', { hasText: 'v2' }).count() === 1);
-    await card(dt.page, 'Pressing après perte').locator('button:has-text("Historique des versions")').click();
+    ok('DT : la version courante est v2', await card(dt.page, 'Jeu sans ballon : démarquage').locator('.badge', { hasText: 'v2' }).count() === 1);
+    await card(dt.page, 'Jeu sans ballon : démarquage').locator('button:has-text("Historique des versions")').click();
     await dt.page.waitForSelector('table tbody tr');
-    ok('DT : historique conservé (v1 et v2) avec la note de modification', await dt.page.locator('table tbody tr').count() === 2 && await dt.page.locator('td', { hasText: 'Délai ramené à 4 s' }).count() === 1);
+    ok('DT : historique conservé (v1 et v2) avec la note de modification', await dt.page.locator('table tbody tr').count() === 2 && await dt.page.locator('td', { hasText: 'Précision : dos au jeu interdit' }).count() === 1);
     await shot(dt.page, '15-methodo-historique');
     await co.page.reload(); await ready(co.page); await goMeth(co.page);
-    await card(co.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
-    await co.page.waitForSelector('text=4 secondes');
-    ok('coach : voit la v2 publiée', await co.page.locator('text=Presser dans les 4 secondes').count() === 1);
-    ok('suivi de diffusion : la lecture du coach est enregistrée', sql(`select count(*) from methodology_reads r join methodology_versions v on v.id=r.version_id join methodology_items i on i.id=v.item_id where i.title='Pressing après perte'`) >= '1');
-    const vid1 = sql(`select v.id from methodology_versions v join methodology_items i on i.id=v.item_id where i.title='Pressing après perte' and v.version_no=1`);
+    await card(co.page, 'Jeu sans ballon : démarquage').locator('button:has-text("Lire")').click();
+    await co.page.waitForSelector('text=dos au jeu interdit');
+    ok('coach : voit la v2 publiée', await co.page.locator('pre.body', { hasText: 'dos au jeu interdit' }).count() === 1);
+    ok('suivi de diffusion : la lecture du coach est enregistrée', sql(`select count(*) from methodology_reads r join methodology_versions v on v.id=r.version_id join methodology_items i on i.id=v.item_id where i.title='Jeu sans ballon : démarquage'`) >= '1');
+    const vid1 = sql(`select v.id from methodology_versions v join methodology_items i on i.id=v.item_id where i.title='Jeu sans ballon : démarquage' and v.version_no=1`);
     const tokCoach = (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'coach-u14@demo.lieusaint.local' }) })).json()).token;
     const tokDt = (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'dt@demo.lieusaint.local' }) })).json()).token;
     const post = (path, tok, body) => fetch(`${BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', Authorization: `Bearer ${tok}` }, body: JSON.stringify(body) });
@@ -271,10 +269,123 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     ok('le transfert est tracé dans le journal d\'audit', Number(sql(`select count(*) from audit_log where table_name='player_team_history' and action='UPDATE'`)) >= 2);
   }
 
+  // ===== Tableau de bord de la direction technique =====
+  {
+    const tokOf = async (who) => (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: `${who}@demo.lieusaint.local` }) })).json()).token;
+    const fmtPct = (n, d) => (d ? `${String(Math.round((1000 * n) / d) / 10).replace('.', ',')} %` : '—');
+    const kpi = async (page, label) => (await page.locator('.kpi', { hasText: label }).first().locator('.n').innerText()).trim();
+
+    // nom d'affichage : renseigné par l'éducateur lui-même
+    const nv = await login(browser, 'nouveau');
+    await nv.page.fill('#pn', 'Nouvel Éducateur Démo'); await nv.page.click('button:has-text("Enregistrer")');
+    await nv.page.waitForSelector('h1:has-text("Nouvel Éducateur Démo")');
+    ok('profil : l\'éducateur renseigne son nom, affiché dans l\'en-tête', (await nv.page.locator('[data-testid=who]').innerText()).includes('Nouvel Éducateur Démo'));
+    ok('éducateur sans droit de rapport : pas d\'entrée « Tableau de bord »', await nv.page.locator('nav >> text=Tableau de bord').count() === 0);
+
+    // coach : aucun accès, ni par le menu ni par l'API
+    const co = await login(browser, 'coach-u14');
+    ok('coach : pas d\'entrée « Tableau de bord »', await co.page.locator('nav >> text=Tableau de bord').count() === 0);
+    await co.page.goto(`${BASE}/#/dashboard`); await co.page.reload();
+    await co.page.waitForSelector('.err');
+    ok('coach : accès direct à la page refusé', /réservé à la direction/.test(await co.page.locator('.err').innerText()));
+    ok('API : le tableau de bord est refusé à un coach (403)', (await fetch(`${BASE}/api/dashboard?period=season`, { headers: { Authorization: `Bearer ${await tokOf('coach-u14')}` } })).status === 403);
+    ok('API : refusé à un compte sans rôle (403)', (await fetch(`${BASE}/api/dashboard?period=season`, { headers: { Authorization: `Bearer ${await tokOf('inconnu')}` } })).status === 403);
+
+    // direction technique
+    const dt = await login(browser, 'dt');
+    await dt.page.click('nav >> text=Tableau de bord'); await dt.page.waitForSelector('.kpis'); await ready(dt.page);
+    await shot(dt.page, '18-dashboard');
+    const sqlN = (q) => Number(sql(q));
+    // contrôles croisés : chaque chiffre affiché est recalculé par une requête SQL indépendante
+    ok('KPI équipes = 16', await kpi(dt.page, 'Équipes') === '16');
+    ok('KPI joueurs = joueurs actuellement rattachés à une équipe', Number(await kpi(dt.page, 'Joueurs')) === sqlN(`select count(*) from player_team_history where ended_on is null`));
+    ok('KPI éducateurs = rôles équipe/catégorie actifs', Number(await kpi(dt.page, 'Éducateurs')) === sqlN(`select count(*) from memberships m join club_roles r on r.club_id=m.club_id and r.key=m.role_key where m.status='active' and r.scope_level in ('team','category')`));
+    const held = sqlN(`select count(*) from events where kind='training' and status='scheduled' and starts_at < now()`);
+    ok('KPI entraînements tenus = entraînements passés non annulés', Number(await kpi(dt.page, 'Entraînements tenus')) === held, `${held}`);
+    const pn = sqlN(`select count(*) from attendance_records a join events e on e.id=a.event_id where e.kind='training' and a.status in ('present','late')`), pd = sqlN(`select count(*) from attendance_records a join events e on e.id=a.event_id where e.kind='training'`);
+    ok('KPI participation recalculée indépendamment', await kpi(dt.page, 'Participation') === fmtPct(pn, pd), `${await kpi(dt.page, 'Participation')} vs ${fmtPct(pn, pd)}`);
+    const played = sqlN(`select count(*) from match_details d join events e on e.id=d.event_id where d.status='played' and e.status='scheduled'`);
+    ok('KPI matchs joués = matchs avec score (officiels compris)', Number(await kpi(dt.page, 'Matchs joués')) === played, `${played}`);
+
+    const row = (t) => dt.page.locator('[data-testid=team-row]', { hasText: t });
+    const covU14 = sqlN(`select count(*) from events e where e.kind='training' and e.status='scheduled' and e.starts_at<now() and e.team_id=(select t.id from teams t join categories c on c.id=t.category_id where c.name='U14' and t.name='1') and exists (select 1 from attendance_records a where a.event_id=e.id)`);
+    const heldU14 = sqlN(`select count(*) from events e where e.kind='training' and e.status='scheduled' and e.starts_at<now() and e.team_id=(select t.id from teams t join categories c on c.id=t.category_id where c.name='U14' and t.name='1')`);
+    ok('ligne U14 1 : couverture des présences recalculée', (await row('U14 1').first().innerText()).includes(fmtPct(covU14, heldU14)), await row('U14 1').first().innerText());
+    ok('ligne Seniors 1 : couverture 0 % (aucune présence saisie)', /0 %/.test(await row('Seniors 1').first().innerText()));
+    ok('ligne U14 1 : éducateurs nommés (responsable, coach, adjoint)', /Coach U14 Démo/.test(await row('U14 1').first().innerText()) && /Adjoint U14 Démo/.test(await row('U14 1').first().innerText()));
+    ok('équipes sans éducateur signalées « aucun attribué »', await dt.page.locator('[data-testid=team-row]', { hasText: 'Seniors 10' }).locator('text=aucun attribué').count() === 1);
+
+    // points d'attention : règle affichée, formulation de piste à vérifier
+    const flags = await dt.page.locator('[data-testid=flag]').allInnerTexts();
+    ok('point d\'attention : présences peu saisies (Seniors 1) avec la règle affichée', flags.some((f) => /Seniors 1/.test(f) && /Règle :/.test(f) && /couverture des présences < 60 %/.test(f)));
+    const nPub = sqlN(`select count(*) from methodology_items where status='published'`);
+    ok('point d\'attention : méthodologie peu ouverte (Coach Seniors 1 Démo : 1 contenu sur ' + nPub + ')', flags.some((f) => /Coach Seniors 1 Démo/.test(f) && f.includes(`1 contenu(s) ouvert(s) sur ${nPub}`)));
+    ok('le coach U14 (3/3 lus) n\'est PAS signalé', !flags.some((f) => /Coach U14 Démo/.test(f) && /ouvert/.test(f)));
+    ok('formulation prudente affichée (pistes à vérifier, pas des constats)', await dt.page.locator('text=pistes à vérifier').count() === 1);
+    ok('limites affichées : « Pas encore suivi » (objectifs, évaluations, thèmes, besoins de formation)', await dt.page.locator('h2:has-text("Pas encore suivi")').count() === 1 && await dt.page.locator('text=Évaluations collectives').count() === 1);
+    ok('aucun jugement de valeur automatique (« mauvais », « insuffisant », « faute »)', !/mauvais|insuffisant|faute|incompétent/i.test(await dt.page.locator('main').innerText()));
+    ok('éducateur nouvellement nommé visible avec son nom', await dt.page.locator('[data-testid=educ-row]', { hasText: 'Nouvel Éducateur Démo' }).count() === 1);
+
+    // filtre de catégorie
+    await dt.page.selectOption('#d-c', { label: 'U14' }); await count(dt.page, '[data-testid=team-row]', 3);
+    ok('filtre U14 : 3 équipes uniquement', await dt.page.locator('[data-testid=team-row]').count() === 3 && await dt.page.locator('[data-testid=team-row]', { hasText: 'Seniors' }).count() === 0);
+    ok('filtre U14 : seuls les éducateurs de U14 (le coach Seniors 1 disparaît)', await dt.page.locator('[data-testid=educ-row]', { hasText: 'Coach Seniors 1' }).count() === 0 && await dt.page.locator('[data-testid=educ-row]', { hasText: 'Coach U14' }).count() === 1);
+    await dt.page.selectOption('#d-c', { label: 'Toutes' });
+
+    // période : mois courant, recalculé indépendamment (heure de Paris)
+    const monthLabel = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    await dt.page.click('button:has-text("Mois")'); await dt.page.waitForFunction((l) => document.body.innerText.toLowerCase().includes('période : ' + l), monthLabel); await dt.page.waitForSelector('.kpis');
+    const heldM = sqlN(`select count(*) from events where kind='training' and status='scheduled' and starts_at < now() and starts_at >= date_trunc('month', now() at time zone 'Europe/Paris') at time zone 'Europe/Paris' and starts_at < (date_trunc('month', now() at time zone 'Europe/Paris') + interval '1 month') at time zone 'Europe/Paris'`);
+    ok('période « mois » : entraînements tenus recalculés', Number(await kpi(dt.page, 'Entraînements tenus')) === heldM, `${heldM}`);
+    await dt.page.fill('#d-m', '2026-08'); await dt.page.waitForFunction(() => document.body.innerText.toLowerCase().includes('période : août 2026')); await dt.page.waitForSelector('.kpis');
+    ok('période « août 2026 » : aucune donnée, aucun chiffre inventé', await kpi(dt.page, 'Entraînements tenus') === '0' && await kpi(dt.page, 'Participation') === '—');
+    await dt.page.click('button:has-text("Trimestre")'); await dt.page.waitForSelector('#d-q'); await dt.page.waitForFunction(() => /période : \d(er|e) trimestre/i.test(document.body.innerText)); await dt.page.waitForSelector('.kpis');
+    ok('période « trimestre » : sélection disponible', await dt.page.locator('#d-q option').count() === 12);
+    await dt.page.click('button:has-text("Saison")'); await dt.page.waitForFunction(() => document.body.innerText.toLowerCase().includes('période : saison')); await dt.page.waitForSelector('.kpis');
+
+    // rapport : CSV et impression journalisés ; anti-injection de formules
+    sql(`update profiles set display_name = '=1+1 Coach piégé' where id = (select id from auth.users where email='coach-seniors1@demo.lieusaint.local')`);
+    await dt.page.reload(); await dt.page.waitForSelector('.kpis');
+    await dt.page.click('.seg button:has-text("Rapport")');
+    ok('rapport : titre, période et date de génération', await dt.page.locator('text=Rapport de la direction technique').count() === 1 && await dt.page.locator('text=généré le').count() === 1);
+    const before = sqlN(`select count(*) from audit_log where table_name='reports' and action='EXPORT'`);
+    const [dl] = await Promise.all([dt.page.waitForEvent('download'), dt.page.click('button:has-text("Exporter en CSV")')]);
+    const csv = require('node:fs').readFileSync(await dl.path(), 'utf8');
+    ok('CSV : en-têtes et lignes équipes / éducateurs / points d\'attention', /ÉQUIPES/.test(csv) && /ÉDUCATEURS/.test(csv) && /POINTS D'ATTENTION/.test(csv) && /"U14";"1"/.test(csv));
+    ok('CSV : séparateur « ; » et BOM (ouverture directe dans Excel en français)', csv.charCodeAt(0) === 0xfeff && csv.includes(';'));
+    ok('CSV : une formule dans un nom est neutralisée (apostrophe)', csv.includes(`"'=1+1 Coach piégé"`) && !csv.includes(`"=1+1 Coach piégé"`));
+    ok('CSV : aucun e-mail d\'éducateur ni aucun nom de joueur exporté', !/@demo\.lieusaint\.local/.test(csv) && !/Demo-[A-Z]/.test(csv));
+    ok('export CSV journalisé dans l\'audit', sqlN(`select count(*) from audit_log where table_name='reports' and action='EXPORT'`) === before + 1);
+    await dt.page.evaluate(() => { window.print = () => {}; });
+    await dt.page.click('button:has-text("Imprimer")'); await dt.page.waitForSelector('text=Impression consignée');
+    ok('impression journalisée dans l\'audit', sqlN(`select count(*) from audit_log where table_name='reports' and action='EXPORT'`) === before + 2);
+    await shot(dt.page, '19-rapport');
+
+    // responsable de catégorie : sa catégorie seulement, pas d'export
+    const re = await login(browser, 'resp-u14');
+    await re.page.click('nav >> text=Tableau de bord'); await re.page.waitForSelector('.kpis'); await ready(re.page);
+    ok('responsable : bandeau « votre catégorie uniquement »', await re.page.locator('text=votre catégorie').first().count() > 0);
+    const reTeams = await re.page.locator('[data-testid=team-row]').allInnerTexts();
+    ok('responsable : uniquement les équipes U14', reTeams.length === 3 && reTeams.every((t) => /^U14/.test(t)), reTeams.map((t) => t.slice(0, 8)).join('|'));
+    ok('responsable : statistiques de lecture de la méthodologie non visibles', await re.page.locator('text=non visible').count() > 0 && await re.page.locator('[data-testid=flag]', { hasText: 'ouvert' }).count() === 0);
+    await re.page.click('.seg button:has-text("Rapport")');
+    ok('responsable : le rapport s\'intitule « de catégorie » et n\'annonce pas « toutes catégories »', await re.page.locator('h2:has-text("Rapport de catégorie")').count() === 1 && await re.page.locator('text=toutes catégories').count() === 0 && await re.page.locator('text=catégorie(s) : U14').count() === 1);
+    ok('responsable : pas de bouton d\'export', await re.page.locator('button:has-text("Exporter en CSV")').count() === 0);
+    ok('API : le responsable ne peut pas journaliser/faire d\'export (403)', (await fetch(`${BASE}/api/reports/export-log`, { method: 'POST', headers: { 'content-type': 'application/json', Authorization: `Bearer ${await tokOf('resp-u14')}` }, body: JSON.stringify({ club_id: sql(`select id from clubs limit 1`), label: 'x' }) })).status === 403);
+    await shot(re.page, '20-dashboard-responsable');
+    ok('dashboard : aucune erreur JavaScript', dt.errors.length === 0 && re.errors.length === 0 && co.errors.length === 0, dt.errors.concat(re.errors).join(' | '));
+  }
+
+  // ===== Réponses périmées (changement rapide de filtre) =====
+  {
+    let okStale = true; try { execSync(`node ${__dirname}/stale.cjs`, { env: { ...process.env, NODE_PATH: process.env.NODE_PATH }, stdio: 'pipe' }); } catch { okStale = false; }
+    ok('tableau de bord : une réponse arrivée en retard n\'écrase pas la période choisie', okStale);
+  }
+
   // ===== Compte sans rôle =====
   {
     const { page } = await login(browser, 'inconnu');
-    ok('compte sans rôle : message explicite, aucune donnée', await page.locator('text=pas encore de rôle').count() === 1 && await page.locator('.card h3').count() === 0);
+    ok('compte sans rôle : message explicite, aucune donnée', await page.locator('text=pas encore de rôle').count() === 1 && await page.locator('.grid .card h3').count() === 0);
   }
 
   // ===== API : accès sans jeton / jeton falsifié =====

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../api';
 import type { Ctx } from '../App';
 
@@ -24,7 +24,8 @@ export function Squad({ ctx }: { ctx: Ctx }) {
     try { await api('POST', `/api/players/${moving.id}/transfer`, { to_team_id: dest }); const to = ctx.teams.find((x) => x.id === dest); setOk(`${moving.first_name} ${moving.last_name} est transféré vers ${to?.category} ${to?.name}. La fiche et l'historique sont conservés.`); setMoving(null); setDest(''); setHistFor(null); load(); }
     catch (e: any) { setErr(e.message); }
   };
-  const load = useCallback(() => { if (team) api<P[]>('GET', `/api/teams/${team}/players`).then(setPlayers).catch((e) => setErr(e.message)); }, [team]);
+  const seq = useRef(0);                       // seule la dernière requête peut mettre l'écran à jour
+  const load = useCallback(() => { if (!team) return; const mine = ++seq.current; api<P[]>('GET', `/api/teams/${team}/players`).then((r) => { if (mine === seq.current) setPlayers(r); }).catch((e) => { if (mine === seq.current) setErr(e.message); }); }, [team]);
   useEffect(load, [load]);
   const add = async () => {
     setErr(''); setOk('');

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, Ev, fmtDate, fmtTime, KIND, monthKey, dayKey, parisToIso } from '../api';
 import type { Ctx } from '../App';
 
@@ -10,12 +10,14 @@ export function CalendarPage({ ctx }: { ctx: Ctx }) {
   const [form, setForm] = useState(false);
   const [err, setErr] = useState('');
 
+  const seq = useRef(0);                       // seule la dernière requête peut mettre l'écran à jour
   const load = useCallback(() => {
+    const mine = ++seq.current;
     setEvents(null);
     const now = Date.now();
     const [from, to] = mode === 'upcoming' ? [now - 12 * 36e5, now + 400 * 864e5] : [now - 400 * 864e5, now - 12 * 36e5];
     api<Ev[]>('GET', `/api/events?from=${new Date(from).toISOString()}&to=${new Date(to).toISOString()}${team ? `&team=${team}` : ''}`)
-      .then((r) => setEvents(mode === 'past' ? r.reverse() : r)).catch((e) => setErr(e.message));
+      .then((r) => { if (mine === seq.current) setEvents(mode === 'past' ? r.reverse() : r); }).catch((e) => { if (mine === seq.current) setErr(e.message); });
   }, [team, mode]);
   useEffect(load, [load]);
 

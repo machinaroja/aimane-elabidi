@@ -12,7 +12,7 @@ Navigateur (web/, React)  →  Passerelle d'API (server/, Node)  →  PostgreSQL
 ```
 
 La passerelle ouvre une transaction **au nom de l'utilisateur** (rôle `authenticated` + claims du jeton) : c'est PostgreSQL
-qui filtre, comme dans les 206 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
+qui filtre, comme dans les 216 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
 
 ## Lancer en local (démonstration)
 
@@ -35,10 +35,23 @@ Le logo officiel du club (`web/public/logo.png`, recadré en rond) figure dans l
 | Fiche événement | éducateurs de l'équipe | Convocations et réponses, présences (présent / retard / absent / excusé), composition, notes, résultat |
 | Effectif | éducateurs de l'équipe | Liste des joueurs, ajout d'un joueur, **transfert vers une autre équipe ou catégorie** (la fiche et l'historique sont conservés), historique du joueur |
 | Méthodologie | tous ; gestion par la direction technique | Lecture des contenus publiés (badge « Nouveau »), copie dans l'espace personnel (original intact) ; **la direction technique crée, modifie en brouillon, publie, crée une nouvelle version, consulte l'historique et le suivi de lecture** |
+| Tableau de bord | direction (club entier) ; responsable de catégorie (sa catégorie seulement) | Indicateurs par période (mois / trimestre / saison) et par catégorie : participation, couverture des présences, matchs et résultats, éducateurs, lecture de la méthodologie ; **points d'attention** (règle et valeur affichées, formulés comme pistes à vérifier) ; rapport imprimable et export CSV (journalisés) |
 | Administration | direction | Catégories, équipes, invitations d'éducateurs (lien à usage unique) |
 
-Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (62 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
-invitation d'un nouvel éducateur, publication de la méthodologie en 2 versions, transferts de joueurs et droits qui suivent, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
+Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (105 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
+invitation d'un nouvel éducateur, publication de la méthodologie en 2 versions, transferts de joueurs et droits qui suivent, tableau de bord recalculé indépendamment en SQL, export CSV, réponses périmées, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
+
+## Tableau de bord : principes
+
+- **Mesuré, jamais deviné** : chaque chiffre vient de données saisies (présences, entraînements, résultats, lectures) et sa définition est affichée.
+  Les 105 contrôles de navigateur **recalculent chaque indicateur par une requête SQL indépendante**.
+- **Aucune conclusion automatique** : les « points d'attention » appliquent des règles simples (ex. couverture des présences < 60 %, méthodologie
+  ouverte à moins de 50 %), affichent la règle et la valeur, et se présentent comme des pistes à vérifier avec l'éducateur.
+- **Ce qui n'est pas encore suivi est écrit à l'écran** : objectifs pédagogiques, évaluations collectives, thèmes travaillés, difficultés
+  récurrentes, besoins de formation (ils exigent des observations et une grille définies par la direction technique).
+- **Droits** : le tableau est calculé au nom de l'utilisateur (RLS). Un responsable de catégorie ne voit que sa catégorie et pas les statistiques
+  de lecture ; un entraîneur n'y a pas accès. Exports CSV / impression : droit dédié + trace dans le journal d'audit ; neutralisation des formules
+  de tableur ; ni e-mail d'éducateur ni nom de joueur exportés.
 
 ## Ce qui est réalisé (priorités 1 à 6, 8, 9, 11, 12 et une partie des 7 et 10 du cahier des charges)
 
@@ -83,7 +96,7 @@ privées ne sont **jamais** partagées automatiquement (partage explicite par l'
 cd plateforme/supabase && ./run_tests.sh
 ```
 
-Crée une base PostgreSQL jetable, applique les migrations, puis exécute **206 contrôles** avec 10 comptes
+Crée une base PostgreSQL jetable, applique les migrations, puis exécute **216 contrôles** avec 10 comptes
 (administrateur, directeur technique, responsable, 4 entraîneurs, adjoint, inconnu, deuxième club) :
 isolation par catégorie/équipe/club, invitations, transferts, observations, versions, audit, garde-fous.
 Le test est « strict » : un refus n'est accepté que s'il vient d'un vrai refus de droits (pas d'une erreur de syntaxe).
@@ -97,6 +110,8 @@ Des failles volontaires (RLS trop large, accès après transfert, anti-escalade 
   et rapports de la direction technique, assistants IA par catégorie, publication de la méthodologie depuis
   l'interface (fait), transfert d'un joueur de catégorie depuis l'interface (fait) ; restent les observations de joueurs
   dans l'interface (la base les gère déjà : privées par défaut, partage explicite), les évaluations et objectifs des joueurs. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+- **Tableau de bord** : indicateurs de participation limités à ce qui est saisi (la couverture des présences est affichée pour juger leur fiabilité) ;
+  pas encore de thèmes par séance, d'objectifs pédagogiques par équipe ni de grille d'évaluation collective ; pas de comparaison automatique entre éducateurs.
 - **Connexion** : seule la connexion de démonstration existe. En production, l'authentification passera par Supabase Auth
   (lien magique par e-mail) ; la passerelle vérifie déjà son jeton (`SUPABASE_JWT_SECRET`). Rien n'est encore déployé :
   il faut créer le projet Supabase, un rôle de connexion dédié pour la passerelle, un hébergement et le nom de domaine.

@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react';
 import { api, Ev, fmtDate, fmtTime, KIND } from '../api';
+import { useState as useS } from 'react';
 import type { Ctx } from '../App';
 
 export function Home({ ctx }: { ctx: Ctx }) {
   const [events, setEvents] = useState<Ev[] | null>(null);
   useEffect(() => { api<Ev[]>('GET', `/api/events?from=${new Date().toISOString()}&to=${new Date(Date.now() + 30 * 864e5).toISOString()}`).then(setEvents); }, []);
   const m = ctx.me.memberships[0];
+  const [name, setName] = useS(''); const [perr, setPerr] = useS('');
+  const saveName = async () => { try { await api('POST', '/api/me/profile', { display_name: name }); location.reload(); } catch (e: any) { setPerr(e.message); } };
   return (
     <>
-      <h1>Bonjour 👋</h1>
+      <h1>Bonjour{ctx.me.display_name ? ` ${ctx.me.display_name}` : ''} 👋</h1>
+      {!ctx.me.display_name && m && (
+        <div className="card"><h3>Votre nom</h3><p className="small muted">Renseignez le nom qui s'affichera auprès de la direction du club (au lieu de votre adresse e-mail).</p>
+          <div className="row"><div><label htmlFor="pn">Prénom et nom</label><input id="pn" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} /></div><div><button onClick={saveName} disabled={!name.trim()}>Enregistrer</button></div></div>
+          {perr && <div className="err" role="alert">{perr}</div>}</div>)}
       {m ? <p className="muted">{m.role_label} — {m.club_name}</p> : <div className="err">Votre compte n'a pas encore de rôle dans le club.</div>}
       <h2>{ctx.teams.length > 1 ? 'Mes équipes' : 'Mon équipe'}</h2>
       {ctx.teams.length === 0 && <p className="muted">Aucune équipe ne vous est attribuée.</p>}

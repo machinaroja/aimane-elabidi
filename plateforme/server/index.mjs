@@ -77,7 +77,14 @@ route('GET', '/api/me', A(async (c, { user }) => {
       app.has_perm($1,null,'players','view') as players_view_all`, [id]);
     caps[id] = k.rows[0];
   }
-  return { email: user.email, memberships: m.rows, club_caps: caps };
+  const prof = (await c.query(`select display_name from profiles where id = auth.uid()`)).rows[0];
+  const rep = (await c.query(`select exists (select 1 from teams t where app.has_perm(t.club_id, t.id, 'reports', 'view')) or bool_or(app.has_perm(m.club_id, null, 'reports', 'view')) as ok from memberships m where m.user_id = auth.uid() and m.status = 'active'`)).rows[0];
+  return { email: user.email, display_name: prof?.display_name ?? null, can_reports: !!rep?.ok, memberships: m.rows, club_caps: caps };
+}));
+
+route('POST', '/api/me/profile', A(async (c, { body }) => {
+  await c.query(`update profiles set display_name = $1 where id = auth.uid()`, [v.str(body.display_name, 'nom', 80)]);
+  return { ok: true };
 }));
 
 route('GET', '/api/teams', A(async (c) => (await c.query(
@@ -247,6 +254,142 @@ route('GET', '/api/personal-sessions', A(async (c) => (await c.query(
   `select s.id, s.title, s.body, s.created_at, t.name as team_name, ca.name as category
    from personal_sessions s left join teams t on t.id = s.team_id left join categories ca on ca.id = t.category_id
    where s.owner_id = auth.uid() order by s.created_at desc`)).rows));
+
+
+// ---------- tableau de bord de la direction technique ----------
+// Tout est calculé AU NOM de l'utilisateur : un responsable de catégorie ne voit que sa catégorie (RLS).
+// Aucune conclusion automatique : des indicateurs définis + des « points d'attention » dont la règle est affichée.
+const DEFINITIONS = {
+  participation: "Taux de participation = (présents + en retard) / toutes les présences saisies (présent, en retard, absent, excusé) aux entraînements de la période.",
+  couverture: "Couverture des présences = entraînements passés pour lesquels au moins une présence a été saisie / entraînements passés (hors annulés). Mesure la fiabilité du taux de participation.",
+  matchs: "Matchs joués = matchs avec un score enregistré dans la période (compétitions officielles comprises). V/N/D du point de vue du club.",
+  lecture: "Part de la méthodologie lue = versions courantes publiées ouvertes par l'éducateur / versions courantes publiées. Une ouverture n'est pas une preuve de compréhension ni d'application.",
+  copies: "Séances reprises du commun = séances personnelles rattachées à une équipe, créées dans la période par copie d'une séance de la méthodologie du club.",
+};
+const NOT_TRACKED = [
+  'Objectifs pédagogiques par équipe et par saison',
+  'Évaluations collectives (grille d\'observation définie par la direction technique)',
+  'Thèmes réellement travaillés en séance (les séances planifiées ne portent pas encore de thème)',
+  'Difficultés récurrentes et besoins de formation des éducateurs : à renseigner par la direction technique à partir d\'observations',
+];
+function periodRange(period, ref, season) {
+  const pad = (n) => String(n).padStart(2, '0');
+  if (period === 'month') {
+    const m = /^(\d{4})-(\d{2})$/.exec(ref || ''); if (!m) throw bad('mois invalide');
+    const y = +m[1], mo = +m[2]; if (mo < 1 || mo > 12) throw bad('mois invalide');
+    const ny = mo === 12 ? y + 1 : y, nm = mo === 12 ? 1 : mo + 1;
+    return { from: `${y}-${pad(mo)}-01`, to: `${ny}-${pad(nm)}-01`, label: new Date(Date.UTC(y, mo - 1, 15)).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric', timeZone: 'UTC' }) };
+  }
+  if (period === 'quarter') {
+    const m = /^(\d{4})-Q([1-4])$/.exec(ref || ''); if (!m) throw bad('trimestre invalide');
+    const y = +m[1], q = +m[2], sm = (q - 1) * 3 + 1, em = sm + 3;
+    return { from: `${y}-${pad(sm)}-01`, to: em > 12 ? `${y + 1}-01-01` : `${y}-${pad(em)}-01`, label: `${q}${q === 1 ? 'er' : 'e'} trimestre ${y}` };
+  }
+  if (period === 'season') {
+    if (!season) throw bad('saison introuvable');
+    return { from: season.starts_on, to: season.ends_on, label: `Saison ${season.label}`, inclusiveEnd: true };
+  }
+  throw bad('période invalide');
+}
+const pct = (a, b) => (b > 0 ? Math.round((1000 * a) / b) / 10 : null);
+
+route('GET', '/api/dashboard', A(async (c, { query }) => {
+  const mem = (await c.query(`select club_id from memberships where user_id = auth.uid() and status = 'active' limit 1`)).rows[0];
+  if (!mem) throw Object.assign(new Error('Aucun club.'), { status: 403 });
+  const club = mem.club_id;
+  const g = (await c.query(`select app.has_perm($1,null,'reports','view') as club_scope, exists (select 1 from teams t where app.has_perm(t.club_id,t.id,'reports','view')) as any_scope`, [club])).rows[0];
+  if (!g.club_scope && !g.any_scope) throw Object.assign(new Error('Le tableau de bord est réservé à la direction.'), { status: 403 });
+  const seasons = (await c.query(`select id, label, to_char(starts_on,'YYYY-MM-DD') as starts_on, to_char(ends_on,'YYYY-MM-DD') as ends_on, is_current from seasons where club_id = $1 order by starts_on desc`, [club])).rows;
+  const season = seasons.find((x) => x.is_current) ?? seasons[0];
+  const period = query.period || 'season';
+  const ref = query.ref || (period === 'month' ? new Date().toISOString().slice(0, 7) : period === 'quarter' ? `${new Date().getUTCFullYear()}-Q${Math.floor(new Date().getUTCMonth() / 3) + 1}` : '');
+  const range = periodRange(period, ref, season);
+  const category = v.uuidOrNull(query.category, 'catégorie');
+  const toExpr = range.inclusiveEnd ? `(($3::date + 1)::timestamp at time zone 'Europe/Paris')` : `($3::date::timestamp at time zone 'Europe/Paris')`;
+  const FROM = `($2::date::timestamp at time zone 'Europe/Paris')`;
+
+  const cats = (await c.query(`select id, name from categories where club_id = $1 order by sort_order, name`, [club])).rows;
+  const teams = (await c.query(
+    `select t.id, t.name, ca.id as category_id, ca.name as category,
+            (select count(*) from player_team_history h where h.team_id = t.id and h.ended_on is null)::int as players
+     from teams t join categories ca on ca.id = t.category_id
+     where t.club_id = $1 and t.season_id = $2 and ($3::uuid is null or t.category_id = $3)
+     order by ca.sort_order, ca.name, t.name`, [club, (seasons.find((x) => x.is_current) ?? season).id, category])).rows;
+  const ev = Object.fromEntries((await c.query(
+    `select e.team_id,
+       count(*) filter (where e.kind = 'training' and e.status = 'scheduled')::int as trainings_planned,
+       count(*) filter (where e.kind = 'training' and e.status = 'scheduled' and e.starts_at < now())::int as trainings_held,
+       count(*) filter (where e.kind = 'training' and e.status = 'scheduled' and e.starts_at < now() and exists (select 1 from attendance_records a where a.event_id = e.id))::int as trainings_with_attendance,
+       count(*) filter (where e.kind = 'match' and e.status = 'scheduled' and e.starts_at >= now())::int as matches_upcoming
+     from events e where e.club_id = $1 and e.team_id is not null and e.starts_at >= ${FROM} and e.starts_at < ${toExpr} group by e.team_id`, [club, range.from, range.to])).rows.map((r) => [r.team_id, r]));
+  const att = Object.fromEntries((await c.query(
+    `select e.team_id, count(*) filter (where a.status = 'present')::int as present, count(*) filter (where a.status = 'late')::int as late,
+            count(*) filter (where a.status = 'absent')::int as absent, count(*) filter (where a.status = 'excused')::int as excused
+     from attendance_records a join events e on e.id = a.event_id
+     where e.club_id = $1 and e.kind = 'training' and e.status = 'scheduled' and e.starts_at >= ${FROM} and e.starts_at < ${toExpr} group by e.team_id`, [club, range.from, range.to])).rows.map((r) => [r.team_id, r]));
+  const mt = Object.fromEntries((await c.query(
+    `select e.team_id, count(*)::int as played, count(*) filter (where d.our_score > d.their_score)::int as wins, count(*) filter (where d.our_score = d.their_score)::int as draws,
+            count(*) filter (where d.our_score < d.their_score)::int as losses, coalesce(sum(d.our_score),0)::int as gf, coalesce(sum(d.their_score),0)::int as ga
+     from match_details d join events e on e.id = d.event_id
+     where e.club_id = $1 and e.status = 'scheduled' and d.status = 'played' and d.our_score is not null and d.their_score is not null
+       and e.starts_at >= ${FROM} and e.starts_at < ${toExpr} group by e.team_id`, [club, range.from, range.to])).rows.map((r) => [r.team_id, r]));
+
+  // éducateurs : rôles à portée équipe / catégorie
+  const assigns = (await c.query(`select membership_id, team_id, category_id from assignments where club_id = $1`, [club])).rows;
+  const educRows = (await c.query(
+    `select m.id as membership_id, m.user_id, coalesce(nullif(p.display_name,''), p.email, 'Éducateur (nom non renseigné)') as name, r.label as role_label, r.scope_level
+     from memberships m join club_roles r on r.club_id = m.club_id and r.key = m.role_key left join profiles p on p.id = m.user_id
+     where m.club_id = $1 and m.status = 'active' and r.scope_level in ('team','category') order by r.rank desc, name`, [club])).rows;
+  const sess = Object.fromEntries((await c.query(
+    `select owner_id, count(*)::int as sessions, count(source_version_id)::int as copied from personal_sessions
+     where club_id = $1 and team_id is not null and created_at >= ${FROM} and created_at < ${toExpr} group by owner_id`, [club, range.from, range.to])).rows.map((r) => [r.owner_id, r]));
+  const cur = (await c.query(`select i.id, i.title, vv.id as version_id, vv.version_no from methodology_items i join methodology_versions vv on vv.id = i.current_version_id where i.club_id = $1 and i.status = 'published' order by i.title`, [club])).rows;
+  const readsBy = {};
+  if (g.club_scope) for (const r of (await c.query(`select user_id, version_id from methodology_reads where club_id = $1`, [club])).rows) (readsBy[r.user_id] ||= new Set()).add(r.version_id);
+  const curIds = new Set(cur.map((x) => x.version_id));
+
+  const teamName = Object.fromEntries(teams.map((t) => [t.id, `${t.category} ${t.name}`]));
+  const educators = educRows.map((e) => {
+    const mine = assigns.filter((a) => a.membership_id === e.membership_id);
+    const tids = new Set(mine.flatMap((a) => (a.team_id ? [a.team_id] : teams.filter((t) => t.category_id === a.category_id).map((t) => t.id))));
+    const inScope = [...tids].filter((t) => teamName[t]);
+    const read = g.club_scope ? [...(readsBy[e.user_id] ?? [])].filter((x) => curIds.has(x)).length : null;
+    return { ...e, teams: inScope.map((t) => teamName[t]), team_ids: inScope, sessions: sess[e.user_id]?.sessions ?? 0, copied: sess[e.user_id]?.copied ?? 0,
+             read, read_pct: read == null || cur.length === 0 ? null : pct(read, cur.length) };
+  }).filter((e) => category == null ? (g.club_scope || e.team_ids.length) : e.team_ids.length);
+
+  const rows = teams.map((t) => {
+    const e = ev[t.id] ?? {}, a = att[t.id] ?? {}, m = mt[t.id] ?? {};
+    const recs = (a.present ?? 0) + (a.late ?? 0) + (a.absent ?? 0) + (a.excused ?? 0);
+    return { ...t, educators: educators.filter((x) => x.team_ids.includes(t.id)).map((x) => x.name),
+      trainings_planned: e.trainings_planned ?? 0, trainings_held: e.trainings_held ?? 0, trainings_with_attendance: e.trainings_with_attendance ?? 0,
+      coverage_pct: pct(e.trainings_with_attendance ?? 0, e.trainings_held ?? 0),
+      records: recs, present: a.present ?? 0, late: a.late ?? 0, absent: a.absent ?? 0, excused: a.excused ?? 0, participation_pct: pct((a.present ?? 0) + (a.late ?? 0), recs),
+      matches_played: m.played ?? 0, wins: m.wins ?? 0, draws: m.draws ?? 0, losses: m.losses ?? 0, gf: m.gf ?? 0, ga: m.ga ?? 0, matches_upcoming: e.matches_upcoming ?? 0 };
+  });
+  const sum = (k) => rows.reduce((x, r) => x + r[k], 0);
+  const kpis = { teams: rows.length, educators: educators.length, players: sum('players'),
+    trainings_held: sum('trainings_held'), coverage_pct: pct(sum('trainings_with_attendance'), sum('trainings_held')),
+    participation_pct: pct(sum('present') + sum('late'), sum('records')), absences: sum('absent') + sum('excused'), late: sum('late'),
+    matches_played: sum('matches_played'), wins: sum('wins'), draws: sum('draws'), losses: sum('losses'), gf: sum('gf'), ga: sum('ga'),
+    methodology_published: cur.length };
+
+  // Points d'attention : règles simples, seuils et valeurs affichés ; à vérifier par la direction, jamais une conclusion.
+  const flags = [];
+  for (const r of rows) {
+    if (r.trainings_held >= 3 && r.coverage_pct != null && r.coverage_pct < 60) flags.push({ code: 'attendance_coverage', subject: `${r.category} ${r.name}`, rule: 'Au moins 3 entraînements passés et couverture des présences < 60 %', value: `${r.trainings_with_attendance} entraînement(s) sur ${r.trainings_held} avec présences saisies (${r.coverage_pct} %)`, hint: 'Le taux de participation de cette équipe n\'est pas fiable tant que les présences ne sont pas saisies.' });
+    if (r.records >= 10 && r.participation_pct != null && r.participation_pct < 60) flags.push({ code: 'participation_low', subject: `${r.category} ${r.name}`, rule: 'Au moins 10 présences saisies et participation < 60 %', value: `${r.participation_pct} % sur ${r.records} présences saisies`, hint: 'À examiner avec l\'éducateur : causes possibles multiples (calendrier, météo, blessures…).' });
+    if (r.players > 0 && r.trainings_planned === 0) flags.push({ code: 'no_training', subject: `${r.category} ${r.name}`, rule: 'Équipe avec joueurs et aucun entraînement planifié dans la période', value: `${r.players} joueur(s), 0 entraînement`, hint: 'Les entraînements ont peut-être lieu mais ne sont pas saisis dans la plateforme.' });
+  }
+  if (g.club_scope) {
+    const none = rows.filter((r) => r.educators.length === 0);
+    if (none.length) flags.push({ code: 'no_educator', subject: `${none.length} équipe(s)`, rule: 'Équipe sans éducateur attribué dans la plateforme', value: none.map((r) => `${r.category} ${r.name}`).join(', '), hint: 'À attribuer par invitation, ou l\'éducateur n\'a pas encore été invité.' });
+    if (cur.length >= 3) for (const e of educators) if (e.read_pct != null && e.read_pct < 50) flags.push({ code: 'methodology_unread', subject: e.name, rule: 'Au moins 3 contenus publiés et moins de 50 % ouverts par l\'éducateur', value: `${e.read} contenu(s) ouvert(s) sur ${cur.length} (${e.read_pct} %)`, hint: 'Diffusion à vérifier (invitation non lue, contenu peu visible…). Ouvrir un contenu ne prouve pas sa compréhension.' });
+  }
+  return { club, scope: g.club_scope ? 'club' : 'category', period: { type: period, ref, label: range.label, from: range.from, to: range.to }, seasons, categories: cats, category,
+    kpis, teams: rows, educators, methodology: cur, flags, definitions: DEFINITIONS, not_tracked: NOT_TRACKED, generated_at: new Date().toISOString() };
+}));
+route('POST', '/api/reports/export-log', A(async (c, { body }) => { await c.query(`select public.log_report_export($1,$2)`, [v.uuid(body.club_id, 'club'), v.str(body.label, 'libellé', 120)]); return { ok: true }; }));
 
 // ---------- invitations ----------
 route('GET', '/api/invitations', A(async (c) => (await c.query(

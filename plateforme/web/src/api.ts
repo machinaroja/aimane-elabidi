@@ -15,7 +15,7 @@ export async function api<T = any>(method: 'GET' | 'POST', path: string, body?: 
 }
 
 export type Cap = { categories_add: boolean; teams_add: boolean; invitations_add: boolean; methodology_add: boolean; methodology_edit: boolean; club_events_add: boolean; calendar_admin: boolean; players_view_all: boolean };
-export type Me = { email: string; memberships: { id: string; club_id: string; club_name: string; role_key: string; role_label: string; scope_level: string }[]; club_caps: Record<string, Cap> };
+export type Me = { email: string; display_name: string | null; can_reports: boolean; memberships: { id: string; club_id: string; club_name: string; role_key: string; role_label: string; scope_level: string }[]; club_caps: Record<string, Cap> };
 export type Team = { id: string; club_id: string; name: string; category_id: string; category: string; can_event: boolean; can_player: boolean; can_attendance: boolean; can_convoke: boolean; can_match: boolean; can_view_players: boolean; can_transfer: boolean };
 export type Ev = { id: string; team_id: string | null; team_name: string | null; category: string | null; kind: string; title: string; starts_at: string; ends_at: string; status: string; official: boolean; time_known: boolean; competition: string | null; facility: string | null; opponent: string | null; home_away: string | null; our_score: number | null; their_score: number | null; match_status: string | null };
 
