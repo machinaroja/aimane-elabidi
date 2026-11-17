@@ -4,6 +4,8 @@ const { execSync } = require('node:child_process');
 const BASE = process.env.BASE || 'http://localhost:8787';
 const DB = process.env.PGDATABASE || 'lieusaint_dev';
 const sql = (q) => execSync(`psql -X -At -d ${DB} -c "${q.replace(/"/g, '\\"')}"`, { encoding: 'utf8' }).trim();
+// Le test crée des données (joueur, événement, invitation) : on repart TOUJOURS d'une base de démonstration neuve.
+execSync(`${__dirname}/../dev.sh`, { stdio: 'ignore' });
 let pass = 0, fail = 0;
 const ok = (name, cond, extra = '') => { cond ? pass++ : fail++; console.log(`${cond ? '✔' : '❌'} ${name}${cond ? '' : ' ' + extra}`); };
 
