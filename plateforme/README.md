@@ -18,6 +18,7 @@ PostgreSQL / Supabase. La séparation des données est faite **dans la base** (R
 | 8. Joueurs | Fiche unique par club, historique d'équipes, transfert U13→U14 sans perte, observations privées non héritées | `0001`, `0004` (`transfer_player`) |
 | 9. Présences et absences | Présent / absent / en retard (minutes) / excusé ; seul un joueur de l'équipe de l'événement est acceptable ; notes jamais copiées dans le journal d'audit | `0007` (`record_attendance`) |
 | 11. Calendrier partagé | Entraînements, matchs, tournois, événements, réunions ; installations et fermetures ; **détection des conflits** (équipe déjà occupée, terrain déjà réservé, installation indisponible) ; chaque coach ne voit que son planning, la direction voit tout ; seule la direction technique peut forcer un conflit de terrain | `0007` (`create_event`, `reschedule_event`, `cancel_event`) |
+| 11 bis. Calendrier officiel | Import des **352 matchs officiels** de 16 équipes depuis SportCorico (voir [CALENDRIER_OFFICIEL.md](CALENDRIER_OFFICIEL.md)) : idempotent, non modifiable par les éducateurs, ne touche pas au travail de l'entraîneur | `0008`, `tools/sportcorico_sync.py` |
 | 12. Matchs et convocations | Convocations et réponses, composition (joueurs de l'équipe uniquement), résultat, statistiques individuelles bornées | `0007` (`convoke_players`, `set_convocation_response`, `save_match`, `record_match_stats`) |
 | 10. Sécurité | RLS sur toutes les tables, journal d'audit insertion seule, RGPD (pas de valeurs nominatives dans le journal), clés étrangères composites anti-mélange entre clubs | `0003`, `0005` |
 
@@ -46,7 +47,7 @@ privées ne sont **jamais** partagées automatiquement (partage explicite par l'
 cd plateforme/supabase && ./run_tests.sh
 ```
 
-Crée une base PostgreSQL jetable, applique les migrations, puis exécute **168 contrôles** avec 10 comptes
+Crée une base PostgreSQL jetable, applique les migrations, puis exécute **206 contrôles** avec 10 comptes
 (administrateur, directeur technique, responsable, 4 entraîneurs, adjoint, inconnu, deuxième club) :
 isolation par catégorie/équipe/club, invitations, transferts, observations, versions, audit, garde-fous.
 Le test est « strict » : un refus n'est accepté que s'il vient d'un vrai refus de droits (pas d'une erreur de syntaxe).
