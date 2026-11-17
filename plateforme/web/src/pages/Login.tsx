@@ -10,7 +10,7 @@ export function Login({ onLogin }: { onLogin: (token: string) => void }) {
   const go = async () => { try { const r = await api<{ token: string }>('POST', '/api/auth/dev-login', { email }); onLogin(r.token); } catch (e: any) { setErr(e.message); } };
   return (
     <div className="login card">
-      <div className="brand" style={{ color: 'var(--blue)' }}><div className="mark">ASL</div><h1>AS Lieusaint — Gestion sportive</h1></div>
+      <div className="brand" style={{ color: 'var(--blue)' }}><img className="logo big" src="/logo.png" alt="Logo AS Lieusaint" width="72" height="72" /><h1>AS Lieusaint — Gestion sportive</h1></div>
       {accounts === null && <p className="muted">Chargement…</p>}
       {accounts && accounts.length > 0 && (
         <>

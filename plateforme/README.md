@@ -26,6 +26,8 @@ Comptes fictifs `…@demo.lieusaint.local` : administrateur, direction technique
 
 ## Interface web (v1)
 
+Le logo officiel du club (`web/public/logo.png`, recadré en rond) figure dans l'en-tête, la page de connexion et l'onglet du navigateur.
+
 | Écran | Pour qui | Contenu |
 |---|---|---|
 | Accueil | tous | Mon rôle, mes équipes, prochains rendez-vous |

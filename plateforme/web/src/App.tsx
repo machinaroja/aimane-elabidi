@@ -47,7 +47,7 @@ export default function App() {
   return (
     <>
       <header className="top">
-        <div className="brand"><div className="mark" aria-hidden>ASL</div><span>AS Lieusaint</span></div>
+        <div className="brand"><img className="logo" src="/logo.png" alt="Logo AS Lieusaint" width="40" height="40" /><span>AS Lieusaint</span></div>
         <nav aria-label="Navigation principale">
           {nav.filter((n) => n[2]).map(([k, label]) => <a key={k} href={`#/${k}`} className={route === k || (k === 'calendar' && route === 'event') ? 'on' : ''}>{label}</a>)}
         </nav>
