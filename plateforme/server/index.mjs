@@ -25,6 +25,20 @@ const v = {
   enum: (x, list, n) => { if (!list.includes(x)) throw bad(`${n} invalide`); return x; },
   ts: (x, n) => { const d = new Date(x); if (!x || isNaN(d)) throw bad(`${n} invalide`); return d.toISOString(); },
   int: (x, n, min, max) => { const i = Number(x); if (!Number.isInteger(i) || i < min || i > max) throw bad(`${n} invalide`); return i; },
+  body: (x) => {                                   // contenu structuré d'une version : objet de textes / listes de textes
+    if (!x || typeof x !== 'object' || Array.isArray(x)) throw bad('contenu invalide');
+    const e = Object.entries(x);
+    if (e.length > 20) throw bad('trop de sections');
+    let total = 0;
+    for (const [k, val] of e) {
+      if (!k || k.length > 60) throw bad('titre de section invalide');
+      const items = Array.isArray(val) ? val : [val];
+      if (items.length > 100 || items.some((i) => typeof i !== 'string' || i.length > 5000)) throw bad('section invalide');
+      total += k.length + items.reduce((a, i) => a + i.length, 0);
+    }
+    if (total > 30000) throw bad('contenu trop volumineux');
+    return x;
+  },
   intOrNull: (x, n, min, max) => (x == null || x === '' ? null : v.int(x, n, min, max)),
 };
 
@@ -58,7 +72,7 @@ route('GET', '/api/me', A(async (c, { user }) => {
   const caps = {};
   for (const id of clubIds) {
     const k = await c.query(`select app.has_perm($1,null,'categories','add') as categories_add, app.has_perm($1,null,'teams','add') as teams_add,
-      app.has_perm($1,null,'invitations','add') as invitations_add, app.has_perm($1,null,'methodology','add') as methodology_add,
+      app.has_perm($1,null,'invitations','add') as invitations_add, app.has_perm($1,null,'methodology','add') as methodology_add, app.has_perm($1,null,'methodology','edit') as methodology_edit,
       app.has_perm($1,null,'calendar','add') as club_events_add, app.has_perm($1,null,'calendar','administer') as calendar_admin,
       app.has_perm($1,null,'players','view') as players_view_all`, [id]);
     caps[id] = k.rows[0];
@@ -73,7 +87,8 @@ route('GET', '/api/teams', A(async (c) => (await c.query(
           app.has_perm(t.club_id, t.id, 'attendance', 'add')    as can_attendance,
           app.has_perm(t.club_id, t.id, 'convocations', 'add')  as can_convoke,
           app.has_perm(t.club_id, t.id, 'matches', 'edit')      as can_match,
-          app.has_perm(t.club_id, t.id, 'players', 'view')      as can_view_players
+          app.has_perm(t.club_id, t.id, 'players', 'view')      as can_view_players,
+          app.has_perm(t.club_id, t.id, 'players', 'edit')      as can_transfer
    from teams t join categories ca on ca.id = t.category_id
    order by ca.sort_order, ca.name, t.name`)).rows));
 route('GET', '/api/categories', A(async (c) => (await c.query(`select id, club_id, name, age_min, age_max, sort_order from categories order by sort_order, name`)).rows));
@@ -160,12 +175,73 @@ route('GET', '/api/teams/:id/players', A(async (c, { params }) => (await c.query
 route('POST', '/api/teams/:id/players', A(async (c, { params, body }) => (await c.query(`select public.add_player($1,$2,$3,$4,$5) as id`,
   [v.uuid(params.id, 'équipe'), v.str(body.first_name, 'prénom', 60), v.str(body.last_name, 'nom', 60), body.birth_date ? v.ts(body.birth_date, 'date').slice(0, 10) : null, v.strOrNull(body.license_no, 30)])).rows[0]));
 
+route('GET', '/api/players/:id/history', A(async (c, { params }) => (await c.query(
+  `select h.id, h.started_on, h.ended_on, t.name as team_name, ca.name as category
+   from player_team_history h left join teams t on t.id = h.team_id left join categories ca on ca.id = t.category_id
+   where h.player_id = $1 order by h.started_on desc, h.ended_on desc nulls first`, [v.uuid(params.id, 'joueur')])).rows));
+route('POST', '/api/players/:id/transfer', A(async (c, { params, body }) => {
+  await c.query(`select public.transfer_player($1,$2)`, [v.uuid(params.id, 'joueur'), v.uuid(body.to_team_id, 'équipe')]);
+  return { ok: true };
+}));
+
 // ---------- méthodologie et espace personnel ----------
 route('GET', '/api/methodology', A(async (c) => (await c.query(
-  `select i.id, i.kind, i.title, i.status, ca.name as category, vv.version_no, vv.published_at, vv.body
+  `select i.id, i.club_id, i.kind, i.title, i.status, i.category_id, ca.name as category, vv.id as version_id, vv.version_no, vv.published_at, vv.body,
+          exists (select 1 from methodology_versions d where d.item_id = i.id and d.status = 'draft') as has_draft
    from methodology_items i left join categories ca on ca.id = i.category_id
    left join methodology_versions vv on vv.id = i.current_version_id
    order by i.kind, i.title`)).rows));
+
+// Historique des versions (les éducateurs ne voient que le publié ; la direction technique voit aussi les brouillons).
+route('GET', '/api/methodology/:id/versions', A(async (c, { params }) => (await c.query(
+  `select v.id, v.version_no, v.status, v.change_note, v.body, v.created_at, v.published_at,
+          (select count(*) from methodology_reads r where r.version_id = v.id) as reads
+   from methodology_versions v where v.item_id = $1 order by v.version_no desc`, [v.uuid(params.id)])).rows));
+
+route('POST', '/api/methodology', A(async (c, { body }) => {
+  const club = v.uuid(body.club_id, 'club');
+  const item = (await c.query(`insert into methodology_items (club_id, kind, title, category_id, created_by) values ($1,$2,$3,$4,auth.uid()) returning id`,
+    [club, v.enum(body.kind, ['philosophy','principle','document','reference_session','exercise','scheme','objective','behavior','coaching_cue','correction','progression'], 'type'),
+     v.str(body.title, 'titre', 160), v.uuidOrNull(body.category_id, 'catégorie')])).rows[0];
+  const ver = (await c.query(`insert into methodology_versions (club_id, item_id, body, change_note) values ($1,$2,$3::jsonb,$4) returning id, version_no`,
+    [club, item.id, JSON.stringify(v.body(body.content)), v.strOrNull(body.change_note, 300) ?? 'Création'])).rows[0];
+  return { item_id: item.id, version_id: ver.id, version_no: ver.version_no };
+}));
+route('POST', '/api/methodology/:id/meta', A(async (c, { params, body }) => {
+  const r = await c.query(`update methodology_items set title = $2, category_id = $3 where id = $1`, [v.uuid(params.id), v.str(body.title, 'titre', 160), v.uuidOrNull(body.category_id, 'catégorie')]);
+  if (!r.rowCount) throw Object.assign(new Error('Contenu introuvable ou droits insuffisants.'), { status: 403 });
+  return { ok: true };
+}));
+// Nouvelle version (brouillon) à partir de la version courante ; un seul brouillon à la fois.
+route('POST', '/api/methodology/:id/versions', A(async (c, { params, body }) => {
+  const id = v.uuid(params.id);
+  const it = (await c.query(`select id, club_id, current_version_id from methodology_items where id = $1`, [id])).rows[0];
+  if (!it) throw Object.assign(new Error('Contenu introuvable.'), { status: 404 });
+  if ((await c.query(`select 1 from methodology_versions where item_id = $1 and status = 'draft'`, [id])).rowCount) throw Object.assign(new Error('Un brouillon est déjà en cours : modifiez-le ou publiez-le.'), { status: 409 });
+  const content = body.content ? v.body(body.content) : ((await c.query(`select body from methodology_versions where id = $1`, [it.current_version_id])).rows[0]?.body ?? {});
+  const ver = (await c.query(`insert into methodology_versions (club_id, item_id, body, change_note) values ($1,$2,$3::jsonb,$4) returning id, version_no`,
+    [it.club_id, id, JSON.stringify(content), v.strOrNull(body.change_note, 300)])).rows[0];
+  return { version_id: ver.id, version_no: ver.version_no };
+}));
+route('POST', '/api/methodology/versions/:vid/update', A(async (c, { params, body }) => {
+  const r = await c.query(`update methodology_versions set body = $2::jsonb, change_note = $3 where id = $1 and status = 'draft'`, [v.uuid(params.vid), JSON.stringify(v.body(body.content)), v.strOrNull(body.change_note, 300)]);
+  if (!r.rowCount) throw Object.assign(new Error('Brouillon introuvable, déjà publié ou droits insuffisants.'), { status: 409 });
+  return { ok: true };
+}));
+route('POST', '/api/methodology/versions/:vid/publish', A(async (c, { params }) => { await c.query(`select public.publish_methodology_version($1)`, [v.uuid(params.vid)]); return { ok: true }; }));
+route('POST', '/api/methodology/versions/:vid/discard', A(async (c, { params }) => {
+  const ver = (await c.query(`select item_id from methodology_versions where id = $1 and status = 'draft'`, [v.uuid(params.vid)])).rows[0];
+  if (!ver) throw Object.assign(new Error('Brouillon introuvable ou déjà publié.'), { status: 409 });
+  await c.query(`delete from methodology_versions where id = $1 and status = 'draft'`, [params.vid]);
+  const left = (await c.query(`select 1 from methodology_versions where item_id = $1`, [ver.item_id])).rowCount;
+  if (!left) await c.query(`delete from methodology_items where id = $1`, [ver.item_id]);         // contenu jamais publié : on le retire
+  return { ok: true };
+}));
+// Suivi de diffusion : « lu par » (alimente les besoins de formation de la direction technique).
+route('POST', '/api/methodology/versions/:vid/read', A(async (c, { params }) => {
+  await c.query(`insert into methodology_reads (club_id, version_id) select club_id, id from methodology_versions where id = $1 on conflict do nothing`, [v.uuid(params.vid)]);
+  return { ok: true };
+}));
 route('POST', '/api/methodology/:id/copy', A(async (c, { params, body }) => (await c.query(`select public.copy_to_personal($1,$2) as id`, [v.uuid(params.id), v.uuidOrNull(body.team_id, 'équipe')])).rows[0]));
 route('GET', '/api/personal-sessions', A(async (c) => (await c.query(
   `select s.id, s.title, s.body, s.created_at, t.name as team_name, ca.name as category

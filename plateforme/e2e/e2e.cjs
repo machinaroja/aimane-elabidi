@@ -156,6 +156,121 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     await shot(p2, '09-invite-accepte');
   }
 
+  // ===== Méthodologie : direction technique -> éducateurs (versions, publication, diffusion) =====
+  {
+    const dt = await login(browser, 'dt'); const co = await login(browser, 'coach-u14');
+    const card = (page, title) => page.locator('[data-testid=meth-item]', { hasText: title });
+    const goMeth = async (page) => { await page.goto(`${BASE}/#/methodology`); await page.reload(); await page.waitForSelector('h1:has-text("Méthodologie")'); await ready(page); };   // rechargement : données fraîches
+    await goMeth(dt.page); await goMeth(co.page);
+    ok('coach : pas de bouton « Nouveau contenu »', await co.page.locator('text=+ Nouveau contenu').count() === 0);
+    await dt.page.click('text=+ Nouveau contenu');
+    await dt.page.selectOption('#mk', 'principle'); await dt.page.fill('#mt', 'Pressing après perte');
+    await dt.page.fill('#sv-0', 'Presser dans les 5 secondes après la perte.'); await dt.page.fill('#sv-1', 'Fermer l\'axe\nPresser à deux\nRepli si dépassé');
+    await dt.page.fill('#mn', 'Création'); await dt.page.click('button:has-text("Enregistrer le brouillon")');
+    await dt.page.waitForSelector('text=Brouillon enregistré');
+    ok('DT : le contenu apparaît dans les brouillons', await dt.page.locator('h2:has-text("Brouillons")').count() === 1 && await card(dt.page, 'Pressing après perte').count() === 1);
+    await shot(dt.page, '13-methodo-brouillon');
+    await goMeth(co.page);
+    ok('coach : ne voit PAS le brouillon', await card(co.page, 'Pressing après perte').count() === 0);
+
+    // publication
+    await card(dt.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await dt.page.waitForSelector('button:has-text("Publier")');
+    await dt.page.click('button:has-text("Publier") >> nth=0'); await dt.page.click('button:has-text("Oui, publier")');
+    await dt.page.waitForSelector('text=publiée : visible de tous les éducateurs');
+    await goMeth(co.page);
+    ok('coach : voit le contenu publié avec le badge « Nouveau »', await card(co.page, 'Pressing après perte').count() === 1 && await card(co.page, 'Pressing après perte').locator('.badge.off').count() === 1);
+    await card(co.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await co.page.waitForSelector('text=Presser dans les 5 secondes');
+    ok('coach : lit les consignes en liste', await co.page.locator('li', { hasText: 'Fermer l\'axe' }).count() === 1);
+    await shot(co.page, '14-methodo-coach-lit');
+
+    // nouvelle version : l'ancienne reste dans l'historique
+    await goMeth(dt.page);
+    await card(dt.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await dt.page.click('button:has-text("Nouvelle version")');
+    await dt.page.waitForSelector('#sv-0');
+    ok('DT : la nouvelle version est préremplie avec la version publiée', (await dt.page.inputValue('#sv-0')).startsWith('Presser dans les 5 secondes'));
+    await dt.page.fill('#sv-0', 'Presser dans les 4 secondes après la perte.'); await dt.page.fill('#mn', 'Délai ramené à 4 s');
+    await dt.page.click('button:has-text("Publier pour tous les éducateurs")'); await dt.page.waitForSelector('text=Contenu publié');
+    await dt.page.waitForSelector('[data-testid=meth-item] .badge:has-text("v2")', { timeout: 8000 }).catch(() => {});
+    ok('DT : la version courante est v2', await card(dt.page, 'Pressing après perte').locator('.badge', { hasText: 'v2' }).count() === 1);
+    await card(dt.page, 'Pressing après perte').locator('button:has-text("Historique des versions")').click();
+    await dt.page.waitForSelector('table tbody tr');
+    ok('DT : historique conservé (v1 et v2) avec la note de modification', await dt.page.locator('table tbody tr').count() === 2 && await dt.page.locator('td', { hasText: 'Délai ramené à 4 s' }).count() === 1);
+    await shot(dt.page, '15-methodo-historique');
+    await co.page.reload(); await ready(co.page); await goMeth(co.page);
+    await card(co.page, 'Pressing après perte').locator('button:has-text("Lire")').click();
+    await co.page.waitForSelector('text=4 secondes');
+    ok('coach : voit la v2 publiée', await co.page.locator('text=Presser dans les 4 secondes').count() === 1);
+    ok('suivi de diffusion : la lecture du coach est enregistrée', sql(`select count(*) from methodology_reads r join methodology_versions v on v.id=r.version_id join methodology_items i on i.id=v.item_id where i.title='Pressing après perte'`) >= '1');
+    const vid1 = sql(`select v.id from methodology_versions v join methodology_items i on i.id=v.item_id where i.title='Pressing après perte' and v.version_no=1`);
+    const tokCoach = (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'coach-u14@demo.lieusaint.local' }) })).json()).token;
+    const tokDt = (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'dt@demo.lieusaint.local' }) })).json()).token;
+    const post = (path, tok, body) => fetch(`${BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', Authorization: `Bearer ${tok}` }, body: JSON.stringify(body) });
+    ok('API : version publiée non modifiable, même par la direction technique (409)', (await post(`/api/methodology/versions/${vid1}/update`, tokDt, { content: { x: 'y' } })).status === 409);
+    ok('API : un coach ne peut pas modifier la méthodologie (409/403)', [403, 409].includes((await post(`/api/methodology/versions/${vid1}/update`, tokCoach, { content: { x: 'y' } })).status));
+    ok('API : contenu mal formé refusé (400)', (await post(`/api/methodology/versions/${vid1}/update`, tokDt, { content: [1, 2] })).status === 400);
+    ok('coach : aucune erreur JavaScript', co.errors.length === 0 && dt.errors.length === 0, co.errors.concat(dt.errors).join(' | '));
+  }
+
+  // ===== Transfert d'un joueur de catégorie =====
+  {
+    const idOf = (last) => sql(`select id from players where last_name='${last}'`);
+    const asUser = (email, q) => sql(`select set_config('request.jwt.claims', json_build_object('sub',(select id from auth.users where email='${email}'),'email','${email}')::text, false); set role authenticated; ${q}`).split('\n').pop();
+    const demoA = idOf('Demo-A'), demoC = idOf('Demo-C');
+    // une observation PRIVÉE du coach U14 sur Demo-A, avant le transfert
+    sql(`select set_config('request.jwt.claims', json_build_object('sub',(select id from auth.users where email='coach-u14@demo.lieusaint.local'),'email','coach-u14@demo.lieusaint.local')::text, false); set role authenticated; insert into player_observations (club_id, player_id, team_id, author_id, visibility, body) select p.club_id, p.id, h.team_id, auth.uid(), 'private', 'note privée du coach' from players p join player_team_history h on h.player_id=p.id and h.ended_on is null where p.id='${demoA}'`);
+
+    // -- coach principal : seule sa propre équipe -> aucune destination
+    const co = await login(browser, 'coach-u14');
+    await co.page.click('nav >> text=Effectif'); await ready(co.page, 'tbody tr');
+    await co.page.click('button[aria-label^="Transférer Demo-C"]');
+    ok('coach principal : aucune destination possible (message explicite, bouton désactivé)', await co.page.locator('text=ne vous permet de transférer vers aucune autre équipe').count() === 1 && await co.page.locator('button:has-text("Confirmer le transfert")').isDisabled());
+
+    // -- responsable de catégorie U14 : uniquement les équipes de SA catégorie
+    const re = await login(browser, 'resp-u14');
+    await re.page.click('nav >> text=Effectif'); await ready(re.page, 'tbody tr');
+    await re.page.click('button[aria-label^="Transférer Demo-C"]');
+    const opts = await re.page.locator('#tr-dest option').allInnerTexts();
+    ok('responsable U14 : destinations limitées à la catégorie U14', opts.length > 0 && opts.every((o) => o.startsWith('U14')), opts.join(','));
+    await re.page.selectOption('#tr-dest', { label: 'U14 2' });
+    await re.page.click('button:has-text("Confirmer le transfert")');
+    await re.page.waitForSelector('text=est transféré vers U14 2');
+    const left = await count(re.page, 'tbody tr', 12);       // 13 joueurs (12 + celui ajouté plus haut) - 1 transféré
+    ok('responsable : Demo-C quitte U14 1 (13 -> 12 joueurs)', left === 12, `obtenu ${left}`);
+    ok('Demo-C n\'apparaît plus dans l\'effectif de départ', await re.page.locator('td', { hasText: 'Demo-C' }).count() === 0);
+    await shot(re.page, '16-transfert');
+    const tokRe = (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: 'resp-u14@demo.lieusaint.local' }) })).json()).token;
+    const u12 = sql(`select t.id from teams t join categories c on c.id=t.category_id where c.name='U12' and t.name='1'`);
+    const rr = await fetch(`${BASE}/api/players/${demoA}/transfer`, { method: 'POST', headers: { 'content-type': 'application/json', Authorization: `Bearer ${tokRe}` }, body: JSON.stringify({ to_team_id: u12 }) });
+    ok('API : le responsable U14 ne peut pas transférer vers U12 (403)', rr.status === 403);
+    ok('le joueur est toujours en U14 1 après la tentative refusée', sql(`select count(*) from player_team_history where player_id='${demoA}' and ended_on is null`) === '1');
+
+    // -- direction technique : U14 1 -> U12 1 (changement de catégorie)
+    const dt = await login(browser, 'dt');
+    await dt.page.click('nav >> text=Effectif'); await dt.page.waitForSelector('#sq-team'); await ready(dt.page);
+    await dt.page.selectOption('#sq-team', { label: 'U14 1' }); await ready(dt.page, 'tbody tr');
+    await dt.page.click('button[aria-label^="Transférer Demo-A"]');
+    await dt.page.selectOption('#tr-dest', { label: 'U12 1' });
+    ok('transfert : le texte explique la conservation de l\'historique et des observations privées', await dt.page.locator('text=conservés').count() === 1 && await dt.page.locator('text=restent privées').count() === 1);
+    await dt.page.click('button:has-text("Confirmer le transfert")'); await dt.page.waitForSelector('text=est transféré vers U12 1');
+    ok('même fiche joueur (1 seule identité) et 2 lignes d\'historique', sql(`select count(*) from players where last_name='Demo-A'`) === '1' && sql(`select count(*) from player_team_history where player_id='${demoA}'`) === '2');
+    await dt.page.selectOption('#sq-team', { label: 'U12 1' }); await ready(dt.page, 'tbody tr');
+    await dt.page.click('button[aria-label^="Historique de Demo-A"]');
+    await dt.page.waitForSelector('text=équipe actuelle');
+    ok('historique visible par la direction : U14 1 puis U12 1', await dt.page.locator('text=U14 1 — depuis le').count() === 1 && await dt.page.locator('text=U12 1 — depuis le').count() === 1);
+    await shot(dt.page, '17-historique-joueur');
+
+    // -- droits qui suivent le joueur
+    ok('ancien coach (U14 1) ne voit plus Demo-A', asUser('coach-u14@demo.lieusaint.local', `select count(*) from players where id='${demoA}'`) === '0');
+    ok('nouvel éducateur (U12 1) voit Demo-A', asUser('nouveau@demo.lieusaint.local', `select count(*) from players where id='${demoA}'`) === '1');
+    ok('observation PRIVÉE de l\'ancien coach : invisible du nouvel éducateur', asUser('nouveau@demo.lieusaint.local', `select count(*) from player_observations`) === '0');
+    ok('observation privée : toujours lisible par son auteur', asUser('coach-u14@demo.lieusaint.local', `select count(*) from player_observations`) === '1');
+    ok('observation privée : invisible même de la direction technique', asUser('dt@demo.lieusaint.local', `select count(*) from player_observations`) === '0');
+    ok('le transfert est tracé dans le journal d\'audit', Number(sql(`select count(*) from audit_log where table_name='player_team_history' and action='UPDATE'`)) >= 2);
+  }
+
   // ===== Compte sans rôle =====
   {
     const { page } = await login(browser, 'inconnu');

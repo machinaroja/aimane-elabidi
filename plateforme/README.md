@@ -33,12 +33,12 @@ Le logo officiel du club (`web/public/logo.png`, recadré en rond) figure dans l
 | Accueil | tous | Mon rôle, mes équipes, prochains rendez-vous |
 | Calendrier | tous (filtré par rôle) | À venir / passés, matchs officiels (badge, score V/N/D), création d'événement avec détection des conflits |
 | Fiche événement | éducateurs de l'équipe | Convocations et réponses, présences (présent / retard / absent / excusé), composition, notes, résultat |
-| Effectif | éducateurs de l'équipe | Liste des joueurs, ajout d'un joueur |
-| Méthodologie | tous | Contenus publiés par la direction technique, copie dans l'espace personnel (original intact) |
+| Effectif | éducateurs de l'équipe | Liste des joueurs, ajout d'un joueur, **transfert vers une autre équipe ou catégorie** (la fiche et l'historique sont conservés), historique du joueur |
+| Méthodologie | tous ; gestion par la direction technique | Lecture des contenus publiés (badge « Nouveau »), copie dans l'espace personnel (original intact) ; **la direction technique crée, modifie en brouillon, publie, crée une nouvelle version, consulte l'historique et le suivi de lecture** |
 | Administration | direction | Catégories, équipes, invitations d'éducateurs (lien à usage unique) |
 
-Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (33 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
-invitation d'un nouvel éducateur, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
+Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (62 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
+invitation d'un nouvel éducateur, publication de la méthodologie en 2 versions, transferts de joueurs et droits qui suivent, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
 
 ## Ce qui est réalisé (priorités 1 à 6, 8, 9, 11, 12 et une partie des 7 et 10 du cahier des charges)
 
@@ -95,8 +95,8 @@ Des failles volontaires (RLS trop large, accès après transfert, anti-escalade 
   instance Supabase réelle. À rejouer sur le vrai projet avant mise en production.
 - **Pas encore faits** : séances d'entraînement planifiées et microcycles (au-delà de la bibliothèque), tableau de bord
   et rapports de la direction technique, assistants IA par catégorie, publication de la méthodologie depuis
-  l'interface (aujourd'hui via la base), transfert d'un joueur de catégorie depuis l'interface, observations de joueurs
-  dans l'interface. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+  l'interface (fait), transfert d'un joueur de catégorie depuis l'interface (fait) ; restent les observations de joueurs
+  dans l'interface (la base les gère déjà : privées par défaut, partage explicite), les évaluations et objectifs des joueurs. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
 - **Connexion** : seule la connexion de démonstration existe. En production, l'authentification passera par Supabase Auth
   (lien magique par e-mail) ; la passerelle vérifie déjà son jeton (`SUPABASE_JWT_SECRET`). Rien n'est encore déployé :
   il faut créer le projet Supabase, un rôle de connexion dédié pour la passerelle, un hébergement et le nom de domaine.
