@@ -47,3 +47,4 @@ begin
 end $$;
 create function tests.cnt(p_sql text) returns bigint language plpgsql as $$
 declare n bigint; begin execute 'select count(*) from (' || p_sql || ') q' into n; return n; end $$;
+grant execute on all functions in schema tests to authenticated;

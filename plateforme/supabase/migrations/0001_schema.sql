@@ -9,6 +9,10 @@
 -- =============================================================================
 
 create schema if not exists app;
+-- Fermé par défaut : toute fonction créée ensuite n'est PAS exécutable par les utilisateurs,
+-- sauf octroi explicite (RPC publiques et fonctions utilisées par les politiques RLS).
+-- (Doit être GLOBAL : un réglage « in schema » ne peut qu'ajouter des droits, jamais en retirer.)
+alter default privileges revoke execute on functions from public;
 
 -- ---------- Clubs, saisons, catégories, équipes ------------------------------
 create table public.clubs (

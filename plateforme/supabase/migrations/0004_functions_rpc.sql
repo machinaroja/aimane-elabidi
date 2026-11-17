@@ -80,6 +80,7 @@ begin
   end if;
   insert into clubs (name, slug) values (p_name, p_slug) returning id into v_club;
   perform app.seed_club(v_club);
+  perform app.seed_club_v2(v_club);
   insert into seasons (club_id, label, starts_on, ends_on, is_current) values (v_club, p_season_label, p_season_start, p_season_end, true);
   insert into memberships (club_id, user_id, role_key) values (v_club, auth.uid(), 'club_admin');
   insert into profiles (id) values (auth.uid()) on conflict do nothing;
