@@ -1,0 +1,7 @@
+
+# Secrets de déploiement : ne jamais sauvegarder
+gateway.env
+.env
+*.env
+!server/.env.example
+!plateforme/server/.env.example
