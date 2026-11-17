@@ -20,6 +20,12 @@ Les fichiers Word originaux sont conservés tels quels dans `sources-docx/`.
 | 08 | [08-module3-echange-joueur-apprentissage-observation.md](08-module3-echange-joueur-apprentissage-observation.md) | Feedback et apprentissage par observation | Quand donner un feedback (avant/pendant/après), auto-efficacité, théorie OPTIMAL (Wulf & Lewthwaite : motivation intrinsèque et attention externe), espaces d'échange avec le joueur, cycle de communication socio-affective, quel feedback donner, modèles de réflexion interne/externe, système sujet-environnement |
 | 09 | [09-proposition-methodologique-atteindre-le-match.md](09-proposition-methodologique-atteindre-le-match.md) | Les rondos | Les rondos comme méthode pour arriver au match : étapes du processus, objectifs, variantes (4v2+1 deux espaces, 4v2+2, 6v2 mobile, double rondo, rondo par positions, rondo football à 7, rondo ludique), critères de possession et de récupération, consignes avant/pendant/après la passe |
 | 10 | [10-la-session-de-formation.md](10-la-session-de-formation.md) | La séance d'entraînement | Planification ouverte et flexible (FC Barcelone, Seirul·lo), processus planification-microstructuration, parties de la séance (organisation, activation, apprentissage), construction d'une séance : objectif, structure préférentielle, SSP, pratique massive du concept, méthodologie d'apprentissage, observations post-séance |
+| 11 | [11-les-phases-du-jeu.md](11-les-phases-du-jeu.md) | Les phases du jeu | Zones et couloirs du terrain, interaction des phases selon le ballon, occupation des espaces, tâches ouvertes et fermées, triangulation, création d'espaces, lignes de dépassement, apprendre à regarder, orientation collective et individuelle, profils, directivité, éléments pour construire un modèle de jeu |
+| 12 | [12-elements-du-groupe-equipe.md](12-elements-du-groupe-equipe.md) | Le groupe-équipe | Logique interne du football, supériorités (à 2, 3, 4 joueurs ; numérique, positionnelle, socio-affective, qualitative), organisation, distances relationnelles, espaces socio-affectifs, entraide et coopération pour l'autogestion, occupation de l'espace et gain de temps |
+| 13 | [13-optimiser-entrainement-structures-joueurs.md](13-optimiser-entrainement-structures-joueurs.md) | Structures du joueur et histoire du club | Structures de l'athlète humain (Seirul·lo) et leur interaction avec les valeurs, la passe comme élément de communication, communication d'équipe, histoire du FC Barcelone (années 50, 1970-71, Laureano Ruiz, Johan Cruyff, Dream Team 1992, ère Guardiola 2008-09) |
+| 14 | [14-composants-identification-fcb.md](14-composants-identification-fcb.md) | Identité de jeu du FC Barcelone | Idées de jeu, modèles d'entraînement selon les paradigmes, composants identitaires (occupation rationnelle des espaces, protection du ballon, mobilité sans ballon, unité fonctionnelle, interprétation du jeu), cognition (regarder, percevoir, comprendre, décider, agir), concentration avant/pendant/après le contact, espaces de phase, stabilité et réorganisation, qualités individuelles au service de l'équipe |
+
+> Note : le fichier « 2. Éléments cognitifs du joueur » envoyé une seconde fois est strictement identique au document 01 ; il n'a pas été dupliqué.
 
 ## Glossaire
 
@@ -30,5 +36,5 @@ Les fichiers Word originaux sont conservés tels quels dans `sources-docx/`.
 
 ## Ajouts futurs
 
-Les nouvelles informations seront ajoutées dans ce dossier (numérotation à la suite : 11, 12, …)
+Les nouvelles informations seront ajoutées dans ce dossier (numérotation à la suite : 15, 16, …)
 et référencées dans le tableau ci-dessus.
