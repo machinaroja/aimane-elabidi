@@ -4,6 +4,10 @@ export const pool = new pg.Pool(process.env.DATABASE_URL
   ? { connectionString: process.env.DATABASE_URL, max: 10 }
   : { host: '/var/run/postgresql', user: process.env.PGUSER || 'root', database: process.env.PGDATABASE || 'lieusaint_dev', max: 10 });
 
+// Une connexion INACTIVE coupée par la base (redémarrage, bascule, maintenance) ne doit jamais faire tomber le serveur :
+// sans ce gestionnaire, l'événement « error » du pool est une exception non rattrapée.
+pool.on('error', (e) => console.error('connexion base inactive perdue (le pool se reconnecte) :', e.code || e.message));
+
 // TOUTE requête métier passe ici : transaction au nom de l'utilisateur, rôle « authenticated »,
 // claims JWT posés => c'est la RLS de PostgreSQL qui décide, jamais ce serveur.
 export async function withUser(user, fn) {
