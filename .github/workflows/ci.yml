@@ -1,0 +1,55 @@
+# Intégration continue : à chaque envoi, on rejoue TOUTES les vérifications de la plateforme.
+name: Vérifications
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  base-de-donnees:
+    name: Base de données (sécurité, droits, règles métier)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: ci }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env: { PGHOST: localhost, PGUSER: postgres, PGPASSWORD: ci }
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./plateforme/supabase/run_tests.sh
+
+  application:
+    name: Passerelle, interface et parcours complets dans un navigateur
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: ci }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env: { PGHOST: localhost, PGUSER: postgres, PGPASSWORD: ci, PGDATABASE: lieusaint_dev }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Base de démonstration
+        run: ./plateforme/dev.sh
+      - name: Passerelle (tests unitaires et de résilience)
+        working-directory: plateforme/server
+        run: npm ci && npm test
+      - name: Interface (types + construction)
+        working-directory: plateforme/web
+        run: npm ci && npm run build
+      - name: Navigateur de test
+        run: npm install -g playwright && playwright install --with-deps chromium
+      - name: Parcours complets (démonstration) et connexion de production (faux Supabase)
+        run: |
+          (cd plateforme/server && DEV_AUTH=1 PORT=8787 node index.mjs &) ; sleep 3
+          cd plateforme/e2e
+          export NODE_PATH="$(npm root -g)"
+          node e2e.cjs
+          node auth.cjs

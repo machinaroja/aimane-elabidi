@@ -5,13 +5,25 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { sign, verify } from './auth.mjs';
+import { sign } from './auth.mjs';
 import { pool, withUser, httpError } from './db.mjs';
+import { loadConfig } from './config.mjs';
+import { createVerifier } from './verifier.mjs';
+import { createAuthClient } from './supabase.mjs';
+import { createLimiter } from './ratelimit.mjs';
 
-const PROD = process.env.NODE_ENV === 'production';
-const DEV_AUTH = process.env.DEV_AUTH === '1' && !PROD;           // connexion de démonstration : jamais en production
-const SECRET = process.env.SUPABASE_JWT_SECRET || (DEV_AUTH ? 'dev-secret-ne-jamais-utiliser-en-production' : '');
-if (!SECRET) { console.error('SUPABASE_JWT_SECRET manquant'); process.exit(1); }
+const log = (o) => console.log(JSON.stringify({ t: new Date().toISOString(), ...o }));       // journaux JSON, jamais d'e-mail ni de jeton
+const { config: cfg, errors: cfgErrors } = loadConfig();
+if (cfgErrors.length) { console.error('Configuration invalide :\n - ' + cfgErrors.join('\n - ')); process.exit(1); }
+const PROD = cfg.prod, DEV_AUTH = cfg.devAuth;
+const DEV_SECRET = 'dev-secret-ne-jamais-utiliser-en-production';
+const verify = DEV_AUTH
+  ? createVerifier({ hsSecret: DEV_SECRET })                                                 // démonstration : jetons HS256 locaux
+  : createVerifier({ issuer: `${cfg.supabaseUrl}/auth/v1`, jwksUrl: `${cfg.supabaseUrl}/auth/v1/.well-known/jwks.json`, hsSecret: cfg.jwtSecret, onWarn: (m) => log({ level: 'warn', msg: m }) });
+const authClient = !DEV_AUTH && cfg.supabaseUrl ? createAuthClient({ url: cfg.supabaseUrl, anonKey: cfg.anonKey, serviceKey: cfg.serviceKey }) : null;
+const limit = createLimiter();
+const clientIp = (req) => (cfg.trustProxy ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : '') || req.socket.remoteAddress || 'inconnue';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const WEB = resolve(fileURLToPath(new URL('../web/dist', import.meta.url)));
 
 // ---------- validation ----------
@@ -50,6 +62,37 @@ const A = (fn) => async (ctx) => withUser(ctx.user, (c) => fn(c, ctx));
 
 // ---------- santé / connexion de démonstration ----------
 route('GET', '/api/health', async () => ({ ok: true }), { auth: false });
+route('GET', '/api/config', async () => ({ mode: DEV_AUTH ? 'dev' : 'supabase' }), { auth: false });
+
+// Lien de connexion : UNIQUEMENT pour une adresse invitée ou déjà membre. Réponse identique dans tous les cas
+// (pas d'énumération des adresses) et durée minimale constante.
+route('POST', '/api/auth/request-link', async ({ body, ip }) => {
+  const t0 = Date.now();
+  const generic = { ok: true, message: 'Si cette adresse est connue du club, un lien de connexion vient d\'être envoyé.' };
+  if (!authClient) throw Object.assign(new Error('introuvable'), { status: 404 });
+  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+  if (!/^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(email) || email.length > 254) throw bad('adresse e-mail invalide');
+  const byIp = limit(`link-ip:${ip}`, 15, 600_000);
+  if (!byIp.allowed) throw Object.assign(new Error('Trop de demandes. Réessayez dans quelques minutes.'), { status: 429 });
+  const byMail = limit(`link-mail:${email}`, 3, 600_000);
+  try {
+    if (byMail.allowed) {
+      const allowed = (await pool.query(`select app.auth_email_allowed($1) as ok`, [email])).rows[0].ok;
+      if (allowed) { await authClient.ensureUser(email); await authClient.sendLink(email, `${cfg.siteUrl}/`); }
+    }
+  } catch (e) { log({ level: 'error', msg: 'envoi du lien de connexion', err: e.message }); }   // l'utilisateur ne voit pas la cause
+  await sleep(Math.max(0, 700 - (Date.now() - t0)));
+  return generic;
+}, { auth: false });
+route('POST', '/api/auth/refresh', async ({ body, ip }) => {
+  if (!authClient) throw Object.assign(new Error('introuvable'), { status: 404 });
+  if (!limit(`refresh-ip:${ip}`, 60, 600_000).allowed) throw Object.assign(new Error('Trop de demandes.'), { status: 429 });
+  const rt = typeof body.refresh_token === 'string' && body.refresh_token.length < 600 ? body.refresh_token : '';
+  const out = rt ? await authClient.refresh(rt).catch(() => null) : null;
+  if (!out) throw Object.assign(new Error('Session expirée : reconnectez-vous.'), { status: 401 });
+  return out;
+}, { auth: false });
+
 route('GET', '/api/dev/accounts', async () => {
   if (!DEV_AUTH) throw Object.assign(new Error('introuvable'), { status: 404 });
   const r = await pool.query(`select email from auth.users where email like '%@demo.lieusaint.local' order by email`);
@@ -59,7 +102,7 @@ route('POST', '/api/auth/dev-login', async ({ body }) => {
   if (!DEV_AUTH) throw Object.assign(new Error('introuvable'), { status: 404 });
   const r = await pool.query(`select id, email from auth.users where email = $1 and email like '%@demo.lieusaint.local'`, [String(body.email)]);
   if (!r.rowCount) throw Object.assign(new Error('compte inconnu'), { status: 401 });
-  return { token: sign({ sub: r.rows[0].id, email: r.rows[0].email, role: 'authenticated' }, SECRET) };
+  return { token: sign({ sub: r.rows[0].id, email: r.rows[0].email, role: 'authenticated', aud: 'authenticated' }, DEV_SECRET) };
 }, { auth: false });
 
 // ---------- profil, structure ----------
@@ -520,7 +563,9 @@ route('POST', '/api/invitations/accept', A(async (c, { body }) => (await c.query
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.json': 'application/json', '.woff2': 'font/woff2' };
 const SEC = {
   'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'no-referrer',
-  'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'",
+  'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  ...(PROD ? { 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains' } : {}),
 };
 const send = (res, status, data, extra = {}) => {
   const body = typeof data === 'string' ? data : JSON.stringify(data);
@@ -543,26 +588,34 @@ async function serveStatic(req, res) {
 }
 
 export const server = http.createServer(async (req, res) => {
+  const t0 = Date.now(); let status = 500; const url0 = (req.url || '').split('?')[0];
+  res.on('finish', () => { if (url0 !== '/healthz') log({ m: req.method, p: url0.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/gi, ':id'), s: res.statusCode, ms: Date.now() - t0 }); });
   try {
     const url = new URL(req.url, 'http://x');
+    if (url.pathname === '/healthz') return send(res, 200, { ok: true });                       // vivacité : ne touche pas la base
+    if (url.pathname === '/readyz') {                                                            // disponibilité : la base répond
+      try { await pool.query('select 1'); return send(res, 200, { ok: true }); } catch { return send(res, 503, { ok: false }); }
+    }
     if (!url.pathname.startsWith('/api/')) return serveStatic(req, res);
     const r = routes.find((x) => x.method === req.method && x.re.test(url.pathname));
     if (!r) return send(res, 404, { error: 'Introuvable.' });
     let user = null;
     if (r.auth) {
       const h = req.headers.authorization || '';
-      user = h.startsWith('Bearer ') ? verify(h.slice(7), SECRET) : null;
+      user = h.startsWith('Bearer ') ? await verify(h.slice(7)) : null;
       if (!user) return send(res, 401, { error: 'Connexion requise.' });
     }
     const body = req.method === 'GET' ? {} : await readBody(req);
-    const out = await r.handler({ user, body, query: Object.fromEntries(url.searchParams), params: url.pathname.match(r.re).groups || {} });
+    const out = await r.handler({ user, body, ip: clientIp(req), query: Object.fromEntries(url.searchParams), params: url.pathname.match(r.re).groups || {} });
     send(res, 200, out);
   } catch (e) {
     const h = httpError(e);
-    send(res, h.status, { error: h.message });
+    send(res, h.status, { error: h.message }, h.status === 429 ? { 'Retry-After': '300' } : {});
   }
 });
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const port = Number(process.env.PORT || 8787);
-  server.listen(port, () => console.log(`API AS Lieusaint sur http://localhost:${port}${DEV_AUTH ? '  (connexion de démonstration ACTIVE)' : ''}`));
+  server.requestTimeout = 30_000; server.headersTimeout = 15_000; server.keepAliveTimeout = 65_000;
+  server.listen(cfg.port, () => log({ msg: 'démarré', port: cfg.port, mode: DEV_AUTH ? 'démonstration (connexion de test ACTIVE)' : 'production' }));
+  const stop = (sig) => { log({ msg: `arrêt (${sig})` }); server.close(() => pool.end().finally(() => process.exit(0))); setTimeout(() => process.exit(1), 10_000).unref(); };
+  process.on('SIGTERM', () => stop('SIGTERM')); process.on('SIGINT', () => stop('SIGINT'));
 }

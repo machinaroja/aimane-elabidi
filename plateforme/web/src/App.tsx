@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, getToken, setToken, Me, Team } from './api';
+import { api, getToken, setToken, clearSession, takeInvite, Me, Team } from './api';
 import { Login } from './pages/Login';
 import { Home } from './pages/Home';
 import { CalendarPage } from './pages/Calendar';
@@ -28,8 +28,8 @@ export default function App() {
     if (!authed) return;
     (async () => {
       try {
-        const invite = new URLSearchParams(location.search).get('invite');
-        if (invite) { await api('POST', '/api/invitations/accept', { token: invite }).catch((e) => setErr(e.message)); history.replaceState(null, '', location.pathname + location.hash); }
+        const invite = takeInvite();
+        if (invite) await api('POST', '/api/invitations/accept', { token: invite }).catch((e) => setErr(e.message));
         const [me, teams] = await Promise.all([api<Me>('GET', '/api/me'), api<Team[]>('GET', '/api/teams')]);
         setCtx({ me, teams });
       } catch (e: any) { setErr(e.message); }
@@ -44,7 +44,7 @@ export default function App() {
   const isAdmin = clubCaps.some((c) => c.categories_add || c.teams_add || c.invitations_add);
   const [, route = '', arg = ''] = hash.split('/');
   const nav: [string, string, boolean][] = [['', 'Accueil', true], ['calendar', 'Calendrier', true], ['squad', 'Effectif', true], ['methodology', 'Méthodologie', true], ['follow', 'Objectifs & évaluations', true], ['dashboard', 'Tableau de bord', me.can_reports], ['admin', 'Administration', isAdmin]];
-  const logout = () => { setToken(null); location.hash = ''; location.reload(); };
+  const logout = () => { clearSession(); location.hash = ''; location.reload(); };
 
   return (
     <>

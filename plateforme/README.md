@@ -12,7 +12,20 @@ Navigateur (web/, React)  →  Passerelle d'API (server/, Node)  →  PostgreSQL
 ```
 
 La passerelle ouvre une transaction **au nom de l'utilisateur** (rôle `authenticated` + claims du jeton) : c'est PostgreSQL
-qui filtre, comme dans les 283 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
+qui filtre, comme dans les 311 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
+
+## Mise en ligne
+
+Voir **[DEPLOIEMENT.md](DEPLOIEMENT.md)** : décisions à prendre, configuration de Supabase pas à pas, rôle de base de données restreint pour la passerelle,
+création du premier administrateur, vérification automatique du déploiement (`supabase/prod/verify_deploy.sql`), liste de contrôle RGPD, et un tableau
+honnête de ce qui est testé et de ce qui ne l'est pas. **Rien n'est encore déployé.**
+
+- **Connexion** : lien à usage unique reçu par e-mail, **réservé aux adresses invitées ou déjà membres** (le compte n'est créé qu'à ce moment-là) ;
+  réponse identique pour une adresse connue ou inconnue ; limitation de débit ; session prolongée discrètement puis révocable.
+- **Passerelle** : refuse de démarrer si la configuration est dangereuse ; tourne avec le rôle `gateway` **sans aucun droit direct sur les tables** ;
+  jetons vérifiés contre les clés publiques de Supabase (ES256 / RS256), émetteur et audience contrôlés ; en-têtes de sécurité ; journaux sans donnée personnelle.
+- **Base** : droits des tables réduits au strict nécessaire (la migration `0011` retire notamment le droit `TRUNCATE`, accordé par défaut par Supabase et qui
+  contourne la sécurité par ligne).
 
 ## Lancer en local (démonstration)
 
@@ -112,7 +125,7 @@ privées ne sont **jamais** partagées automatiquement (partage explicite par l'
 cd plateforme/supabase && ./run_tests.sh
 ```
 
-Crée une base PostgreSQL jetable, applique les migrations, puis exécute **283 contrôles** avec 10 comptes
+Crée une base PostgreSQL jetable, applique les migrations, puis exécute **311 contrôles** avec 10 comptes
 (administrateur, directeur technique, responsable, 4 entraîneurs, adjoint, inconnu, deuxième club) :
 isolation par catégorie/équipe/club, invitations, transferts, observations, versions, audit, garde-fous.
 Le test est « strict » : un refus n'est accepté que s'il vient d'un vrai refus de droits (pas d'une erreur de syntaxe).
@@ -130,10 +143,9 @@ Des failles volontaires (RLS trop large, accès après transfert, anti-escalade 
   séance ni de relevé des besoins de formation (à définir avec la direction technique) ; pas de comparaison entre catégories (les critères peuvent différer).
 - **Tableau de bord** : indicateurs de participation limités à ce qui est saisi (la couverture des présences est affichée pour juger leur fiabilité) ;
   pas encore de thèmes par séance ni de relevé des besoins de formation ; pas de comparaison automatique entre éducateurs.
-- **Connexion** : seule la connexion de démonstration existe. En production, l'authentification passera par Supabase Auth
-  (lien magique par e-mail) ; la passerelle vérifie déjà son jeton (`SUPABASE_JWT_SECRET`). Rien n'est encore déployé :
-  il faut créer le projet Supabase, un rôle de connexion dédié pour la passerelle, un hébergement et le nom de domaine.
-- **Pas de limitation de débit** (anti-abus) ni d'envoi automatique des invitations par e-mail : à ajouter avant l'ouverture au public.
+- **Mise en ligne** : la connexion de production est écrite et testée contre un faux Supabase ; elle n'a **jamais tourné sur un vrai projet Supabase**.
+  Il reste à créer le projet, l'hébergement, le domaine et l'envoi d'e-mails (voir DEPLOIEMENT.md). L'image Docker et l'intégration continue sont écrites mais non exécutées.
+- Limitation de débit en mémoire d'une seule instance ; pas d'envoi automatique des invitations par e-mail (le lien d'invitation se transmet à la main).
 - Les convocations enregistrent la réponse **saisie par l'éducateur** ; une réponse directe des parents
   (lien ou application) reste à concevoir avec les règles RGPD du club.
 - Les évaluations et objectifs des joueurs suivront le même schéma (fiche unique + équipe + visibilité).

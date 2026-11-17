@@ -1,15 +1,50 @@
-const KEY = 'lieusaint.token';
+const KEY = 'lieusaint.token', RKEY = 'lieusaint.refresh', IKEY = 'lieusaint.invite', EKEY = 'lieusaint.authError';
 export const getToken = () => sessionStorage.getItem(KEY);
 export const setToken = (t: string | null) => (t ? sessionStorage.setItem(KEY, t) : sessionStorage.removeItem(KEY));
+export const clearSession = () => { [KEY, RKEY, IKEY].forEach((k) => sessionStorage.removeItem(k)); };
 
-export async function api<T = any>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
+// Retour du lien de connexion envoyé par e-mail : « …/#access_token=…&refresh_token=… ». Les jetons sont lus puis RETIRÉS de l'adresse.
+export function consumeAuthHash() {
+  const h = location.hash.startsWith('#') ? location.hash.slice(1) : '';
+  if (!h.includes('access_token=') && !h.includes('error=')) return;
+  const p = new URLSearchParams(h);
+  if (p.get('access_token')) { setToken(p.get('access_token')); if (p.get('refresh_token')) sessionStorage.setItem(RKEY, p.get('refresh_token')!); }
+  else if (p.get('error')) sessionStorage.setItem(EKEY, p.get('error_code') === 'otp_expired' ? 'Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau.' : 'Connexion impossible avec ce lien. Demandez-en un nouveau.');
+  history.replaceState(null, '', location.pathname + location.search);
+}
+// Lien d'invitation « …/?invite=JETON » : conservé pendant la connexion, puis retiré de l'adresse.
+export function captureInvite() {
+  const q = new URLSearchParams(location.search); const t = q.get('invite');
+  if (t) { sessionStorage.setItem(IKEY, t); q.delete('invite'); history.replaceState(null, '', location.pathname + (q.toString() ? `?${q}` : '') + location.hash); }
+}
+export const takeInvite = () => { const t = sessionStorage.getItem(IKEY); sessionStorage.removeItem(IKEY); return t; };
+export const hasInvite = () => !!sessionStorage.getItem(IKEY);
+export const takeAuthError = () => { const e = sessionStorage.getItem(EKEY); sessionStorage.removeItem(EKEY); return e; };
+
+let refreshing: Promise<boolean> | null = null;
+export function refreshSession(): Promise<boolean> {
+  const rt = sessionStorage.getItem(RKEY); if (!rt) return Promise.resolve(false);
+  if (!refreshing) refreshing = (async () => {
+    try {
+      const r = await fetch('/api/auth/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh_token: rt }) });
+      if (!r.ok) return false; const d = await r.json();
+      setToken(d.access_token); if (d.refresh_token) sessionStorage.setItem(RKEY, d.refresh_token); return true;
+    } catch { return false; } finally { refreshing = null; }
+  })();
+  return refreshing;
+}
+
+export async function api<T = any>(method: 'GET' | 'POST', path: string, body?: unknown, retried = false): Promise<T> {
   const r = await fetch(path, {
     method,
     headers: { 'Content-Type': 'application/json', ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}) },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const data = await r.json().catch(() => ({}));
-  if (r.status === 401 && getToken()) { setToken(null); location.reload(); }
+  if (r.status === 401 && getToken()) {
+    if (!retried && (await refreshSession())) return api<T>(method, path, body, true);          // session prolongée sans déconnecter l'utilisateur
+    clearSession(); location.reload();
+  }
   if (!r.ok) throw new Error(data.error || `Erreur ${r.status}`);
   return data as T;
 }
