@@ -1,0 +1,21 @@
+# Déploiement en un clic sur Render : Dashboard > New > Blueprint > choisir ce dépôt.
+# Render demande les valeurs « sync: false » : copiez-les depuis le fichier gateway.env produit par deploy_supabase.mjs.
+services:
+  - type: web
+    name: as-lieusaint
+    runtime: docker
+    region: frankfurt                 # Union européenne
+    plan: starter                     # « free » s'endort après inactivité : à éviter pour un usage réel (vérifier les tarifs chez Render)
+    dockerfilePath: ./plateforme/Dockerfile
+    dockerContext: ./plateforme
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - { key: NODE_ENV, value: production }
+      - { key: TRUST_PROXY, value: "1" }
+      - { key: DATABASE_SSL, value: "1" }
+      - { key: SITE_URL, sync: false }                    # https://app.as-lieusaint.fr (ou l'adresse fournie par Render au début)
+      - { key: SUPABASE_URL, sync: false }
+      - { key: SUPABASE_ANON_KEY, sync: false }
+      - { key: SUPABASE_SERVICE_ROLE_KEY, sync: false }   # SECRET
+      - { key: DATABASE_URL, sync: false }                # SECRET : rôle « gateway », jamais postgres

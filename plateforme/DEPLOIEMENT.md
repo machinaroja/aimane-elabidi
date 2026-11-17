@@ -1,5 +1,33 @@
 # Mise en ligne de la plateforme AS Lieusaint
 
+## ⚡ Chemin rapide (3 étapes)
+
+Tout le travail technique est automatisé. Il reste **uniquement ce que seul le club peut faire** : ouvrir ses comptes et y coller deux informations.
+
+**Étape 1 — Supabase (base de données + connexion).** Votre jeton ne quitte jamais votre ordinateur.
+1. Créez un compte sur <https://supabase.com>, puis un jeton : <https://supabase.com/dashboard/account/tokens> → « Generate new token » (il commence par `sbp_`).
+2. Dans un terminal, depuis le dossier du dépôt (Node 18 ou plus récent) :
+   ```bash
+   export SUPABASE_ACCESS_TOKEN=sbp_xxxxxxxx
+   export ADMIN_EMAIL=vous@exemple.fr            # premier administrateur du club
+   export SITE_URL=https://app.as-lieusaint.fr   # adresse publique (provisoire possible, à corriger ensuite)
+   node plateforme/tools/deploy_supabase.mjs
+   ```
+   Le script crée le projet **en Europe (Paris)**, applique les 11 migrations, crée le rôle restreint de la passerelle, **ferme les inscriptions publiques**, crée votre compte
+   administrateur et le club, **vérifie 17 points de sécurité**, puis écrit `gateway.env`. Il s'arrête net, avec le message à me transmettre, à la moindre erreur ; on peut le relancer sans risque.
+   Pour que les liens de connexion arrivent vraiment, ajoutez un service d'e-mail (Brevo, Mailjet, Resend…) avec `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`.
+
+**Étape 2 — Hébergement.** Sur <https://render.com> : *New → Blueprint* → choisissez ce dépôt (`render.yaml` est déjà prêt) → recopiez les valeurs de `gateway.env` quand Render les demande.
+Les liens de connexion pointent vers `SITE_URL` : mettez l'adresse définitive (domaine du club) dans Render **et** relancez l'étape 1 avec la même `SITE_URL`.
+
+**Étape 3 — Premier accès.** Ouvrez le site, saisissez `ADMIN_EMAIL`, cliquez sur le lien reçu : vous êtes administrateur du club. Invitez ensuite vos éducateurs depuis « Administration ».
+Calendrier officiel : voir §6.
+
+> **Honnêteté.** Le script est testé contre un faux Supabase local qui exécute réellement les migrations (24 contrôles), mais **jamais contre le vrai** : si Supabase a changé son API,
+> il s'arrête avec le message exact. Le fichier `render.yaml` et l'image Docker n'ont pas été exécutés non plus. Le reste de ce document détaille chaque étape à la main.
+
+---
+
 > **État honnête.** Tout ce qui peut être préparé et testé sans compte externe l'est (voir §9). **Rien n'est encore déployé** : il faut un projet
 > Supabase, un hébergement, un nom de domaine et un service d'envoi d'e-mails, qui sont à créer par le club. Ce guide les relie dans l'ordre.
 
