@@ -117,4 +117,48 @@ begin
     insert into methodology_reads (club_id, version_id) values (club, vers[1]);
     perform dev.logout();
   end;
+
+  -- grille d'évaluation : propositions relues et activées par la direction technique (sauf une, laissée inactive)
+  declare c1 uuid; c2 uuid; c3 uuid; c4 uuid; c5 uuid; ev uuid; o1 uuid; o2 uuid;
+  begin
+    perform dev.login('dt@demo.lieusaint.local');
+    perform public.seed_criteria_proposals(club);
+    update criteria set active = true where title in ('Occupation des espaces','Circulation du ballon','Lignes de passe et triangulations','Pressing après perte de balle','Prise d''information avant réception');
+    perform dev.logout();
+    select id into c1 from criteria where title = 'Occupation des espaces'; select id into c2 from criteria where title = 'Circulation du ballon';
+    select id into c3 from criteria where title = 'Lignes de passe et triangulations'; select id into c4 from criteria where title = 'Pressing après perte de balle';
+    select id into c5 from criteria where title = 'Prise d''information avant réception';
+
+    perform dev.login('coach-u14@demo.lieusaint.local');
+    insert into team_objectives (club_id, team_id, title, description, criterion_id, status, due_on)
+      values (club, t_u14, 'Occuper la largeur en phase de possession', 'Les latéraux restent sur la ligne et ouvrent le jeu.', c1, 'in_progress', current_date + 45) returning id into o1;
+    insert into team_objectives (club_id, team_id, title, description, criterion_id, status)
+      values (club, t_u14, 'Réagir collectivement à la perte du ballon', null, c4, 'planned') returning id into o2;
+    insert into team_objectives (club_id, team_id, title, status) values (club, t_u14, 'Installer la routine d''échauffement avec ballon', 'achieved');
+    insert into objective_notes (club_id, objective_id, note) values (club, o1, 'Exercice de largeur en 4 contre 2 mené deux semaines de suite ; les latéraux oublient encore de rester sur la ligne.');
+    -- 1re observation (auto-évaluation), il y a 20 jours
+    ev := public.create_evaluation(t_u14, current_date - 20, 'Observation du match de championnat');
+    perform public.save_evaluation_score(ev, c1, 2, 'Les latéraux se rapprochent de l''axe dès que le ballon est de l''autre côté.');
+    perform public.save_evaluation_score(ev, c2, 2, 'Peu de changements de côté : le ballon revient souvent vers le gardien.');
+    perform public.save_evaluation_score(ev, c4, 2, 'Sur cinq pertes de balle, deux joueurs seulement réagissent.');
+    perform public.finalize_evaluation(ev);
+    -- 2e observation, il y a 4 jours : progression sur deux critères, critère de pressing inchangé
+    ev := public.create_evaluation(t_u14, current_date - 4, 'Observation de la séance de vendredi et du match de samedi');
+    perform public.save_evaluation_score(ev, c1, 3, 'Les latéraux restent sur la ligne dans la majorité des séquences de construction.');
+    perform public.save_evaluation_score(ev, c2, 3, 'Quatre changements de côté en première mi-temps.');
+    perform public.save_evaluation_score(ev, c4, 2, 'Sur six pertes de balle, trois joueurs réagissent ; le reste de l''équipe attend.');
+    perform public.save_evaluation_score(ev, c5, 3, 'La plupart des joueurs regardent avant de recevoir ; deux joueurs encore dos au jeu.');
+    perform public.finalize_evaluation(ev);
+    perform dev.logout();
+    -- regard extérieur de la direction technique, il y a 10 jours
+    perform dev.login('dt@demo.lieusaint.local');
+    ev := public.create_evaluation(t_u14, current_date - 10, 'Visite d''une séance');
+    perform public.save_evaluation_score(ev, c1, 2, 'Occupation des couloirs correcte, profondeur peu utilisée.');
+    perform public.save_evaluation_score(ev, c3, 3, 'Deux options de passe proposées en moyenne autour du porteur.');
+    perform public.finalize_evaluation(ev);
+    perform dev.logout();
+    perform dev.login('coach-seniors1@demo.lieusaint.local');
+    insert into team_objectives (club_id, team_id, title, status) values (club, t_s1, 'Fiabiliser la sortie de balle sous pression', 'in_progress');
+    perform dev.logout();
+  end;
 end $$;

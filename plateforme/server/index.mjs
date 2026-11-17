@@ -72,7 +72,7 @@ route('GET', '/api/me', A(async (c, { user }) => {
   const caps = {};
   for (const id of clubIds) {
     const k = await c.query(`select app.has_perm($1,null,'categories','add') as categories_add, app.has_perm($1,null,'teams','add') as teams_add,
-      app.has_perm($1,null,'invitations','add') as invitations_add, app.has_perm($1,null,'methodology','add') as methodology_add, app.has_perm($1,null,'methodology','edit') as methodology_edit,
+      app.has_perm($1,null,'invitations','add') as invitations_add, app.has_perm($1,null,'methodology','add') as methodology_add, app.has_perm($1,null,'methodology','edit') as methodology_edit, app.has_perm($1,null,'criteria','edit') as criteria_edit,
       app.has_perm($1,null,'calendar','add') as club_events_add, app.has_perm($1,null,'calendar','administer') as calendar_admin,
       app.has_perm($1,null,'players','view') as players_view_all`, [id]);
     caps[id] = k.rows[0];
@@ -95,7 +95,9 @@ route('GET', '/api/teams', A(async (c) => (await c.query(
           app.has_perm(t.club_id, t.id, 'convocations', 'add')  as can_convoke,
           app.has_perm(t.club_id, t.id, 'matches', 'edit')      as can_match,
           app.has_perm(t.club_id, t.id, 'players', 'view')      as can_view_players,
-          app.has_perm(t.club_id, t.id, 'players', 'edit')      as can_transfer
+          app.has_perm(t.club_id, t.id, 'players', 'edit')      as can_transfer,
+          app.has_perm(t.club_id, t.id, 'objectives', 'add')    as can_objective,
+          app.has_perm(t.club_id, t.id, 'evaluations', 'add')   as can_evaluate
    from teams t join categories ca on ca.id = t.category_id
    order by ca.sort_order, ca.name, t.name`)).rows));
 route('GET', '/api/categories', A(async (c) => (await c.query(`select id, club_id, name, age_min, age_max, sort_order from categories order by sort_order, name`)).rows));
@@ -256,6 +258,104 @@ route('GET', '/api/personal-sessions', A(async (c) => (await c.query(
    where s.owner_id = auth.uid() order by s.created_at desc`)).rows));
 
 
+
+// ---------- grille d'évaluation, objectifs, évaluations collectives ----------
+const anchors4 = (a) => {
+  if (!a || typeof a !== 'object') throw bad('niveaux invalides');
+  const o = {}; for (const k of ['1', '2', '3', '4']) o[k] = v.str(a[k], `niveau ${k}`, 400, 10);
+  return o;
+};
+const PILLARS = ['position', 'possession', 'pression', 'transversal'];
+route('GET', '/api/criteria', A(async (c) => (await c.query(
+  `select c.id, c.club_id, c.title, c.description, c.pillar, c.anchors, c.category_id, ca.name as category, c.active, c.sort_order,
+          exists (select 1 from evaluation_scores s where s.criterion_id = c.id) as used
+   from criteria c left join categories ca on ca.id = c.category_id order by c.active desc, c.sort_order, c.title`)).rows));
+route('POST', '/api/criteria', A(async (c, { body }) => (await c.query(
+  `insert into criteria (club_id, title, description, pillar, anchors, category_id, sort_order, active) values ($1,$2,$3,$4,$5::jsonb,$6,$7,$8) returning id`,
+  [v.uuid(body.club_id, 'club'), v.str(body.title, 'titre', 120, 3), v.strOrNull(body.description, 500), v.enum(body.pillar ?? 'transversal', PILLARS, 'pilier'), JSON.stringify(anchors4(body.anchors)),
+   v.uuidOrNull(body.category_id, 'catégorie'), v.intOrNull(body.sort_order, 'ordre', 0, 999) ?? 0, body.active !== false])).rows[0]));
+route('POST', '/api/criteria/seed-proposals', A(async (c, { body }) => (await c.query(`select public.seed_criteria_proposals($1) as n`, [v.uuid(body.club_id, 'club')])).rows[0]));
+route('POST', '/api/criteria/:id', A(async (c, { params, body }) => {
+  const id = v.uuid(params.id);
+  if (body.anchors !== undefined || body.title !== undefined || body.pillar !== undefined || body.description !== undefined || body.category_id !== undefined) {
+    await c.query(`update criteria set title = coalesce($2, title), description = coalesce($3, description), pillar = coalesce($4, pillar), anchors = coalesce($5::jsonb, anchors), category_id = case when $6::boolean then $7 else category_id end where id = $1`,
+      [id, body.title === undefined ? null : v.str(body.title, 'titre', 120, 3), body.description === undefined ? null : v.strOrNull(body.description, 500), body.pillar === undefined ? null : v.enum(body.pillar, PILLARS, 'pilier'),
+       body.anchors === undefined ? null : JSON.stringify(anchors4(body.anchors)), body.category_id !== undefined, v.uuidOrNull(body.category_id, 'catégorie')]);
+  }
+  if (body.active !== undefined || body.sort_order !== undefined) {
+    const r = await c.query(`update criteria set active = coalesce($2, active), sort_order = coalesce($3, sort_order) where id = $1`, [id, typeof body.active === 'boolean' ? body.active : null, v.intOrNull(body.sort_order, 'ordre', 0, 999)]);
+    if (!r.rowCount) throw Object.assign(new Error('Critère introuvable ou droits insuffisants.'), { status: 403 });
+  }
+  return { ok: true };
+}));
+
+route('GET', '/api/teams/:id/objectives', A(async (c, { params }) => (await c.query(
+  `select o.id, o.title, o.description, o.status, o.due_on, o.created_at, o.updated_at, o.criterion_id, cr.title as criterion, o.methodology_item_id, mi.title as methodology,
+          coalesce(nullif(p.display_name,''), p.email) as author, o.created_by = auth.uid() as mine,
+          app.has_perm(o.club_id, o.team_id, 'objectives', 'edit') as can_edit, app.has_perm(o.club_id, o.team_id, 'objectives', 'delete') as can_delete,
+          (select count(*) from objective_notes n where n.objective_id = o.id)::int as notes
+   from team_objectives o left join criteria cr on cr.id = o.criterion_id left join methodology_items mi on mi.id = o.methodology_item_id left join profiles p on p.id = o.created_by
+   where o.team_id = $1 order by (o.status in ('planned','in_progress')) desc, o.due_on nulls last, o.created_at desc`, [v.uuid(params.id, 'équipe')])).rows));
+const OBJ_STATUS = ['planned', 'in_progress', 'achieved', 'not_achieved', 'abandoned'];
+route('POST', '/api/teams/:id/objectives', A(async (c, { params, body }) => {
+  const team = v.uuid(params.id, 'équipe');
+  const club = (await c.query(`select club_id from teams where id = $1`, [team])).rows[0]?.club_id;
+  if (!club) throw Object.assign(new Error('Équipe introuvable.'), { status: 404 });
+  return (await c.query(`insert into team_objectives (club_id, team_id, title, description, criterion_id, methodology_item_id, status, due_on) values ($1,$2,$3,$4,$5,$6,$7,$8) returning id`,
+    [club, team, v.str(body.title, 'titre', 160, 3), v.strOrNull(body.description, 2000), v.uuidOrNull(body.criterion_id, 'critère'), v.uuidOrNull(body.methodology_item_id, 'contenu'),
+     v.enum(body.status ?? 'planned', OBJ_STATUS, 'statut'), body.due_on ? v.ts(body.due_on, 'échéance').slice(0, 10) : null])).rows[0];
+}));
+route('POST', '/api/objectives/:id', A(async (c, { params, body }) => {
+  const r = await c.query(`update team_objectives set status = coalesce($2, status), title = coalesce($3, title), description = coalesce($4, description), due_on = case when $5::boolean then $6 else due_on end where id = $1`,
+    [v.uuid(params.id), body.status === undefined ? null : v.enum(body.status, OBJ_STATUS, 'statut'), body.title === undefined ? null : v.str(body.title, 'titre', 160, 3),
+     body.description === undefined ? null : v.strOrNull(body.description, 2000), body.due_on !== undefined, body.due_on ? v.ts(body.due_on, 'échéance').slice(0, 10) : null]);
+  if (!r.rowCount) throw Object.assign(new Error('Objectif introuvable ou droits insuffisants.'), { status: 403 });
+  return { ok: true };
+}));
+route('GET', '/api/objectives/:id/notes', A(async (c, { params }) => (await c.query(
+  `select n.id, n.note, n.created_at, coalesce(nullif(p.display_name,''), p.email, 'Éducateur') as author from objective_notes n left join profiles p on p.id = n.author_id where n.objective_id = $1 order by n.created_at desc`, [v.uuid(params.id)])).rows));
+route('POST', '/api/objectives/:id/notes', A(async (c, { params, body }) => (await c.query(
+  `insert into objective_notes (club_id, objective_id, note) select club_id, id, $2 from team_objectives where id = $1 returning id`, [v.uuid(params.id), v.str(body.note, 'note', 2000, 3)])).rows[0] ?? (() => { throw Object.assign(new Error('Objectif introuvable.'), { status: 404 }); })()));
+
+route('GET', '/api/teams/:id/evaluations', A(async (c, { params }) => (await c.query(
+  `select e.id, e.evaluated_on, e.evaluator_role, e.summary, e.status, e.finalized_at, (e.evaluator_id = auth.uid()) as mine,
+          coalesce(nullif(p.display_name,''), p.email) as author, (select count(*) from evaluation_scores s where s.evaluation_id = e.id)::int as observed
+   from team_evaluations e left join profiles p on p.id = e.evaluator_id where e.team_id = $1 order by e.evaluated_on desc, e.created_at desc`, [v.uuid(params.id, 'équipe')])).rows));
+route('POST', '/api/teams/:id/evaluations', A(async (c, { params, body }) => (await c.query(`select public.create_evaluation($1,$2::date,$3) as id`,
+  [v.uuid(params.id, 'équipe'), v.ts(body.evaluated_on, 'date').slice(0, 10), v.strOrNull(body.summary, 1000)])).rows[0]));
+route('GET', '/api/evaluations/:id', A(async (c, { params }) => {
+  const id = v.uuid(params.id);
+  const e = (await c.query(
+    `select e.id, e.team_id, e.club_id, e.evaluated_on, e.evaluator_role, e.summary, e.status, e.finalized_at, (e.evaluator_id = auth.uid()) as mine,
+            coalesce(nullif(p.display_name,''), p.email) as author, t.name as team_name, ca.name as category, t.category_id
+     from team_evaluations e join teams t on t.id = e.team_id join categories ca on ca.id = t.category_id left join profiles p on p.id = e.evaluator_id where e.id = $1`, [id])).rows[0];
+  if (!e) throw Object.assign(new Error('Évaluation introuvable.'), { status: 404 });
+  const scores = (await c.query(`select s.criterion_id, cr.title, cr.pillar, cr.anchors, cr.sort_order, s.level, s.evidence from evaluation_scores s join criteria cr on cr.id = s.criterion_id where s.evaluation_id = $1 order by cr.sort_order, cr.title`, [id])).rows;
+  const grid = e.status === 'draft' && e.mine
+    ? (await c.query(`select id as criterion_id, title, pillar, anchors, sort_order from criteria where club_id = $1 and active and (category_id is null or category_id = $2) order by sort_order, title`, [e.club_id, e.category_id])).rows : [];
+  return { evaluation: e, scores, grid };
+}));
+route('POST', '/api/evaluations/:id/scores', A(async (c, { params, body }) => {
+  await c.query(`select public.save_evaluation_score($1,$2,$3,$4)`, [v.uuid(params.id), v.uuid(body.criterion_id, 'critère'), v.intOrNull(body.level, 'niveau', 1, 4), v.strOrNull(body.evidence, 2000)]);
+  return { ok: true };
+}));
+route('POST', '/api/evaluations/:id/finalize', A(async (c, { params }) => { await c.query(`select public.finalize_evaluation($1)`, [v.uuid(params.id)]); return { ok: true }; }));
+route('POST', '/api/evaluations/:id/discard', A(async (c, { params }) => {
+  const r = await c.query(`delete from team_evaluations where id = $1 and status = 'draft' and evaluator_id = auth.uid()`, [v.uuid(params.id)]);
+  if (!r.rowCount) throw Object.assign(new Error('Brouillon introuvable.'), { status: 404 });
+  return { ok: true };
+}));
+// Évolution par critère : uniquement des niveaux observés, ordonnés dans le temps. AUCUNE moyenne, AUCUN score global.
+route('GET', '/api/teams/:id/evaluation-trend', A(async (c, { params }) => {
+  const rows = (await c.query(
+    `select cr.id as criterion_id, cr.title, cr.pillar, cr.sort_order, e.id as evaluation_id, e.evaluated_on, e.evaluator_role, s.level
+     from evaluation_scores s join team_evaluations e on e.id = s.evaluation_id join criteria cr on cr.id = s.criterion_id
+     where e.team_id = $1 and e.status = 'final' order by cr.sort_order, cr.title, e.evaluated_on, e.created_at`, [v.uuid(params.id, 'équipe')])).rows;
+  const out = new Map();
+  for (const r of rows) { if (!out.has(r.criterion_id)) out.set(r.criterion_id, { criterion_id: r.criterion_id, title: r.title, pillar: r.pillar, points: [] }); out.get(r.criterion_id).points.push({ evaluation_id: r.evaluation_id, evaluated_on: r.evaluated_on, evaluator_role: r.evaluator_role, level: r.level }); }
+  return [...out.values()];
+}));
+
 // ---------- tableau de bord de la direction technique ----------
 // Tout est calculé AU NOM de l'utilisateur : un responsable de catégorie ne voit que sa catégorie (RLS).
 // Aucune conclusion automatique : des indicateurs définis + des « points d'attention » dont la règle est affichée.
@@ -264,11 +364,11 @@ const DEFINITIONS = {
   couverture: "Couverture des présences = entraînements passés pour lesquels au moins une présence a été saisie / entraînements passés (hors annulés). Mesure la fiabilité du taux de participation.",
   matchs: "Matchs joués = matchs avec un score enregistré dans la période (compétitions officielles comprises). V/N/D du point de vue du club.",
   lecture: "Part de la méthodologie lue = versions courantes publiées ouvertes par l'éducateur / versions courantes publiées. Une ouverture n'est pas une preuve de compréhension ni d'application.",
+  objectifs: "Objectifs = objectifs pédagogiques saisis par équipe (en cours, atteints, non atteints, abandonnés). Le statut est celui que l'éducateur ou la direction a renseigné : il n'est pas déduit des résultats.",
+  evaluations: "Évaluations = observations collectives finalisées sur la grille définie par la direction technique : un niveau (1 à 4) par critère, étayé par une observation écrite. Aucun score global n'est calculé ; une absence d'évaluation n'est pas un constat sur l'équipe.",
   copies: "Séances reprises du commun = séances personnelles rattachées à une équipe, créées dans la période par copie d'une séance de la méthodologie du club.",
 };
 const NOT_TRACKED = [
-  'Objectifs pédagogiques par équipe et par saison',
-  'Évaluations collectives (grille d\'observation définie par la direction technique)',
   'Thèmes réellement travaillés en séance (les séances planifiées ne portent pas encore de thème)',
   'Difficultés récurrentes et besoins de formation des éducateurs : à renseigner par la direction technique à partir d\'observations',
 ];
@@ -334,6 +434,15 @@ route('GET', '/api/dashboard', A(async (c, { query }) => {
      where e.club_id = $1 and e.status = 'scheduled' and d.status = 'played' and d.our_score is not null and d.their_score is not null
        and e.starts_at >= ${FROM} and e.starts_at < ${toExpr} group by e.team_id`, [club, range.from, range.to])).rows.map((r) => [r.team_id, r]));
 
+  const ob = Object.fromEntries((await c.query(
+    `select o.team_id, count(*)::int as total, count(*) filter (where o.status = 'planned')::int as planned, count(*) filter (where o.status = 'in_progress')::int as in_progress,
+            count(*) filter (where o.status = 'achieved')::int as achieved, count(*) filter (where o.status = 'not_achieved')::int as not_achieved, count(*) filter (where o.status = 'abandoned')::int as abandoned
+     from team_objectives o where o.club_id = $1 group by o.team_id`, [club])).rows.map((r) => [r.team_id, r]));
+  const evs = Object.fromEntries((await c.query(
+    `select e.team_id, count(*) filter (where e.evaluated_on >= $2::date and e.evaluated_on < ${range.inclusiveEnd ? "($3::date + 1)" : '$3::date'})::int as in_period,
+            max(e.evaluated_on)::text as last_on, count(*)::int as total
+     from team_evaluations e where e.club_id = $1 and e.status = 'final' group by e.team_id`, [club, range.from, range.to])).rows.map((r) => [r.team_id, r]));
+
   // éducateurs : rôles à portée équipe / catégorie
   const assigns = (await c.query(`select membership_id, team_id, category_id from assignments where club_id = $1`, [club])).rows;
   const educRows = (await c.query(
@@ -362,9 +471,11 @@ route('GET', '/api/dashboard', A(async (c, { query }) => {
     const e = ev[t.id] ?? {}, a = att[t.id] ?? {}, m = mt[t.id] ?? {};
     const recs = (a.present ?? 0) + (a.late ?? 0) + (a.absent ?? 0) + (a.excused ?? 0);
     return { ...t, educators: educators.filter((x) => x.team_ids.includes(t.id)).map((x) => x.name),
+      head_educators: educators.filter((x) => x.scope_level === 'team' && x.team_ids.includes(t.id)).length,
       trainings_planned: e.trainings_planned ?? 0, trainings_held: e.trainings_held ?? 0, trainings_with_attendance: e.trainings_with_attendance ?? 0,
       coverage_pct: pct(e.trainings_with_attendance ?? 0, e.trainings_held ?? 0),
       records: recs, present: a.present ?? 0, late: a.late ?? 0, absent: a.absent ?? 0, excused: a.excused ?? 0, participation_pct: pct((a.present ?? 0) + (a.late ?? 0), recs),
+      objectives: ob[t.id] ?? { total: 0, planned: 0, in_progress: 0, achieved: 0, not_achieved: 0, abandoned: 0 }, evaluations_in_period: evs[t.id]?.in_period ?? 0, last_evaluation_on: evs[t.id]?.last_on ?? null,
       matches_played: m.played ?? 0, wins: m.wins ?? 0, draws: m.draws ?? 0, losses: m.losses ?? 0, gf: m.gf ?? 0, ga: m.ga ?? 0, matches_upcoming: e.matches_upcoming ?? 0 };
   });
   const sum = (k) => rows.reduce((x, r) => x + r[k], 0);
@@ -372,7 +483,7 @@ route('GET', '/api/dashboard', A(async (c, { query }) => {
     trainings_held: sum('trainings_held'), coverage_pct: pct(sum('trainings_with_attendance'), sum('trainings_held')),
     participation_pct: pct(sum('present') + sum('late'), sum('records')), absences: sum('absent') + sum('excused'), late: sum('late'),
     matches_played: sum('matches_played'), wins: sum('wins'), draws: sum('draws'), losses: sum('losses'), gf: sum('gf'), ga: sum('ga'),
-    methodology_published: cur.length };
+    methodology_published: cur.length, objectives_total: rows.reduce((x, r) => x + r.objectives.total, 0), objectives_achieved: rows.reduce((x, r) => x + r.objectives.achieved, 0), evaluations_in_period: rows.reduce((x, r) => x + r.evaluations_in_period, 0) };
 
   // Points d'attention : règles simples, seuils et valeurs affichés ; à vérifier par la direction, jamais une conclusion.
   const flags = [];
@@ -380,6 +491,10 @@ route('GET', '/api/dashboard', A(async (c, { query }) => {
     if (r.trainings_held >= 3 && r.coverage_pct != null && r.coverage_pct < 60) flags.push({ code: 'attendance_coverage', subject: `${r.category} ${r.name}`, rule: 'Au moins 3 entraînements passés et couverture des présences < 60 %', value: `${r.trainings_with_attendance} entraînement(s) sur ${r.trainings_held} avec présences saisies (${r.coverage_pct} %)`, hint: 'Le taux de participation de cette équipe n\'est pas fiable tant que les présences ne sont pas saisies.' });
     if (r.records >= 10 && r.participation_pct != null && r.participation_pct < 60) flags.push({ code: 'participation_low', subject: `${r.category} ${r.name}`, rule: 'Au moins 10 présences saisies et participation < 60 %', value: `${r.participation_pct} % sur ${r.records} présences saisies`, hint: 'À examiner avec l\'éducateur : causes possibles multiples (calendrier, météo, blessures…).' });
     if (r.players > 0 && r.trainings_planned === 0) flags.push({ code: 'no_training', subject: `${r.category} ${r.name}`, rule: 'Équipe avec joueurs et aucun entraînement planifié dans la période', value: `${r.players} joueur(s), 0 entraînement`, hint: 'Les entraînements ont peut-être lieu mais ne sont pas saisis dans la plateforme.' });
+  }
+  for (const r of rows) {
+    if (r.head_educators > 0 && r.objectives.total - r.objectives.abandoned === 0) flags.push({ code: 'no_objective', subject: `${r.category} ${r.name}`, rule: 'Équipe avec un entraîneur attribué et aucun objectif pédagogique défini (hors abandonnés)', value: '0 objectif défini', hint: 'À aborder avec l\'éducateur : l\'équipe a peut-être des objectifs non saisis dans la plateforme.' });
+    if (period !== 'month' && r.players > 0 && r.evaluations_in_period === 0) flags.push({ code: 'no_evaluation', subject: `${r.category} ${r.name}`, rule: 'Équipe avec joueurs et aucune évaluation collective finalisée dans la période', value: r.last_evaluation_on ? `dernière évaluation finalisée : ${r.last_evaluation_on}` : 'aucune évaluation finalisée', hint: 'L\'absence d\'évaluation ne dit rien de la qualité du travail de l\'équipe.' });
   }
   if (g.club_scope) {
     const none = rows.filter((r) => r.educators.length === 0);

@@ -376,6 +376,151 @@ const shot = (page, n) => page.screenshot({ path: `shots/${n}.png`, fullPage: fa
     ok('dashboard : aucune erreur JavaScript', dt.errors.length === 0 && re.errors.length === 0 && co.errors.length === 0, dt.errors.concat(re.errors).join(' | '));
   }
 
+  // ===== Objectifs et évaluations collectives =====
+  {
+    const tokOf = async (who) => (await (await fetch(`${BASE}/api/auth/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: `${who}@demo.lieusaint.local` }) })).json()).token;
+    const apiAs = async (who, method, path, body) => fetch(`${BASE}${path}`, { method, headers: { 'content-type': 'application/json', Authorization: `Bearer ${await tokOf(who)}` }, body: body ? JSON.stringify(body) : undefined });
+    const sqlN = (q) => Number(sql(q));
+    const goFollow = async (page, tab) => { await page.goto(`${BASE}/#/follow`); await page.reload(); await page.waitForSelector('h1:has-text("Objectifs et évaluations")'); if (tab) await page.click(`[role=tab]:has-text("${tab}")`); await ready(page); };
+    const pickTeam = async (page, label) => { await page.selectOption('#f-team', { label }); await ready(page); };
+
+    // ---------- entraîneur U14 : objectifs
+    const co = await login(browser, 'coach-u14'); const cp = co.page;
+    await goFollow(cp);
+    ok('coach : entrée « Objectifs & évaluations » dans le menu', await cp.locator('nav >> text=Objectifs & évaluations').count() === 1);
+    await pickTeam(cp, 'U14 1'); await count(cp, '[data-testid=objective]', 3);
+    ok('objectifs : les 3 objectifs de U14 1', await cp.locator('[data-testid=objective]').count() === 3);
+    ok('objectifs : le critère de la grille visé est affiché', await cp.locator('[data-testid=objective]', { hasText: 'Critère : Occupation des espaces' }).count() === 1);
+    await cp.selectOption('select[aria-label^="Statut de Réagir collectivement"]', 'in_progress'); await cp.waitForSelector('text=Statut mis à jour');
+    ok('objectifs : changement de statut enregistré', sql(`select status from team_objectives where title like 'Réagir collectivement%'`) === 'in_progress');
+    await cp.fill('#ob-t', 'Améliorer la prise d\'information'); await cp.selectOption('#ob-c', { label: 'Prise d\'information avant réception' }); await cp.fill('#ob-d', new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10));
+    await cp.click('button:has-text("Créer l\'objectif")'); await cp.waitForSelector('text=Objectif créé');
+    ok('objectifs : nouvel objectif créé et lié à un critère', await count(cp, '[data-testid=objective]', 4) === 4 && sqlN(`select count(*) from team_objectives where title='Améliorer la prise d''information' and criterion_id is not null`) === 1);
+    await cp.locator('[data-testid=objective]', { hasText: 'Améliorer la prise' }).locator('button:has-text("Suivi")').click();
+    await cp.fill('textarea[id^=nn-]', 'Exercice de regard avant réception en 5 contre 2, deux séances.'); await cp.click('button:has-text("Ajouter")'); await cp.waitForSelector('text=Note ajoutée');
+    ok('objectifs : note de suivi ajoutée', sqlN(`select count(*) from objective_notes where note like 'Exercice de regard%'`) === 1);
+    await shot(cp, '21-objectifs');
+
+    // ---------- entraîneur U14 : évaluations, tendance, sans score global
+    await cp.click('[role=tab]:has-text("Évaluations")'); await ready(cp, '[data-testid=evaluation]');
+    ok('évaluations : 3 observations finalisées (2 auto-évaluations + 1 regard extérieur)', await cp.locator('[data-testid=evaluation]').count() === 3);
+    ok('évaluations : un auteur dont le profil n\'est pas visible est affiché « — » (jamais un faux libellé)', (await cp.locator('[data-testid=evaluation]', { hasText: 'Regard extérieur — direction technique' }).locator('td').nth(2).innerText()).trim() === '—');
+    ok('évaluations : le regard extérieur est identifié', await cp.locator('[data-testid=evaluation]', { hasText: 'Regard extérieur — direction technique' }).count() === 1);
+    const occ = await cp.locator('[data-testid=trend-row]', { hasText: 'Occupation des espaces' }).innerText();
+    ok('tendance : niveaux observés dans l\'ordre (2 → 2 → 3)', /2[\s\S]*→[\s\S]*2[\s\S]*→[\s\S]*3/.test(occ), occ.replace(/\s+/g, ' '));
+    // on contrôle les VALEURS affichées (cellules, intitulés de colonnes, pastilles), pas les phrases d'explication de la page
+    const shown = (await cp.locator('td, th, .badge').allInnerTexts()).join(' | ');
+    ok('aucune moyenne, aucun total, aucun score global, aucun niveau décimal dans les valeurs affichées', !/\b\d,\d\b/.test(shown.replace(/\d{2}\/\d{2}\/\d{4}/g, '')) && !/(moyenne|total|score global|note globale|indice)/i.test(shown), shown.slice(0, 200));
+    ok('l\'absence de score global est annoncée à l\'utilisateur', await cp.locator('text=aucun score global').count() >= 1);
+    await shot(cp, '22-evaluations');
+
+    // nouvelle observation : preuve exigée, « non observé » par défaut
+    await cp.click('button:has-text("Commencer")'); await cp.waitForSelector('[data-testid=criterion-card]');
+    const cards = await cp.locator('[data-testid=criterion-card]').count();
+    ok('éditeur : uniquement les critères ACTIFS (5 ; « Coordination de la pression » inactif absent)', cards === 5 && await cp.locator('h3:has-text("Coordination de la pression")').count() === 0, `${cards}`);
+    ok('éditeur : aucun niveau pré-sélectionné (tout « Non observé »)', await cp.locator('input[type=radio][aria-label*="niveau"]:checked').count() === 0);
+    ok('éditeur : les descriptions comportementales des 4 niveaux sont affichées', await cp.locator('text=Niveau 4').count() >= 5);
+    await cp.check('input[aria-label="Occupation des espaces niveau 3"]');
+    await cp.click('button[aria-label="Enregistrer Occupation des espaces"]'); await cp.waitForSelector('[role=alert]');
+    ok('éditeur : un niveau sans observation écrite est refusé (message clair)', /observation factuelle/i.test(await cp.locator('[role=alert]').innerText()));
+    await cp.fill('#e-' + (await cp.locator('textarea[id^="e-"]').first().getAttribute('id')).slice(2), 'ok');
+    await cp.click('button[aria-label="Enregistrer Occupation des espaces"]'); await cp.waitForSelector('[role=alert]');
+    ok('éditeur : une observation trop courte est refusée', /observation factuelle/i.test(await cp.locator('[role=alert]').innerText()));
+    await cp.fill('textarea[id^="e-"] >> nth=0', 'Les latéraux tiennent la ligne pendant toute la seconde mi-temps.');
+    await cp.click('button[aria-label="Enregistrer Occupation des espaces"]'); await cp.waitForSelector('text=Niveau enregistré');
+    await cp.check('input[aria-label="Circulation du ballon niveau 4"]');
+    await cp.fill('textarea[id^="e-"] >> nth=1', 'Changements de côté et de rythme répétés, ballon progressé par trois couloirs.');
+    await cp.click('button[aria-label="Enregistrer Circulation du ballon"]'); await cp.waitForSelector('text=Niveau enregistré');
+    ok('éditeur : 2 critères observés enregistrés, les 3 autres restent « non observés »', sqlN(`select count(*) from evaluation_scores s join team_evaluations e on e.id=s.evaluation_id where e.status='draft'`) === 2);
+    ok('éditeur : le brouillon est invisible de la direction technique avant finalisation', sqlN(`select count(*) from team_evaluations where status='draft'`) === 1);
+    await shot(cp, '23-editeur-evaluation');
+    await cp.click('button:has-text("Finaliser l\'observation")');
+    ok('finalisation : confirmation explicite (irréversible)', await cp.locator('text=ne pourra plus être modifiée').count() === 1);
+    await cp.click('button:has-text("Oui, finaliser")'); await ready(cp, '[data-testid=evaluation]');
+    ok('finalisation : la 4e observation apparaît dans la liste', await count(cp, '[data-testid=evaluation]', 4) === 4);
+    await cp.locator('[data-testid=evaluation]').first().locator('button:has-text("Voir")').click(); await cp.waitForSelector('[data-testid=score-row]');
+    ok('lecture : observation finalisée en lecture seule avec ses observations écrites', await cp.locator('[data-testid=score-row]').count() === 2 && await cp.locator('button:has-text("Enregistrer ce critère")').count() === 0 && await cp.locator('text=latéraux tiennent la ligne').count() === 1);
+    ok('base : l\'observation finalisée est figée (UPDATE refusé même pour le propriétaire de la base)', (() => { try { sql(`update team_evaluations set summary='réécrite' where status='final'`); return false; } catch { return true; } })());
+    await cp.click('text=← Évaluations'); await ready(cp, '[data-testid=evaluation]');
+    await cp.click('button:has-text("Commencer")'); await cp.waitForSelector('[data-testid=criterion-card]');
+    await cp.click('text=← Évaluations'); await ready(cp, '[data-testid=evaluation]');
+    ok('brouillon vide : listé « Brouillon » uniquement pour son auteur', await cp.locator('.badge.warn', { hasText: 'Brouillon' }).count() === 1);
+    await cp.locator('button:has-text("Continuer")').click(); await cp.waitForSelector('button:has-text("Supprimer le brouillon")');
+    await cp.click('button:has-text("Supprimer le brouillon")'); await ready(cp, '[data-testid=evaluation]');
+    ok('brouillon supprimé par son auteur', sqlN(`select count(*) from team_evaluations where status='draft'`) === 0);
+    ok('coach : aucune erreur JavaScript', co.errors.length === 0, co.errors.join(' | '));
+
+    // ---------- adjoint : lecture seule
+    const aj = await login(browser, 'adjoint-u14'); await goFollow(aj.page); await pickTeam(aj.page, 'U14 1'); await count(aj.page, '[data-testid=objective]', 4);
+    ok('adjoint : voit les objectifs de son équipe', await aj.page.locator('[data-testid=objective]').count() === 4);
+    ok('adjoint : aucun formulaire de création, statuts non modifiables', await aj.page.locator('text=Nouvel objectif').count() === 0 && await aj.page.locator('select[aria-label^="Statut de"]').count() === 0);
+    await aj.page.click('[role=tab]:has-text("Évaluations")'); await ready(aj.page, '[data-testid=evaluation]');
+    ok('adjoint : voit les évaluations finalisées mais ne peut pas en créer', await aj.page.locator('[data-testid=evaluation]').count() === 4 && await aj.page.locator('text=Nouvelle observation').count() === 0);
+
+    // ---------- coach Seniors 1 : cloisonnement
+    const u14 = sql(`select t.id from teams t join categories c on c.id=t.category_id where c.name='U14' and t.name='1'`);
+    const r1 = await (await apiAs('coach-seniors1', 'GET', `/api/teams/${u14}/objectives`)).json();
+    const r2 = await (await apiAs('coach-seniors1', 'GET', `/api/teams/${u14}/evaluations`)).json();
+    ok('API : le coach Seniors 1 ne voit ni les objectifs ni les évaluations de U14 1', Array.isArray(r1) && r1.length === 0 && Array.isArray(r2) && r2.length === 0);
+    ok('API : le coach Seniors 1 ne peut pas créer d\'objectif pour U14 1 (équipe invisible : 403/404)', [403, 404].includes((await apiAs('coach-seniors1', 'POST', `/api/teams/${u14}/objectives`, { title: 'Intrusion' })).status));
+    ok('API : le coach Seniors 1 ne peut pas commencer une évaluation de U14 1 (403)', (await apiAs('coach-seniors1', 'POST', `/api/teams/${u14}/evaluations`, { evaluated_on: new Date().toISOString().slice(0, 10) })).status === 403);
+    ok('base : aucun objectif ni évaluation créé par cette intrusion', sqlN(`select count(*) from team_objectives where title='Intrusion'`) === 0);
+
+    // ---------- direction technique : grille
+    const dt = await login(browser, 'dt'); const dp = dt.page;
+    await goFollow(dp, 'Grille d\'évaluation'); await dp.waitForSelector('[data-testid=criterion]');
+    ok('grille : 5 critères actifs et 1 proposition inactive « à valider »', await dp.locator('h2:has-text("Critères actifs (5)")').count() === 1 && await dp.locator('h2:has-text("Critères inactifs (1)")').count() === 1);
+    ok('grille : chaque critère décrit 4 niveaux', (await dp.locator('[data-testid=criterion]').first().locator('tr').count()) === 4);
+    ok('grille : les critères déjà utilisés sont signalés', await dp.locator('.badge.ok', { hasText: 'Déjà utilisé' }).count() >= 3);
+    await shot(dp, '24-grille');
+    const critId = sql(`select id from criteria where title='Occupation des espaces'`);
+    const bad = await apiAs('dt', 'POST', `/api/criteria/${critId}`, { title: 'Renommé après coup' });
+    ok('API : un critère déjà utilisé n\'est pas modifiable, même par la direction technique (400)', bad.status === 400 && /déjà utilisé/.test((await bad.json()).error));
+    ok('API : un coach ne peut pas créer de critère (403)', (await apiAs('coach-u14', 'POST', '/api/criteria', { club_id: sql('select id from clubs limit 1'), title: 'Pirate', anchors: { 1: 'aaaaaaaaaaaa', 2: 'bbbbbbbbbbbb', 3: 'cccccccccccc', 4: 'dddddddddddd' } })).status === 403);
+    ok('API : critère sans les 4 niveaux refusé (400)', (await apiAs('dt', 'POST', '/api/criteria', { club_id: sql('select id from clubs limit 1'), title: 'Incomplet', anchors: { 1: 'aaaaaaaaaaaa', 2: 'bbbbbbbbbbbb' } })).status === 400);
+    await dp.locator('[data-testid=criterion]', { hasText: 'Coordination de la pression' }).locator('button:has-text("Valider et activer")').click();
+    await dp.waitForSelector('text=Critère activé');
+    ok('grille : la direction technique valide et active une proposition', sql(`select active from criteria where title='Coordination de la pression'`) === 't');
+    await dp.click('text=+ Nouveau critère');
+    await dp.fill('#g-t', 'Largeur et profondeur'); await dp.selectOption('#g-p', 'position');
+    await dp.fill('#g-a1', 'Les joueurs restent dans l\'axe, aucune largeur.'); await dp.fill('#g-a2', 'La largeur est occupée, sans profondeur associée.');
+    await dp.fill('#g-a3', 'Largeur et profondeur sont occupées la plupart du temps.'); await dp.fill('#g-a4', 'Largeur et profondeur occupées en permanence, avec rotations.');
+    await dp.click('button:has-text("Créer et activer")'); await dp.waitForSelector('text=Critère créé et activé');
+    ok('grille : nouveau critère créé avec ses 4 niveaux', sqlN(`select count(*) from criteria where title='Largeur et profondeur' and active`) === 1);
+    await dp.locator('[data-testid=criterion]', { hasText: 'Prise d\'information avant réception' }).locator('button:has-text("Retirer")').click(); await dp.waitForSelector('text=Critère retiré');
+    ok('grille : un critère utilisé peut être retiré (évaluations passées intactes)', sql(`select active from criteria where title like 'Prise d''information%'`) === 'f');
+
+    // coach : la grille mise à jour et la lecture des évaluations passées avec un critère retiré
+    await goFollow(cp, 'Évaluations'); await pickTeam(cp, 'U14 1'); await ready(cp, '[data-testid=evaluation]');
+    ok('critère retiré : toujours visible dans la tendance des évaluations passées', await cp.locator('[data-testid=trend-row]', { hasText: 'Prise d\'information avant réception' }).count() === 1);
+    await cp.click('button:has-text("Commencer")'); await cp.waitForSelector('[data-testid=criterion-card]');
+    const titles = await cp.locator('[data-testid=criterion-card] h3').allInnerTexts();
+    ok('nouvelle observation : critères activés proposés (Coordination, Largeur) et critère retiré absent', titles.some((t) => /Coordination de la pression/.test(t)) && titles.some((t) => /Largeur et profondeur/.test(t)) && !titles.some((t) => /Prise d'information/.test(t)), titles.join('|'));
+    await cp.click('text=← Évaluations'); await ready(cp, '[data-testid=evaluation]'); await cp.locator('button:has-text("Continuer")').click(); await cp.click('button:has-text("Supprimer le brouillon")');
+
+    // ---------- responsable de catégorie
+    const re = await login(browser, 'resp-u14'); const rp = re.page;
+    await goFollow(rp); const opts = await rp.locator('#f-team option').allInnerTexts();
+    ok('responsable : ne voit que les équipes U14 dans le sélecteur', opts.length === 3 && opts.every((o) => o.startsWith('U14')), opts.join(','));
+    await pickTeam(rp, 'U14 2'); await rp.fill('#ob-t', 'Objectif posé par le responsable'); await rp.click('button:has-text("Créer l\'objectif")'); await rp.waitForSelector('text=Objectif créé');
+    ok('responsable : crée un objectif pour une équipe de sa catégorie', sqlN(`select count(*) from team_objectives where title='Objectif posé par le responsable'`) === 1);
+    await rp.click('[role=tab]:has-text("Grille")'); await ready(rp, '[data-testid=criterion]');
+    ok('responsable : consulte la grille sans pouvoir la modifier', await rp.locator('button:has-text("Retirer")').count() === 0 && await rp.locator('text=+ Nouveau critère').count() === 0);
+
+    // ---------- tableau de bord
+    await dp.goto(`${BASE}/#/dashboard`); await dp.reload(); await dp.waitForSelector('.kpis'); await ready(dp);
+    const kObj = (await dp.locator('[data-testid=kpi-objectives]').innerText()).trim();
+    ok('dashboard : objectifs atteints/définis recalculés indépendamment', kObj === `${sqlN(`select count(*) from team_objectives where status='achieved'`)}/${sqlN('select count(*) from team_objectives')}`, kObj);
+    ok('dashboard : évaluations finalisées de la période recalculées indépendamment', Number((await dp.locator('[data-testid=kpi-evaluations]').innerText()).trim()) === sqlN(`select count(*) from team_evaluations where status='final'`));
+    const rowU14 = await dp.locator('[data-testid=team-row]', { hasText: 'U14 1' }).first().innerText();
+    ok('dashboard : la ligne U14 1 affiche ses objectifs (x/4)', /\b1\/4\b/.test(rowU14), rowU14.replace(/\s+/g, ' '));
+    const flags2 = await dp.locator('[data-testid=flag]').allInnerTexts();
+    ok('dashboard : U14 1 (objectifs définis) n\'est pas signalée « sans objectif »', !flags2.some((f) => /U14 1/.test(f) && /objectif/i.test(f)));
+    ok('dashboard : « Pas encore suivi » ne liste plus objectifs ni évaluations, seulement thèmes et besoins de formation', !/Objectifs pédagogiques par équipe/.test(await dp.locator('main').innerText()) && await dp.locator('li', { hasText: 'Thèmes réellement travaillés' }).count() === 1);
+    ok('objectifs/évaluations : aucune erreur JavaScript', aj.errors.length === 0 && dt.errors.length === 0 && re.errors.length === 0, aj.errors.concat(dt.errors, re.errors).join(' | '));
+    ok('journal : aucune observation écrite copiée dans l\'audit', sqlN(`select count(*) from audit_log where new_data::text ilike '%latéraux tiennent la ligne%' or new_data::text ilike '%Exercice de regard%'`) === 0);
+  }
+
   // ===== Réponses périmées (changement rapide de filtre) =====
   {
     let okStale = true; try { execSync(`node ${__dirname}/stale.cjs`, { env: { ...process.env, NODE_PATH: process.env.NODE_PATH }, stdio: 'pipe' }); } catch { okStale = false; }

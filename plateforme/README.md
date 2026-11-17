@@ -12,7 +12,7 @@ Navigateur (web/, React)  →  Passerelle d'API (server/, Node)  →  PostgreSQL
 ```
 
 La passerelle ouvre une transaction **au nom de l'utilisateur** (rôle `authenticated` + claims du jeton) : c'est PostgreSQL
-qui filtre, comme dans les 216 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
+qui filtre, comme dans les 283 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
 
 ## Lancer en local (démonstration)
 
@@ -35,11 +35,27 @@ Le logo officiel du club (`web/public/logo.png`, recadré en rond) figure dans l
 | Fiche événement | éducateurs de l'équipe | Convocations et réponses, présences (présent / retard / absent / excusé), composition, notes, résultat |
 | Effectif | éducateurs de l'équipe | Liste des joueurs, ajout d'un joueur, **transfert vers une autre équipe ou catégorie** (la fiche et l'historique sont conservés), historique du joueur |
 | Méthodologie | tous ; gestion par la direction technique | Lecture des contenus publiés (badge « Nouveau »), copie dans l'espace personnel (original intact) ; **la direction technique crée, modifie en brouillon, publie, crée une nouvelle version, consulte l'historique et le suivi de lecture** |
+| Objectifs & évaluations | tous (lecture) ; éducateurs et responsables (saisie sur leur périmètre) ; direction technique (grille) | **Objectifs pédagogiques** par équipe (statut, échéance, critère visé, contenu de la méthodologie, notes de suivi) ; **évaluations collectives** sur une grille de critères à 4 niveaux décrits par des comportements observables, chaque niveau étant étayé par une observation écrite ; évolution par critère ; **grille** gérée par la direction technique |
 | Tableau de bord | direction (club entier) ; responsable de catégorie (sa catégorie seulement) | Indicateurs par période (mois / trimestre / saison) et par catégorie : participation, couverture des présences, matchs et résultats, éducateurs, lecture de la méthodologie ; **points d'attention** (règle et valeur affichées, formulés comme pistes à vérifier) ; rapport imprimable et export CSV (journalisés) |
 | Administration | direction | Catégories, équipes, invitations d'éducateurs (lien à usage unique) |
 
-Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (105 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
+Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (159 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
 invitation d'un nouvel éducateur, publication de la méthodologie en 2 versions, transferts de joueurs et droits qui suivent, tableau de bord recalculé indépendamment en SQL, export CSV, réponses périmées, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
+
+## Évaluations : principes
+
+- **Grille définie par la direction technique** : chaque critère décrit 4 niveaux par des comportements observables. Les propositions fournies
+  (inspirées des principes Position / Possession / Pression) sont créées **inactives** : l'activation par la direction technique vaut validation.
+  Un critère déjà utilisé n'est plus modifiable (on en crée un nouveau et on retire l'ancien) pour que les évaluations passées restent lisibles.
+- **Pas de niveau sans observation** : une observation écrite (10 caractères minimum) est obligatoire pour chaque niveau ; « non observé » est la valeur
+  par défaut, jamais un niveau. Double verrou : fonction + contrainte de table.
+- **Aucun score global** : ni stocké, ni calculé, ni affiché (aucune colonne de total / moyenne, vérifié par test). L'évolution montre des niveaux observés, dans l'ordre.
+- **Brouillon privé, finalisation irréversible** : un brouillon n'est visible que de son auteur ; une évaluation finalisée (et ses niveaux) est figée,
+  même pour le propriétaire de la base. Corriger = nouvelle observation.
+- **Auto-évaluation ≠ regard extérieur** : le rôle de l'auteur est conservé avec l'observation et affiché ; ils ne sont jamais fusionnés.
+- **Données sensibles** : les observations écrites ne sont pas copiées dans le journal d'audit (noms de champs seulement).
+- **Dans le tableau de bord** : objectifs atteints / définis (statut renseigné par les éducateurs, jamais déduit des résultats) et nombre d'évaluations
+  finalisées dans la période ; aucune comparaison automatique entre équipes ou éducateurs.
 
 ## Tableau de bord : principes
 
@@ -96,7 +112,7 @@ privées ne sont **jamais** partagées automatiquement (partage explicite par l'
 cd plateforme/supabase && ./run_tests.sh
 ```
 
-Crée une base PostgreSQL jetable, applique les migrations, puis exécute **216 contrôles** avec 10 comptes
+Crée une base PostgreSQL jetable, applique les migrations, puis exécute **283 contrôles** avec 10 comptes
 (administrateur, directeur technique, responsable, 4 entraîneurs, adjoint, inconnu, deuxième club) :
 isolation par catégorie/équipe/club, invitations, transferts, observations, versions, audit, garde-fous.
 Le test est « strict » : un refus n'est accepté que s'il vient d'un vrai refus de droits (pas d'une erreur de syntaxe).
@@ -109,9 +125,11 @@ Des failles volontaires (RLS trop large, accès après transfert, anti-escalade 
 - **Pas encore faits** : séances d'entraînement planifiées et microcycles (au-delà de la bibliothèque), tableau de bord
   et rapports de la direction technique, assistants IA par catégorie, publication de la méthodologie depuis
   l'interface (fait), transfert d'un joueur de catégorie depuis l'interface (fait) ; restent les observations de joueurs
-  dans l'interface (la base les gère déjà : privées par défaut, partage explicite), les évaluations et objectifs des joueurs. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+  dans l'interface (la base les gère déjà : privées par défaut, partage explicite) et les évaluations individuelles des joueurs. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+- **Évaluations** : la grille proposée est un point de départ à valider ; elle ne remplace pas le jugement de la direction technique. Pas encore de thèmes par
+  séance ni de relevé des besoins de formation (à définir avec la direction technique) ; pas de comparaison entre catégories (les critères peuvent différer).
 - **Tableau de bord** : indicateurs de participation limités à ce qui est saisi (la couverture des présences est affichée pour juger leur fiabilité) ;
-  pas encore de thèmes par séance, d'objectifs pédagogiques par équipe ni de grille d'évaluation collective ; pas de comparaison automatique entre éducateurs.
+  pas encore de thèmes par séance ni de relevé des besoins de formation ; pas de comparaison automatique entre éducateurs.
 - **Connexion** : seule la connexion de démonstration existe. En production, l'authentification passera par Supabase Auth
   (lien magique par e-mail) ; la passerelle vérifie déjà son jeton (`SUPABASE_JWT_SECRET`). Rien n'est encore déployé :
   il faut créer le projet Supabase, un rôle de connexion dédié pour la passerelle, un hébergement et le nom de domaine.

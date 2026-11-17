@@ -14,9 +14,9 @@ export async function api<T = any>(method: 'GET' | 'POST', path: string, body?: 
   return data as T;
 }
 
-export type Cap = { categories_add: boolean; teams_add: boolean; invitations_add: boolean; methodology_add: boolean; methodology_edit: boolean; club_events_add: boolean; calendar_admin: boolean; players_view_all: boolean };
+export type Cap = { categories_add: boolean; teams_add: boolean; invitations_add: boolean; methodology_add: boolean; methodology_edit: boolean; criteria_edit: boolean; club_events_add: boolean; calendar_admin: boolean; players_view_all: boolean };
 export type Me = { email: string; display_name: string | null; can_reports: boolean; memberships: { id: string; club_id: string; club_name: string; role_key: string; role_label: string; scope_level: string }[]; club_caps: Record<string, Cap> };
-export type Team = { id: string; club_id: string; name: string; category_id: string; category: string; can_event: boolean; can_player: boolean; can_attendance: boolean; can_convoke: boolean; can_match: boolean; can_view_players: boolean; can_transfer: boolean };
+export type Team = { id: string; club_id: string; name: string; category_id: string; category: string; can_event: boolean; can_player: boolean; can_attendance: boolean; can_convoke: boolean; can_match: boolean; can_view_players: boolean; can_transfer: boolean; can_objective: boolean; can_evaluate: boolean };
 export type Ev = { id: string; team_id: string | null; team_name: string | null; category: string | null; kind: string; title: string; starts_at: string; ends_at: string; status: string; official: boolean; time_known: boolean; competition: string | null; facility: string | null; opponent: string | null; home_away: string | null; our_score: number | null; their_score: number | null; match_status: string | null };
 
 export const KIND: Record<string, string> = { training: 'Entraînement', match: 'Match', tournament: 'Tournoi', event: 'Événement', meeting: 'Réunion' };
@@ -35,3 +35,8 @@ export function parisToIso(date: string, time: string): string {
   let t = wall - offset(wall); t = wall - offset(t);
   return new Date(t).toISOString();
 }
+
+export const OBJ_STATUS: Record<string, string> = { planned: 'Prévu', in_progress: 'En cours', achieved: 'Atteint', not_achieved: 'Non atteint', abandoned: 'Abandonné' };
+export const PILLAR: Record<string, string> = { position: 'Position', possession: 'Possession', pression: 'Pression', transversal: 'Transversal' };
+export const EVAL_ROLE: Record<string, string> = { entraineur: 'Auto-évaluation (entraîneur)', adjoint: 'Observation de l\'adjoint', responsable_categorie: 'Regard extérieur — responsable de catégorie', directeur_technique: 'Regard extérieur — direction technique', direction: 'Regard extérieur — direction', club_admin: 'Regard extérieur — administration' };
+export const fmtShort = (s: string) => new Date(s).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Paris' });

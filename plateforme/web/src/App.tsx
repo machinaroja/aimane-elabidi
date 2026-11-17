@@ -8,6 +8,7 @@ import { Squad } from './pages/Squad';
 import { Methodology } from './pages/Methodology';
 import { Admin } from './pages/Admin';
 import { Dashboard } from './pages/Dashboard';
+import { Follow } from './pages/Follow';
 
 export type Ctx = { me: Me; teams: Team[] };
 
@@ -42,7 +43,7 @@ export default function App() {
   const clubCaps = Object.values(me.club_caps);
   const isAdmin = clubCaps.some((c) => c.categories_add || c.teams_add || c.invitations_add);
   const [, route = '', arg = ''] = hash.split('/');
-  const nav: [string, string, boolean][] = [['', 'Accueil', true], ['calendar', 'Calendrier', true], ['squad', 'Effectif', true], ['methodology', 'Méthodologie', true], ['dashboard', 'Tableau de bord', me.can_reports], ['admin', 'Administration', isAdmin]];
+  const nav: [string, string, boolean][] = [['', 'Accueil', true], ['calendar', 'Calendrier', true], ['squad', 'Effectif', true], ['methodology', 'Méthodologie', true], ['follow', 'Objectifs & évaluations', true], ['dashboard', 'Tableau de bord', me.can_reports], ['admin', 'Administration', isAdmin]];
   const logout = () => { setToken(null); location.hash = ''; location.reload(); };
 
   return (
@@ -61,6 +62,7 @@ export default function App() {
         {route === 'event' && <EventSheet ctx={ctx} id={arg} />}
         {route === 'squad' && <Squad ctx={ctx} />}
         {route === 'methodology' && <Methodology ctx={ctx} />}
+        {route === 'follow' && <Follow ctx={ctx} />}
         {route === 'dashboard' && (me.can_reports ? <Dashboard ctx={ctx} /> : <div className="err">Le tableau de bord est réservé à la direction.</div>)}
         {route === 'admin' && (isAdmin ? <Admin ctx={ctx} /> : <div className="err">Accès réservé à la direction.</div>)}
       </main>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api';
 import type { Ctx } from '../App';
 
-type TeamRow = { id: string; name: string; category: string; category_id: string; players: number; educators: string[]; trainings_planned: number; trainings_held: number; trainings_with_attendance: number; coverage_pct: number | null; records: number; present: number; late: number; absent: number; excused: number; participation_pct: number | null; matches_played: number; wins: number; draws: number; losses: number; gf: number; ga: number; matches_upcoming: number };
+type TeamRow = { id: string; name: string; category: string; category_id: string; players: number; educators: string[]; trainings_planned: number; trainings_held: number; trainings_with_attendance: number; coverage_pct: number | null; records: number; present: number; late: number; absent: number; excused: number; participation_pct: number | null; matches_played: number; wins: number; draws: number; losses: number; gf: number; ga: number; matches_upcoming: number; objectives: { total: number; planned: number; in_progress: number; achieved: number; not_achieved: number; abandoned: number }; evaluations_in_period: number; last_evaluation_on: string | null };
 type Educ = { membership_id: string; name: string; role_label: string; teams: string[]; sessions: number; copied: number; read: number | null; read_pct: number | null };
 type Flag = { code: string; subject: string; rule: string; value: string; hint: string };
 type Dash = { club: string; scope: 'club' | 'category'; period: { type: string; ref: string; label: string; from: string; to: string }; seasons: { id: string; label: string; is_current: boolean }[]; categories: { id: string; name: string }[]; category: string | null;
@@ -44,8 +44,8 @@ export function Dashboard({ ctx }: { ctx: Ctx }) {
   const exportCsv = async () => {
     if (!d || !(await logExport(`CSV ${d.period.label}`))) return;
     const L: string[][] = [[`Rapport AS Lieusaint — ${d.period.label}`, `Généré le ${new Date(d.generated_at).toLocaleString('fr-FR')}`], [],
-      ['ÉQUIPES'], ['Catégorie', 'Équipe', 'Éducateurs', 'Joueurs', 'Entraînements tenus', 'Avec présences saisies', 'Couverture %', 'Présences saisies', 'Présents', 'En retard', 'Absents', 'Excusés', 'Participation %', 'Matchs joués', 'V', 'N', 'D', 'BP', 'BC']];
-    d.teams.forEach((t) => L.push([t.category, t.name, t.educators.join(' / '), t.players, t.trainings_held, t.trainings_with_attendance, t.coverage_pct, t.records, t.present, t.late, t.absent, t.excused, t.participation_pct, t.matches_played, t.wins, t.draws, t.losses, t.gf, t.ga].map((x) => (x ?? '') as string)));
+      ['ÉQUIPES'], ['Catégorie', 'Équipe', 'Éducateurs', 'Joueurs', 'Entraînements tenus', 'Avec présences saisies', 'Couverture %', 'Présences saisies', 'Présents', 'En retard', 'Absents', 'Excusés', 'Participation %', 'Objectifs définis', 'Objectifs atteints', 'Évaluations finalisées (période)', 'Matchs joués', 'V', 'N', 'D', 'BP', 'BC']];
+    d.teams.forEach((t) => L.push([t.category, t.name, t.educators.join(' / '), t.players, t.trainings_held, t.trainings_with_attendance, t.coverage_pct, t.records, t.present, t.late, t.absent, t.excused, t.participation_pct, t.objectives.total, t.objectives.achieved, t.evaluations_in_period, t.matches_played, t.wins, t.draws, t.losses, t.gf, t.ga].map((x) => (x ?? '') as string)));
     L.push([], ['ÉDUCATEURS'], ['Nom', 'Rôle', 'Équipes', 'Séances rattachées à une équipe', 'dont reprises du commun', 'Contenus lus', 'Part lue %']);
     d.educators.forEach((e) => L.push([e.name, e.role_label, e.teams.join(' / '), e.sessions, e.copied, e.read ?? '', e.read_pct ?? ''].map((x) => x as string)));
     L.push([], ['POINTS D\'ATTENTION (indicateurs à vérifier)'], ['Sujet', 'Règle', 'Valeur']); d.flags.forEach((f) => L.push([f.subject, f.rule, f.value]));
@@ -83,6 +83,8 @@ export function Dashboard({ ctx }: { ctx: Ctx }) {
           <div className="kpi"><div className="n">{d.kpis.players}</div><div className="l">Joueurs</div></div>
           <div className="kpi"><div className="n">{d.kpis.trainings_held}</div><div className="l">Entraînements tenus</div><div className="s">couverture des présences : {fmt(d.kpis.coverage_pct as number | null)}</div></div>
           <div className="kpi"><div className="n" data-testid="kpi-participation">{fmt(d.kpis.participation_pct as number | null)}</div><div className="l">Participation aux entraînements</div><div className="s">{d.kpis.absences} absence(s) · {d.kpis.late} retard(s)</div></div>
+          <div className="kpi"><div className="n" data-testid="kpi-objectives">{d.kpis.objectives_achieved}/{d.kpis.objectives_total}</div><div className="l">Objectifs atteints / définis</div><div className="s">statut renseigné par les éducateurs</div></div>
+          <div className="kpi"><div className="n" data-testid="kpi-evaluations">{d.kpis.evaluations_in_period}</div><div className="l">Évaluations collectives finalisées</div><div className="s">sur la période</div></div>
           <div className="kpi"><div className="n">{d.kpis.matches_played}</div><div className="l">Matchs joués</div><div className="s">{d.kpis.wins} V · {d.kpis.draws} N · {d.kpis.losses} D · {d.kpis.gf}–{d.kpis.ga}</div></div>
         </div>
 
@@ -93,11 +95,12 @@ export function Dashboard({ ctx }: { ctx: Ctx }) {
 
         <h2>Par équipe</h2>
         <div className="card tablewrap"><table>
-          <thead><tr><th>Équipe</th><th>Éducateurs</th><th className="num">Joueurs</th><th className="num">Entraîn. tenus</th><th>Couverture présences</th><th>Participation</th><th className="num">Matchs (V-N-D)</th><th className="num">Buts</th></tr></thead>
+          <thead><tr><th>Équipe</th><th>Éducateurs</th><th className="num">Joueurs</th><th className="num">Entraîn. tenus</th><th>Couverture présences</th><th>Participation</th><th className="num">Objectifs (atteints/total)</th><th className="num">Évaluations (période)</th><th className="num">Matchs (V-N-D)</th><th className="num">Buts</th></tr></thead>
           <tbody>{d.teams.map((t) => (
             <tr key={t.id} data-testid="team-row"><td><strong>{t.category} {t.name}</strong></td><td className="small">{t.educators.length ? t.educators.join(', ') : <span className="muted">aucun attribué</span>}</td>
               <td className="num">{t.players}</td><td className="num">{t.trainings_held}<span className="muted small"> / {t.trainings_planned} prévus</span></td>
               <td style={{ minWidth: 130 }}><Bar pct={t.coverage_pct} /></td><td style={{ minWidth: 130 }}><Bar pct={t.participation_pct} /></td>
+              <td className="num">{t.objectives.total ? `${t.objectives.achieved}/${t.objectives.total}` : '—'}</td><td className="num">{t.evaluations_in_period || '—'}{t.last_evaluation_on && !t.evaluations_in_period ? <span className="muted small"> (dernière : {new Date(t.last_evaluation_on).toLocaleDateString('fr-FR')})</span> : null}</td>
               <td className="num">{t.matches_played ? `${t.matches_played} (${t.wins}-${t.draws}-${t.losses})` : '—'}</td><td className="num">{t.matches_played ? `${t.gf}–${t.ga}` : '—'}</td></tr>))}
           </tbody></table></div>
 
