@@ -27,6 +27,12 @@ Les fichiers Word originaux sont conservés tels quels dans `sources-docx/`.
 
 > Note : le fichier « 2. Éléments cognitifs du joueur » envoyé une seconde fois est strictement identique au document 01 ; il n'a pas été dupliqué.
 
+## Fiches de séances (Barça Academy Casablanca)
+
+Le dossier [`seances/`](seances/README.md) contient les fiches de séances réelles (semaines 9, 10 et 11 :
+SP1, SP2, SA1, SA2, SA3), avec image de chaque fiche, texte intégral et PDF original.
+Elles servent de **modèle de format** pour concevoir de nouvelles séances.
+
 ## Glossaire
 
 - **ABP / APP / PBL** : action à ballon arrêté = coup de pied arrêté (traductions variables de l'espagnol *ABP*).
