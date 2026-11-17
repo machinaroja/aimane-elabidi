@@ -1,8 +1,42 @@
-# AS Lieusaint — Plateforme de gestion sportive (socle club multi-catégories)
+# AS Lieusaint — Plateforme de gestion sportive
 
 Un club, une méthodologie, plusieurs catégories, une seule plateforme.
 Ce dossier contient le **socle de données et de sécurité** de la plateforme, écrit pour
 PostgreSQL / Supabase. La séparation des données est faite **dans la base** (RLS), pas dans l'interface.
+
+## Architecture
+
+```
+Navigateur (web/, React)  →  Passerelle d'API (server/, Node)  →  PostgreSQL / Supabase (supabase/)
+                              ne décide d'aucun droit            RLS : toutes les règles de droits
+```
+
+La passerelle ouvre une transaction **au nom de l'utilisateur** (rôle `authenticated` + claims du jeton) : c'est PostgreSQL
+qui filtre, comme dans les 206 tests. Aucun droit n'est codé dans l'interface ni dans la passerelle.
+
+## Lancer en local (démonstration)
+
+```bash
+./dev.sh                                   # base de démonstration : 16 équipes, 352 matchs officiels, comptes fictifs
+cd web && npm install && npm run build     # interface
+cd ../server && npm install && DEV_AUTH=1 node index.mjs   # http://localhost:8787
+```
+Comptes fictifs `…@demo.lieusaint.local` : administrateur, direction technique, responsable U14, coach U14, adjoint U14, coach Seniors 1, compte sans rôle.
+`DEV_AUTH=1` (connexion de démonstration) est **refusé** si `NODE_ENV=production`.
+
+## Interface web (v1)
+
+| Écran | Pour qui | Contenu |
+|---|---|---|
+| Accueil | tous | Mon rôle, mes équipes, prochains rendez-vous |
+| Calendrier | tous (filtré par rôle) | À venir / passés, matchs officiels (badge, score V/N/D), création d'événement avec détection des conflits |
+| Fiche événement | éducateurs de l'équipe | Convocations et réponses, présences (présent / retard / absent / excusé), composition, notes, résultat |
+| Effectif | éducateurs de l'équipe | Liste des joueurs, ajout d'un joueur |
+| Méthodologie | tous | Contenus publiés par la direction technique, copie dans l'espace personnel (original intact) |
+| Administration | direction | Catégories, équipes, invitations d'éducateurs (lien à usage unique) |
+
+Tests : `cd e2e && NODE_PATH=$(npm root -g) node e2e.cjs` (33 contrôles dans un vrai Chromium : parcours entraîneur, direction technique,
+invitation d'un nouvel éducateur, compte sans rôle, jetons falsifiés) ; `cd server && npm test` (8 contrôles des jetons).
 
 ## Ce qui est réalisé (priorités 1 à 6, 8, 9, 11, 12 et une partie des 7 et 10 du cahier des charges)
 
@@ -57,9 +91,14 @@ Des failles volontaires (RLS trop large, accès après transfert, anti-escalade 
 
 - Testé sur **PostgreSQL 16 avec une simulation de Supabase Auth** (`tests/00_auth_shim.sql`), pas sur une
   instance Supabase réelle. À rejouer sur le vrai projet avant mise en production.
-- **Pas encore faits** : interface web, séances d'entraînement planifiées et microcycles (au-delà de la
-  bibliothèque), tableau de bord et rapports de la direction technique, assistants IA par catégorie.
-  Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+- **Pas encore faits** : séances d'entraînement planifiées et microcycles (au-delà de la bibliothèque), tableau de bord
+  et rapports de la direction technique, assistants IA par catégorie, publication de la méthodologie depuis
+  l'interface (aujourd'hui via la base), transfert d'un joueur de catégorie depuis l'interface, observations de joueurs
+  dans l'interface. Ils suivront l'ordre de priorité, avec le même modèle de droits (`app.has_perm`).
+- **Connexion** : seule la connexion de démonstration existe. En production, l'authentification passera par Supabase Auth
+  (lien magique par e-mail) ; la passerelle vérifie déjà son jeton (`SUPABASE_JWT_SECRET`). Rien n'est encore déployé :
+  il faut créer le projet Supabase, un rôle de connexion dédié pour la passerelle, un hébergement et le nom de domaine.
+- **Pas de limitation de débit** (anti-abus) ni d'envoi automatique des invitations par e-mail : à ajouter avant l'ouverture au public.
 - Les convocations enregistrent la réponse **saisie par l'éducateur** ; une réponse directe des parents
   (lien ou application) reste à concevoir avec les règles RGPD du club.
 - Les évaluations et objectifs des joueurs suivront le même schéma (fiche unique + équipe + visibilité).
