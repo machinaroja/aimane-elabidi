@@ -16,6 +16,13 @@ export function createAuthClient({ url, anonKey, serviceKey, fetchImpl = fetch, 
       const r = await call('/auth/v1/otp', { key: anonKey, body: { email, create_user: false, options: { email_redirect_to: redirectTo } } });
       if (!r.ok) throw new Error(`envoi du lien impossible (HTTP ${r.status})`);
     },
+    // Échange le jeton d'un lien « cliqué par la personne » (token_hash) contre une session. Fait côté serveur, sur action explicite de
+    // l'utilisateur : un robot qui ouvre simplement le lien (antivirus, aperçu) ne le consomme donc pas.
+    async verifyLink(tokenHash) {
+      const r = await call('/auth/v1/verify', { key: anonKey, body: { type: 'magiclink', token_hash: tokenHash } });
+      if (!r.ok || !r.data?.access_token) return null;
+      return { access_token: r.data.access_token, refresh_token: r.data.refresh_token, expires_in: r.data.expires_in };
+    },
     async refresh(refreshToken) {
       const r = await call('/auth/v1/token?grant_type=refresh_token', { key: anonKey, body: { refresh_token: refreshToken } });
       if (!r.ok || !r.data?.access_token) return null;

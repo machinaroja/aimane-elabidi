@@ -84,6 +84,14 @@ route('POST', '/api/auth/request-link', async ({ body, ip }) => {
   await sleep(Math.max(0, 700 - (Date.now() - t0)));
   return generic;
 }, { auth: false });
+route('POST', '/api/auth/verify', async ({ body, ip }) => {
+  if (!authClient) throw Object.assign(new Error('introuvable'), { status: 404 });
+  if (!limit(`verify-ip:${ip}`, 30, 600_000).allowed) throw Object.assign(new Error('Trop de demandes.'), { status: 429 });
+  const th = typeof body.token_hash === 'string' && /^[\w-]{10,200}$/.test(body.token_hash) ? body.token_hash : '';
+  const out = th ? await authClient.verifyLink(th).catch(() => null) : null;
+  if (!out) throw Object.assign(new Error('Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau.'), { status: 401 });
+  return out;
+}, { auth: false });
 route('POST', '/api/auth/refresh', async ({ body, ip }) => {
   if (!authClient) throw Object.assign(new Error('introuvable'), { status: 404 });
   if (!limit(`refresh-ip:${ip}`, 60, 600_000).allowed) throw Object.assign(new Error('Trop de demandes.'), { status: 429 });

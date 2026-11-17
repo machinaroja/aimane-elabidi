@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, hasInvite, takeAuthError } from '../api';
+import { api, hasInvite, setToken, takeAuthError } from '../api';
 
 // Deux modes, annoncés par le serveur :
 //  * « dev »      : comptes fictifs de démonstration (jamais en production) ;
@@ -15,6 +15,16 @@ export function Login({ onLogin }: { onLogin: (token: string) => void }) {
       if (c.mode === 'dev') { const a = await api<string[]>('GET', '/api/dev/accounts').catch(() => []); setAccounts(a); setEmail(a[0] || ''); }
     }).catch(() => setMode('supabase'));
   }, []);
+  // Lien reçu par e-mail : « …/?token_hash=… ». Rien n'est consommé tant que la personne n'a pas cliqué sur le bouton.
+  const [linkHash] = useState(() => new URLSearchParams(location.search).get('token_hash') || '');
+  const confirmLink = async () => {
+    setErr(''); setBusy(true);
+    try {
+      const r = await api<{ access_token: string; refresh_token?: string }>('POST', '/api/auth/verify', { token_hash: linkHash });
+      setToken(r.access_token); if (r.refresh_token) sessionStorage.setItem('lieusaint.refresh', r.refresh_token);
+      history.replaceState(null, '', location.pathname); location.reload();
+    } catch (e: any) { setErr(e.message); history.replaceState(null, '', location.pathname); } finally { setBusy(false); }
+  };
   const devLogin = async () => { try { const r = await api<{ token: string }>('POST', '/api/auth/dev-login', { email }); onLogin(r.token); } catch (e: any) { setErr(e.message); } };
   const sendLink = async () => {
     setErr(''); setSent(''); setBusy(true);
@@ -32,7 +42,13 @@ export function Login({ onLogin }: { onLogin: (token: string) => void }) {
           <p><button onClick={devLogin}>Entrer</button></p>
         </>
       )}
-      {mode === 'supabase' && (
+      {mode === 'supabase' && linkHash && !err && (
+        <>
+          <p>Votre lien de connexion est prêt.</p>
+          <p><button onClick={confirmLink} disabled={busy}>Me connecter</button></p>
+        </>
+      )}
+      {mode === 'supabase' && !(linkHash && !err) && (
         <>
           {hasInvite() && <div className="okmsg">Vous avez reçu une invitation. Saisissez <strong>l'adresse e-mail à laquelle elle a été envoyée</strong> pour recevoir votre lien de connexion.</div>}
           <label htmlFor="mail">Votre adresse e-mail</label>
